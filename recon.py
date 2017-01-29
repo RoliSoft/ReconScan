@@ -86,10 +86,13 @@ def run_cmd(cmd, tag='?', redirect=True):
 
 # endregion
 
-def run_nmap(addr):
-	out = os.path.join(outdir, addr, 'nmap')
-	cmd_tcp = 'nmap -v -sV -sC -T5 -p- -oN "' + out + '_tcp.txt" -oX "' + out + '_tcp.xml" ' + addr
-	cmd_udp = 'nmap -v -sV --version-intensity 0 -sC -sU -T5 -oN "' + out + '_udp.txt" -oX "' + out + '_udp.xml" ' + addr
+# region Host Discovery
+
+
+def run_nmap(address):
+	out = os.path.join(outdir, address)
+	cmd_tcp = 'nmap -v -sV -sC -T5 -p- -oN "' + out + '/0_tcp_nmap.txt" -oX "' + out + '/0_tcp_nmap.xml" ' + address
+	cmd_udp = 'nmap -v -sV --version-intensity 0 -sC -sU -T5 -oN "' + out + '/0_udp_nmap.txt" -oX "' + out + '/0_udp_nmap.xml" ' + address
 
 	debug('Running ' + Fore.BLUE + Style.BRIGHT + cmd_tcp + Style.NORMAL + Fore.RESET)
 	proc_tcp = multiprocessing.Process(target=run_cmd, args=(cmd_tcp, 'nmap-tcp'))
@@ -104,12 +107,12 @@ def run_nmap(addr):
 
 	nmap_svcs = []
 
-	if os.path.exists(out + '_tcp.xml'):
-		report = NmapParser.parse_fromfile(out + '_tcp.xml')
+	if os.path.exists(out + '/0_tcp_nmap.xml'):
+		report = NmapParser.parse_fromfile(out + '/0_tcp_nmap.xml')
 		nmap_svcs += report.hosts[0].services
 
-	if os.path.exists(out + '_udp.xml'):
-		report = NmapParser.parse_fromfile(out + '_udp.xml')
+	if os.path.exists(out + '/0_udp_nmap.xml'):
+		report = NmapParser.parse_fromfile(out + '/0_udp_nmap.xml')
 		nmap_svcs += report.hosts[0].services
 
 	services  = []
@@ -120,13 +123,13 @@ def run_nmap(addr):
 			continue
 
 		info('Service ' + Fore.GREEN + Style.BRIGHT + str(service.port) + Style.NORMAL + Fore.RESET + '/' + Fore.GREEN + Style.BRIGHT + service.protocol + Style.NORMAL + Fore.RESET + ' is ' + Fore.GREEN + Style.BRIGHT + service.service + Style.NORMAL + Fore.RESET + (' running ' + Fore.GREEN + service.service_dict['product'] + Fore.RESET if 'product' in service.service_dict else '') + (' version ' + Fore.GREEN + service.service_dict['version'] + Fore.RESET if 'version' in service.service_dict else ''))
-		services.append((addr, service.port * -1 if service.protocol == 'udp' else service.port, service.service))
+		services.append((address, service.port * -1 if service.protocol == 'udp' else service.port, service.service))
 
 	return services
 
 
 def run_amap(services, only_unidentified=True):
-	out = os.path.join(outdir, services[0][0], 'amap')
+	out = os.path.join(outdir, services[0][0])
 
 	ports_tcp = ''
 	ports_udp = ''
@@ -141,14 +144,14 @@ def run_amap(services, only_unidentified=True):
 			ports_tcp += str(service[1]) + ','
 
 	if len(ports_tcp) != 0:
-		cmd_tcp = 'amap -A -bqv -m -o "' + out + '_tcp.txt" ' + services[0][0] + ' ' + ports_tcp.rstrip(',')
+		cmd_tcp = 'amap -A -bqv -m -o "' + out + '/0_tcp_amap.txt" ' + services[0][0] + ' ' + ports_tcp.rstrip(',')
 
 		debug('Running ' + Fore.BLUE + Style.BRIGHT + cmd_tcp + Style.NORMAL + Fore.RESET)
 		proc_tcp = multiprocessing.Process(target=run_cmd, args=(cmd_tcp, 'amap-tcp'))
 		proc_tcp.start()
 
 	if len(ports_udp) != 0:
-		cmd_udp = 'amap -A -bqvu -m -o "' + out + '_udp.txt" ' + services[0][0] + ' ' + ports_udp.rstrip(',')
+		cmd_udp = 'amap -A -bqvu -m -o "' + out + '/0_udp_amap.txt" ' + services[0][0] + ' ' + ports_udp.rstrip(',')
 
 		debug('Running ' + Fore.BLUE + Style.BRIGHT + cmd_udp + Style.NORMAL + Fore.RESET)
 		proc_udp = multiprocessing.Process(target=run_cmd, args=(cmd_udp, 'amap-udp'))
@@ -162,15 +165,15 @@ def run_amap(services, only_unidentified=True):
 
 	amap_svcs = []
 
-	if os.path.exists(out + '_tcp.txt'):
-		with open(out + '_tcp.txt') as file:
+	if os.path.exists(out + '/0_tcp_amap.txt'):
+		with open(out + '/0_tcp_amap.txt') as file:
 			reader = csv.reader(file, delimiter=':', quotechar='"', dialect=csv.unix_dialect)
 			for row in reader:
 				if len(row) > 5 and not row[0].startswith('#'):
 					amap_svcs.append((row[0], int(row[1]) * -1 if row[2] == 'udp' else int(row[1]), row[5]))
 
-	if os.path.exists(out + '_udp.txt'):
-		with open(out + '_udp.txt') as file:
+	if os.path.exists(out + '/0_udp_amap.txt'):
+		with open(out + '/0_udp_amap.txt') as file:
 			reader = csv.reader(file, delimiter=':', quotechar='"', dialect=csv.unix_dialect)
 			for row in reader:
 				if len(row) > 5 and not row[0].startswith('#'):
@@ -184,21 +187,56 @@ def run_amap(services, only_unidentified=True):
 	return services
 
 
-def scan_service(addr, port, service):
-	info('Scanning service ' + Fore.YELLOW + Style.BRIGHT + addr + Style.NORMAL + Fore.RESET + ':' + Fore.GREEN + Style.BRIGHT + str(port) + Style.NORMAL + Fore.RESET + '/' + Fore.GREEN + Style.BRIGHT + service + Style.NORMAL + Fore.RESET + '...')
-	basedir = os.path.join(outdir, addr)
+# endregion
+
+# region Service Enumeration
+
+#
+#  HTTP
+#  nmap, nikto, dirb
+#
+
+def enum_http(address, port, service):
+	pass
+
+
+# endregion
+
+def scan_service(address, port, service):
+	if port < 0:
+		is_udp = True
+		port *= -1
+	else:
+		is_udp = False
+
+	info('Scanning service ' + Fore.GREEN + Style.BRIGHT + service + Style.NORMAL + Fore.RESET + ' on port ' + Fore.GREEN + Style.BRIGHT + str(port) + Style.NORMAL + Fore.RESET + '/' + Fore.GREEN + Style.BRIGHT + ('udp' if is_udp else 'tcp') + Style.NORMAL + Fore.RESET + '...')
+	basedir = os.path.join(outdir, address)
 	os.makedirs(basedir, exist_ok=True)
 
+	if 'http' in service:
+		enum_http(address, port, service)
+	else:
+		warn('Service ' + Fore.YELLOW + Style.BRIGHT + service + Style.NORMAL + Fore.RESET + ' has no scanner support.')
 
-def scan_host(addr):
-	info('Scanning host ' + Fore.YELLOW + Style.BRIGHT + addr + Style.NORMAL + Fore.RESET + '...')
-	basedir = os.path.join(outdir, addr)
+		with open(os.path.join(basedir, '0_untouched.txt'), 'a') as file:
+			file.writelines(str(port) + '\t' + ('udp' if is_udp else 'tcp') + '\t' + service + '\n')
+
+
+def scan_host(address):
+	info('Scanning host ' + Fore.YELLOW + Style.BRIGHT + address + Style.NORMAL + Fore.RESET + '...')
+	basedir = os.path.join(outdir, address)
 	os.makedirs(basedir, exist_ok=True)
 
-	services = run_nmap(addr)
+	services = run_nmap(address)
 
 	if any('unknown' in s for s in services):
 		services = run_amap(services)
+
+	if len(services) != 0:
+		info('Starting scan of services...')
+
+	if os.path.exists(os.path.join(basedir, '0_untouched.txt')):
+		os.unlink(os.path.join(basedir, '0_untouched.txt'))
 
 	for service in services:
 		scan_service(*service)
@@ -225,3 +263,5 @@ if __name__ == '__main__':
 		scan_service(args.address, args.port, args.service)
 	else:
 		scan_host(args.address)
+
+	os.system('stty sane')
