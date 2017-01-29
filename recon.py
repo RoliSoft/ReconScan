@@ -1,17 +1,26 @@
 #!/usr/bin/env python3
-import sys
+#
+#    Network reconnaissance tool for service enumeration.
+#    Copyright (C) 2017 RoliSoft <root@rolisoft.net>
+#
+#    This program can be redistributed and/or modified under the terms of the
+#    GNU General Public License, either version 3 of the License, or (at your
+#    option) any later version.
+#
+
 import os
+import sys
 import csv
-import threading
-import multiprocessing
-import subprocess
 import argparse
+import threading
+import subprocess
+import multiprocessing
 from libnmap.parser import NmapParser
 from colorama import init, Fore, Back, Style
 
 init()
 
-verbose = False
+verbose = 0
 dryrun  = False
 outdir  = ''
 
@@ -23,7 +32,7 @@ def cprint(*args, color=Fore.RESET, char='*', sep=' ', end='\n', file=sys.stdout
 
 
 def debug(*args, color=Fore.BLUE, sep=' ', end='\n', file=sys.stdout):
-	if verbose:
+	if verbose >= 1:
 		cprint(*args, color=color, char='-', sep=sep, end=end, file=file)
 
 
@@ -57,11 +66,16 @@ def dump_pipe(stream, stop_event=None, tag='?', color=Fore.BLUE):
 			debug(color + '[' + Style.BRIGHT + tag + Style.NORMAL + '] ' + Fore.RESET + line, color=color)
 
 
-def run_cmd(cmd, tag='?', redirect=True):
+def run_cmd(cmd, tag='?', redirect=None):
+	if redirect is None:
+		redirect = verbose >= 2
+
+	info(('Skipping' if dryrun else 'Running') + ' task ' + Fore.GREEN + Style.BRIGHT + tag + Style.NORMAL + Fore.RESET + (' with ' + Fore.BLUE + Style.BRIGHT + cmd + Style.NORMAL + Fore.RESET if verbose >= 1 else '...'))
+
 	if dryrun:
 		return True
 
-	proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE if redirect else subprocess.DEVNULL, stderr=subprocess.PIPE if redirect else subprocess.DEVNULL)
 
 	if redirect:
 		thdout = threading.Event()
@@ -77,11 +91,24 @@ def run_cmd(cmd, tag='?', redirect=True):
 		thderr.set()
 
 	if ret != 0:
-		error(Fore.RED + Style.BRIGHT + tag + Style.NORMAL + Fore.RESET + ' returned non-zero exit code: ' + str(ret))
+		error('Task ' + Fore.RED + Style.BRIGHT + tag + Style.NORMAL + Fore.RESET + ' returned non-zero exit code: ' + str(ret))
 	else:
-		info(Fore.GREEN + Style.BRIGHT + tag + Style.NORMAL + Fore.RESET + ' finished successfully.')
+		info('Task ' + Fore.GREEN + Style.BRIGHT + tag + Style.NORMAL + Fore.RESET + ' finished successfully.')
 
 	return ret == 0
+
+
+def run_cmds(cmds):
+	procs = []
+
+	for cmd in cmds:
+		proc = multiprocessing.Process(target=run_cmd, args=cmd)
+		procs.append(proc)
+		proc.start()
+
+	for proc in procs:
+		if proc.is_alive():
+			proc.join()
 
 
 # endregion
@@ -94,16 +121,7 @@ def run_nmap(address):
 	cmd_tcp = 'nmap -v -sV -sC -T5 -p- -oN "' + out + '/0_tcp_nmap.txt" -oX "' + out + '/0_tcp_nmap.xml" ' + address
 	cmd_udp = 'nmap -v -sV --version-intensity 0 -sC -sU -T5 -oN "' + out + '/0_udp_nmap.txt" -oX "' + out + '/0_udp_nmap.xml" ' + address
 
-	debug('Running ' + Fore.BLUE + Style.BRIGHT + cmd_tcp + Style.NORMAL + Fore.RESET)
-	proc_tcp = multiprocessing.Process(target=run_cmd, args=(cmd_tcp, 'nmap-tcp'))
-	proc_tcp.start()
-
-	debug('Running ' + Fore.BLUE + Style.BRIGHT + cmd_udp + Style.NORMAL + Fore.RESET)
-	proc_udp = multiprocessing.Process(target=run_cmd, args=(cmd_udp, 'nmap-udp'))
-	proc_udp.start()
-
-	proc_tcp.join()
-	proc_udp.join()
+	run_cmds([(cmd_tcp, 'nmap-tcp'), (cmd_udp, 'nmap-udp')])
 
 	nmap_svcs = []
 
@@ -143,25 +161,17 @@ def run_amap(services, only_unidentified=True):
 		else:
 			ports_tcp += str(service[1]) + ','
 
+	cmds = []
+
 	if len(ports_tcp) != 0:
 		cmd_tcp = 'amap -A -bqv -m -o "' + out + '/0_tcp_amap.txt" ' + services[0][0] + ' ' + ports_tcp.rstrip(',')
-
-		debug('Running ' + Fore.BLUE + Style.BRIGHT + cmd_tcp + Style.NORMAL + Fore.RESET)
-		proc_tcp = multiprocessing.Process(target=run_cmd, args=(cmd_tcp, 'amap-tcp'))
-		proc_tcp.start()
+		cmds.append((cmd_tcp, 'amap-tcp'))
 
 	if len(ports_udp) != 0:
 		cmd_udp = 'amap -A -bqvu -m -o "' + out + '/0_udp_amap.txt" ' + services[0][0] + ' ' + ports_udp.rstrip(',')
+		cmds.append((cmd_udp, 'amap-udp'))
 
-		debug('Running ' + Fore.BLUE + Style.BRIGHT + cmd_udp + Style.NORMAL + Fore.RESET)
-		proc_udp = multiprocessing.Process(target=run_cmd, args=(cmd_udp, 'amap-udp'))
-		proc_udp.start()
-
-	if len(ports_tcp) != 0:
-		proc_tcp.join()
-
-	if len(ports_udp) != 0:
-		proc_udp.join()
+	run_cmds(cmds)
 
 	amap_svcs = []
 
@@ -246,14 +256,14 @@ if __name__ == '__main__':
 	parser.add_argument('address', action='store', help='address of the host.')
 	parser.add_argument('port', action='store', type=int, help='port of the service, if scanning only one port', nargs='?')
 	parser.add_argument('service', action='store', help='type of the service, when port is specified', nargs='?')
-	parser.add_argument('-v', '--verbose', action='store_true', help='enable verbose output')
+	parser.add_argument('-v', '--verbose', action='count', help='enable verbose output, repeat for more verbosity')
 	parser.add_argument('-n', '--dry-run', action='store_true', help='does not invoke commands')
 	parser.add_argument('-o', '--output', action='store', default='results', help='output directory for the results')
 	parser.error = lambda s: fail(s[0].upper() + s[1:])
 	args = parser.parse_args()
 
 	outdir  = args.output
-	verbose = args.verbose
+	verbose = args.verbose if args.verbose is not None else 0
 	dryrun  = args.dry_run
 
 	if args.port is not None:
