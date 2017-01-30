@@ -210,12 +210,12 @@ def enum_http(address, port, service, basedir):
 
 	run_cmds([
 		('nmap -vv -sV -T5 -Pn -p ' + str(port) + ' --script=http-vhosts,http-userdir-enum,http-apache-negotiation,http-backup-finder,http-config-backup,http-default-accounts,http-methods,http-method-tamper,http-passwd,http-robots.txt,http-devframework,http-enum,http-frontpage-login,http-git,http-iis-webdav-vuln,http-php-version,http-robots.txt,http-shellshock,http-vuln-* -oN "' + basedir + '/' + str(port) + '_http_nmap.txt" -oX "' + basedir + '/' + str(port) + '_http_nmap.xml" ' + address, 'nmap-' + str(port)),
-		('curl -I ' + scheme + '://' + address + ':' + str(port) + '/ -o "' + basedir + '/' + str(port) + '_http_index.html"', 'curl-1-' + str(port)),
-		('curl -I ' + scheme + '://' + address + ':' + str(port) + '/robots.txt -o "' + basedir + '/' + str(port) + '_http_robots.txt"', 'curl-2-' + str(port))
+		('curl -i ' + scheme + '://' + address + ':' + str(port) + '/ -o "' + basedir + '/' + str(port) + '_http_index.html"', 'curl-1-' + str(port)),
+		('curl -i ' + scheme + '://' + address + ':' + str(port) + '/robots.txt -o "' + basedir + '/' + str(port) + '_http_robots.txt"', 'curl-2-' + str(port))
 	])
 	run_cmds([
 		('dirb ' + scheme + '://' + address + ':' + str(port) + ' -o "' + basedir + '/' + str(port) + '_http_dirb.txt" -r', 'dirb-' + str(port)),
-		('nikto -h ' + scheme + '://' + address + ' -p ' + str(port) + ' -o "' + basedir + '/' + str(port) + '_http_nikto.txt"', 'nikto-' + str(port))
+		('nikto -h ' + scheme + '://' + address + ':' + str(port) + ' -o "' + basedir + '/' + str(port) + '_http_nikto.txt"', 'nikto-' + str(port))
 	])
 
 
@@ -254,7 +254,7 @@ def enum_ftp(address, port, service, basedir):
 def enum_smb(address, port, service, basedir):
 	run_cmds([
 		('nmap -vv -sV -T5 -Pn -p ' + str(port) + ' --script=smb-enum-shares.nse,smb-ls.nse,smb-enum-users.nse,smb-mbenum.nse,smb-os-discovery.nse,smb-security-mode.nse,smbv2-enabled.nse,smb-vuln-*,smbv2-enabled.nse -oN "' + basedir + '/' + str(port) + '_smb_nmap.txt" -oX "' + basedir + '/' + str(port) + '_smb_nmap.xml" ' + address, 'nmap-' + str(port)),
-		('enum4linux -a ' + address + ' | tee "' + basedir + '/' + str(port) + '_smb_enum4linux.txt" ' + address, 'enum4linux-' + str(port)),
+		('enum4linux -a ' + address + ' | tee "' + basedir + '/' + str(port) + '_smb_enum4linux.txt"', 'enum4linux-' + str(port)),
 		('python2 /usr/share/doc/python-impacket/examples/samrdump.py ' + address + ' ' + str(port) + '/SMB | tee "' + basedir + '/' + str(port) + '_smb_samrdump.txt"', 'samrdump-' + str(port))
 	])
 
@@ -305,7 +305,7 @@ def enum_dns(address, port, service, basedir):
 	info('Running task ' + Fore.GREEN + Style.BRIGHT + 'nmblookup-' + str(port) + Style.NORMAL + Fore.RESET + (' with ' + Fore.BLUE + Style.BRIGHT + nmblookup + Style.NORMAL + Fore.RESET if verbose >= 1 else '...'))
 
 	try:
-		host = subprocess.check_output(nmblookup, shell=True, stderr=subprocess.DEVNULL).strip()
+		host = subprocess.check_output(nmblookup, shell=True, stderr=subprocess.DEVNULL).decode().strip()
 	except subprocess.CalledProcessError:
 		return
 
