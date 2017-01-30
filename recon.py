@@ -118,10 +118,10 @@ def run_cmds(cmds):
 
 def run_nmap(address):
 	out = os.path.join(outdir, address)
-	cmd_tcp = 'nmap -v -sV -sC -T5 -p- -oN "' + out + '/0_tcp_nmap.txt" -oX "' + out + '/0_tcp_nmap.xml" ' + address
-	cmd_udp = 'nmap -v -sV --version-intensity 0 -sC -sU -T5 -oN "' + out + '/0_udp_nmap.txt" -oX "' + out + '/0_udp_nmap.xml" ' + address
-
-	run_cmds([(cmd_tcp, 'nmap-tcp'), (cmd_udp, 'nmap-udp')])
+	run_cmds([
+		('nmap -v -sV -sC -T5 -p- -oN "' + out + '/0_tcp_nmap.txt" -oX "' + out + '/0_tcp_nmap.xml" ' + address, 'nmap-tcp'),
+		('nmap -v -sV --version-intensity 0 -sC -sU -T5 -oN "' + out + '/0_udp_nmap.txt" -oX "' + out + '/0_udp_nmap.xml" ' + address, 'nmap-udp')
+	])
 
 	nmap_svcs = []
 
@@ -164,12 +164,10 @@ def run_amap(services, only_unidentified=True):
 	cmds = []
 
 	if len(ports_tcp) != 0:
-		cmd_tcp = 'amap -A -bqv -m -o "' + out + '/0_tcp_amap.txt" ' + services[0][0] + ' ' + ports_tcp.rstrip(',')
-		cmds.append((cmd_tcp, 'amap-tcp'))
+		cmds.append(('amap -A -bqv -m -o "' + out + '/0_tcp_amap.txt" ' + services[0][0] + ' ' + ports_tcp.rstrip(','), 'amap-tcp'))
 
 	if len(ports_udp) != 0:
-		cmd_udp = 'amap -A -bqvu -m -o "' + out + '/0_udp_amap.txt" ' + services[0][0] + ' ' + ports_udp.rstrip(',')
-		cmds.append((cmd_udp, 'amap-udp'))
+		cmds.append(('amap -A -bqvu -m -o "' + out + '/0_udp_amap.txt" ' + services[0][0] + ' ' + ports_udp.rstrip(','), 'amap-udp'))
 
 	run_cmds(cmds)
 
@@ -202,12 +200,112 @@ def run_amap(services, only_unidentified=True):
 # region Service Enumeration
 
 #
-#  HTTP
+#  HTTP(S)
 #  nmap, nikto, dirb
 #
 
-def enum_http(address, port, service):
-	pass
+def enum_http(address, port, service, basedir):
+	scheme = 'https' if 'https' in service or 'ssl' in service else 'http'
+
+	run_cmds([
+		('nmap -vv -sV -T5 -Pn -p ' + str(port) + ' --script=http-vhosts,http-userdir-enum,http-apache-negotiation,http-backup-finder,http-config-backup,http-default-accounts,http-methods,http-method-tamper,http-passwd,http-robots.txt,http-devframework,http-enum,http-frontpage-login,http-git,http-iis-webdav-vuln,http-php-version,http-robots.txt,http-shellshock,http-vuln-* -oN "' + basedir + '/' + str(port) + '_http_nmap.txt" -oX "' + basedir + '/' + str(port) + '_http_nmap.xml" ' + address, 'nmap-' + str(port)),
+		('curl -I ' + scheme + '://' + address + ':' + str(port) + '/ -o "' + basedir + '/' + str(port) + '_http_index.html"', 'curl-1-' + str(port)),
+		('curl -I ' + scheme + '://' + address + ':' + str(port) + '/robots.txt -o "' + basedir + '/' + str(port) + '_http_robots.txt"', 'curl-2-' + str(port))
+	])
+	run_cmds([
+		('dirb ' + scheme + '://' + address + ':' + str(port) + ' -o "' + basedir + '/' + str(port) + '_http_dirb.txt" -r', 'dirb-' + str(port)),
+		('nikto -h ' + scheme + '://' + address + ' -p ' + str(port) + ' -o "' + basedir + '/' + str(port) + '_http_nikto.txt"', 'nikto-' + str(port))
+	])
+
+
+#
+#  SMTP
+#  nmap
+#
+
+def enum_smtp(address, port, service, basedir):
+	run_cmds([
+		('nmap -vv -sV -T5 -Pn -p ' + str(port) + ' --script=smtp-commands,smtp-enum-users,smtp-vuln-* -oN "' + basedir + '/' + str(port) + '_smtp_nmap.txt" -oX "' + basedir + '/' + str(port) + '_smtp_nmap.xml" ' + address, 'nmap-' + str(port))
+	])
+
+
+#
+#  FTP
+#  nmap, [hydra]
+#
+
+def enum_ftp(address, port, service, basedir):
+	run_cmds([
+		('nmap -vv -sV -T5 -Pn -p ' + str(port) + ' --script=ftp-anon,ftp-bounce,ftp-libopie,ftp-proftpd-backdoor,ftp-vsftpd-backdoor,ftp-vuln-* -oN "' + basedir + '/' + str(port) + '_ftp_nmap.txt" -oX "' + basedir + '/' + str(port) + '_ftp_nmap.xml" ' + address, 'nmap-' + str(port)),
+		# ('hydra -v -L /usr/share/nmap/nselib/data/usernames.lst -P /usr/share/nmap/nselib/data/passwords.lst -t 8 -f -o "' + basedir + '/' + str(port) + '_ftp_hydra.txt" -u ' + address + ' -s ' + str(port) + ' ftp', 'hydra-' + str(port))
+	])
+
+
+#
+#  SMB
+#  nmap, enum4linux, samrdump
+#
+
+def enum_smb(address, port, service, basedir):
+	run_cmds([
+		('nmap -vv -sV -T5 -Pn -p ' + str(port) + ' --script=smb-enum-shares.nse,smb-ls.nse,smb-enum-users.nse,smb-mbenum.nse,smb-os-discovery.nse,smb-security-mode.nse,smbv2-enabled.nse,smb-vuln-*,smbv2-enabled.nse -oN "' + basedir + '/' + str(port) + '_smb_nmap.txt" -oX "' + basedir + '/' + str(port) + '_smb_nmap.xml" ' + address, 'nmap-' + str(port)),
+		('enum4linux -a ' + address + ' | tee "' + basedir + '/' + str(port) + '_smb_enum4linux.txt" ' + address, 'enum4linux-' + str(port)),
+		('python2 /usr/share/doc/python-impacket/examples/samrdump.py ' + address + ' ' + str(port) + '/SMB | tee "' + basedir + '/' + str(port) + '_smb_samrdump.txt"', 'samrdump-' + str(port))
+	])
+
+
+#
+#  MSSQL
+#  nmap
+#
+
+def enum_mssql(address, port, service, basedir):
+	run_cmds([
+		('nmap -vv -sV -T5 -Pn -p ' + str(port) + ' --script=ms-sql-info,ms-sql-config,ms-sql-dump-hashes --script-args=mssql.instance-port=1433,smsql.username-sa,mssql.password-sa -oN "' + basedir + '/' + str(port) + '_mssql_nmap.txt" -oX "' + basedir + '/' + str(port) + '_mssql_nmap.xml" ' + address, 'nmap-' + str(port))
+	])
+
+
+#
+#  SSH
+#  [hydra]
+#
+
+def enum_ssh(address, port, service, basedir):
+	run_cmds([
+		# ('hydra -v -L /usr/share/nmap/nselib/data/usernames.lst -P /usr/share/nmap/nselib/data/passwords.lst -t 8 -f -o "' + basedir + '/' + str(port) + '_ssh_hydra.txt" -u ' + address + ' -s ' + str(port) + ' ssh', 'hydra-' + str(port))
+	])
+
+
+#
+#  SNMP
+#  onesixtyone, snmpwalk
+#
+
+def enum_snmp(address, port, service, basedir):
+	run_cmds([
+		('onesixtyone -dd -o "' + basedir + '/' + str(port) + '_snmp_onesixtyone.txt" ' + address, 'onesixtyone-' + str(port)),
+		('snmpwalk -c public -v 1 ' + address + ' | tee "' + basedir + '/' + str(port) + '_snmp_snmpwalk.txt"', 'snmpwalk-' + str(port))
+	])
+
+
+#
+#  DNS
+#  axfr with dig
+#
+
+def enum_dns(address, port, service, basedir):
+	nmblookup = 'nmblookup -A ' + address + " | grep '<00>' | grep -v '<GROUP>' | cut -d' ' -f1"
+
+	info('Running task ' + Fore.GREEN + Style.BRIGHT + 'nmblookup-' + str(port) + Style.NORMAL + Fore.RESET + (' with ' + Fore.BLUE + Style.BRIGHT + nmblookup + Style.NORMAL + Fore.RESET if verbose >= 1 else '...'))
+
+	try:
+		host = subprocess.check_output(nmblookup, shell=True, stderr=subprocess.DEVNULL).strip()
+	except subprocess.CalledProcessError:
+		return
+
+	run_cmds([
+		('dig @' + host + '.thinc.local thinc.local axfr > "' + basedir + '/' + str(port) + '_dns_dig.txt"', 'dig-' + str(port)),
+	])
 
 
 # endregion
@@ -224,7 +322,21 @@ def scan_service(address, port, service):
 	os.makedirs(basedir, exist_ok=True)
 
 	if 'http' in service:
-		enum_http(address, port, service)
+		enum_http(address, port, service, basedir)
+	elif 'smtp' in service:
+		enum_smtp(address, port, service, basedir)
+	elif 'ftp' in service:
+		enum_ftp(address, port, service, basedir)
+	elif 'microsoft-ds' in service or 'netbios-ssn' in service:
+		enum_smb(address, port, service, basedir)
+	elif 'ms-sql' in service:
+		enum_mssql(address, port, service, basedir)
+	elif 'ssh' in service:
+		enum_ssh(address, port, service, basedir)
+	elif 'snmp' in service:
+		enum_snmp(address, port, service, basedir)
+	elif 'domain' in service or 'dns' in service:
+		enum_dns(address, port, service, basedir)
 	else:
 		warn('Service ' + Fore.YELLOW + Style.BRIGHT + service + Style.NORMAL + Fore.RESET + ' has no scanner support.')
 
