@@ -20,9 +20,10 @@ from colorama import init, Fore, Back, Style
 
 init()
 
-verbose = 0
-dryrun  = False
-outdir  = ''
+verbose    = 0
+dryrun     = False
+bruteforce = True
+outdir     = ''
 
 # region Colors
 
@@ -235,10 +236,14 @@ def enum_smtp(address, port, service, basedir):
 #
 
 def enum_ftp(address, port, service, basedir):
-	run_cmds([
+	cmds = [
 		('nmap -vv -sV -T5 -Pn -p ' + str(port) + ' --script=ftp-anon,ftp-bounce,ftp-libopie,ftp-proftpd-backdoor,ftp-vsftpd-backdoor,ftp-vuln-* -oN "' + basedir + '/' + str(port) + '_ftp_nmap.txt" -oX "' + basedir + '/' + str(port) + '_ftp_nmap.xml" ' + address, 'nmap-' + str(port)),
-		# ('hydra -v -L /usr/share/nmap/nselib/data/usernames.lst -P /usr/share/nmap/nselib/data/passwords.lst -t 8 -f -o "' + basedir + '/' + str(port) + '_ftp_hydra.txt" -u ' + address + ' -s ' + str(port) + ' ftp', 'hydra-' + str(port))
-	])
+	]
+
+	if bruteforce:
+		cmds.append(('hydra -v -L /usr/share/nmap/nselib/data/usernames.lst -P /usr/share/nmap/nselib/data/passwords.lst -t 8 -f -o "' + basedir + '/' + str(port) + '_ftp_hydra.txt" -u ' + address + ' -s ' + str(port) + ' ftp', 'hydra-' + str(port)))
+
+	run_cmds(cmds)
 
 
 #
@@ -271,9 +276,10 @@ def enum_mssql(address, port, service, basedir):
 #
 
 def enum_ssh(address, port, service, basedir):
-	run_cmds([
-		# ('hydra -v -L /usr/share/nmap/nselib/data/usernames.lst -P /usr/share/nmap/nselib/data/passwords.lst -t 8 -f -o "' + basedir + '/' + str(port) + '_ssh_hydra.txt" -u ' + address + ' -s ' + str(port) + ' ssh', 'hydra-' + str(port))
-	])
+	if bruteforce:
+		run_cmds([
+			('hydra -v -L /usr/share/nmap/nselib/data/usernames.lst -P /usr/share/nmap/nselib/data/passwords.lst -t 8 -f -o "' + basedir + '/' + str(port) + '_ssh_hydra.txt" -u ' + address + ' -s ' + str(port) + ' ssh', 'hydra-' + str(port))
+		])
 
 
 #
@@ -368,15 +374,17 @@ if __name__ == '__main__':
 	parser.add_argument('address', action='store', help='address of the host.')
 	parser.add_argument('port', action='store', type=int, help='port of the service, if scanning only one port', nargs='?')
 	parser.add_argument('service', action='store', help='type of the service, when port is specified', nargs='?')
-	parser.add_argument('-v', '--verbose', action='count', help='enable verbose output, repeat for more verbosity')
+	parser.add_argument('-b', '--bruteforce', action='store_true', help='bruteforce credentials with hydra')
 	parser.add_argument('-n', '--dry-run', action='store_true', help='does not invoke commands')
+	parser.add_argument('-v', '--verbose', action='count', help='enable verbose output, repeat for more verbosity')
 	parser.add_argument('-o', '--output', action='store', default='results', help='output directory for the results')
 	parser.error = lambda s: fail(s[0].upper() + s[1:])
 	args = parser.parse_args()
 
-	outdir  = args.output
-	verbose = args.verbose if args.verbose is not None else 0
-	dryrun  = args.dry_run
+	outdir     = args.output
+	verbose    = args.verbose if args.verbose is not None else 0
+	dryrun     = args.dry_run
+	bruteforce = args.bruteforce
 
 	if args.port is not None:
 		if args.service is None:
