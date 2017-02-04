@@ -11,6 +11,7 @@
 import os
 import sys
 import csv
+import shutil
 import argparse
 import threading
 import subprocess
@@ -369,7 +370,11 @@ def scan_host(address):
 	for service in services:
 		scan_service(*service)
 
+
 if __name__ == '__main__':
+	if 'COLUMNS' not in os.environ:
+		os.environ['COLUMNS'] = str(shutil.get_terminal_size((80, 20)).columns)
+
 	parser = argparse.ArgumentParser(description='Network reconnaissance tool for enumerating the everliving fuck out of a host.')
 	parser.add_argument('address', action='store', help='address of the host.')
 	parser.add_argument('port', action='store', type=int, help='port of the service, if scanning only one port', nargs='?')
