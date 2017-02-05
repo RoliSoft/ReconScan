@@ -116,6 +116,12 @@ def download_nvd_dbs():
 	info('Downloading CPE dictionary...')
 	download_archives('https://static.nvd.nist.gov/feeds/xml/cpe/dictionary/official-cpe-dictionary_v2.3.xml.gz', 'nvd/cpe-dict.xml.gz')
 
+	if os.path.exists('nvd/cpe-aliases.lst'):
+		os.unlink('nvd/cpe-aliases.lst')
+
+	info('Downloading CPE aliases...')
+	download_archives('https://anonscm.debian.org/viewvc/secure-testing/data/CPE/aliases?view=co', 'nvd/cpe-aliases.lst', False)
+
 	currentyear = datetime.datetime.now().year
 
 	for year in range(2002, currentyear):
@@ -134,11 +140,11 @@ def download_nvd_dbs():
 
 
 def parse_nvd_dbs():
-	names = []
-
 	info('Initiating XML parsing...')
 
-	info('Parsing file ' + Fore.GREEN + Style.BRIGHT + 'cves/cpe-dict.xml' + Style.NORMAL + Fore.RESET + '...')
+	names = []
+
+	info('Parsing file ' + Fore.GREEN + Style.BRIGHT + 'nvd/cpe-dict.xml' + Style.NORMAL + Fore.RESET + '...')
 
 	tree = etree.parse('nvd/cpe-dict.xml')
 	root = tree.getroot()
@@ -155,6 +161,25 @@ def parse_nvd_dbs():
 				title = titles[0]
 
 			names.append([name, title.text])
+
+	aliases = []
+
+	info('Parsing file ' + Fore.GREEN + Style.BRIGHT + 'nvd/cpe-aliases.lst' + Style.NORMAL + Fore.RESET + '...')
+
+	with open('nvd/cpe-aliases.lst') as file:
+		alias_group = []
+
+		for line in file:
+			if line.startswith('#'):
+				continue
+
+			if len(line.strip()) == 0:
+				if len(alias_group) != 0:
+					aliases.append(alias_group)
+					alias_group = []
+				continue
+
+			alias_group.append(parse.unquote(line.strip()[5:]))
 
 	vulns = []
 
@@ -196,10 +221,10 @@ def parse_nvd_dbs():
 
 	info('Extracted ' + Fore.YELLOW + Style.BRIGHT + '{:,}'.format(len(vulns)) + Style.NORMAL + Fore.RESET + ' vulnerabilites.')
 
-	return (names, vulns)
+	return (names, aliases, vulns)
 
 
-def create_vulndb(names, vulns):
+def create_vulndb(names, aliases, vulns):
 	info('Initiating SQLite creation...')
 
 	if os.path.isfile('vulns.db'):
@@ -210,6 +235,7 @@ def create_vulndb(names, vulns):
 
 	c.execute('create table vulns (id integer primary key autoincrement, cve text, date datetime, description text, availability char(1))')
 	c.execute('create table affected (vuln_id integer not null, cpe text, foreign key(vuln_id) references vulns(id))')
+	c.execute('create table aliases (class int, cpe text)')
 	# c.execute('create table names (cpe text, name text, foreign key(cpe) references affected(cpe))')
 	c.execute('create virtual table names using fts4(cpe, name)')
 
@@ -224,7 +250,16 @@ def create_vulndb(names, vulns):
 	for name in names:
 		c.execute('insert into names (cpe, name) values (?, ?)', name)
 
+	group_counter = 0
+	for alias_group in aliases:
+		for alias in alias_group:
+			c.execute('insert into aliases (class, cpe) values (?, ?)', [group_counter, alias])
+
+		group_counter += 1
+
 	c.execute('create index cpe_vuln_idx on affected (cpe collate nocase)')
+	c.execute('create index cpe_alias_cpe_idx on aliases (cpe collate nocase)')
+	c.execute('create index cpe_alias_class_idx on aliases (class)')
 
 	conn.commit()
 	conn.close()
@@ -234,8 +269,8 @@ def create_vulndb(names, vulns):
 
 def update_database():
 	download_nvd_dbs()
-	(names, vulns) = parse_nvd_dbs()
-	create_vulndb(names, vulns)
+	(names, aliases, vulns) = parse_nvd_dbs()
+	create_vulndb(names, aliases, vulns)
 
 
 # endregion
@@ -261,6 +296,25 @@ def fuzzy_find_cpe(name, version=None):
 	return None
 
 
+def get_cpe_aliases(cpe):
+	cparts = cpe.split(':')
+
+	cpebase = ':'.join(cparts[:3])
+	version = ':'.join(cparts[3:])
+
+	aliases = []
+
+	for row in c.execute('select cpe from aliases where class = (select class from aliases where cpe like ?)', [cpebase]):
+		alias = row[0]
+
+		if version:
+			alias += ':' + version
+
+		aliases.append(alias)
+
+	return aliases
+
+
 def get_vulns(cpe):
 	vulns = []
 
@@ -272,7 +326,24 @@ def get_vulns(cpe):
 		warn('Name ' + Fore.YELLOW + Style.BRIGHT + 'cpe:/' + cpe + Style.NORMAL + Fore.RESET + ' has no version. Use ' + Fore.BLUE + Style.BRIGHT + '-a' + Style.NORMAL + Fore.RESET + ' to dump all vulnerabilities.')
 		return None
 
-	for row in c.execute('select cve, cpe, date, description, availability from affected join vulns on vulns.id = affected.vuln_id where cpe like ? or cpe like ? order by id desc', (cpe, cpe + ':%')):
+	aliases = get_cpe_aliases(cpe)
+
+	if len(aliases) > 0:
+		query  = ''
+		params = []
+
+		for alias in aliases:
+			query += 'cpe like ? or cpe like ? or '
+			params.append(alias)
+			params.append(alias + ':%')
+
+		query = query[:-4]
+
+	else:
+		query  = 'cpe like ? or cpe like ?'
+		params = [cpe, cpe + ':%']
+
+	for row in c.execute('select cve, cpe, date, description, availability from affected join vulns on vulns.id = affected.vuln_id where ' + query + ' order by id desc', params):
 		vulns.append(row)
 
 	return vulns
