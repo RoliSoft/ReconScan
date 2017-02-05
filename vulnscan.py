@@ -7,17 +7,20 @@
 #    GNU General Public License, either version 3 of the License, or (at your
 #    option) any later version.
 #
-
-import argparse
 import os
 import re
-import shutil
 import sys
 import math
+import glob
 import struct
+import shutil
 import sqlite3
-from colorama import init, Fore, Back, Style
+import argparse
+import datetime
+from lxml import etree
+from urllib import parse
 from libnmap.parser import NmapParser
+from colorama import init, Fore, Back, Style
 
 init()
 
@@ -33,7 +36,6 @@ def cprint(*args, color=Fore.RESET, char='*', sep=' ', end='\n', file=sys.stdout
 
 
 def debug(*args, color=Fore.BLUE, sep=' ', end='\n', file=sys.stdout):
-	#if verbose >= 1:
 	cprint(*args, color=color, char='-', sep=sep, end=end, file=file)
 
 
@@ -95,6 +97,149 @@ def bm25(raw_match_info, column_index, k1 = 1.2, b = 0.75):
 
 # endregion
 
+# region Database update
+
+
+def download_archives(url, out, uncompress=True):
+	os.system('wget "' + url + '" -O "' + out + '"')
+
+	if uncompress:
+		os.system('gzip -v -d "' + out + '"')
+
+
+def download_nvd_dbs():
+	os.makedirs('nvd', exist_ok=True)
+
+	if os.path.exists('nvd/cpe-dict.xml'):
+		os.unlink('nvd/cpe-dict.xml')
+
+	info('Downloading CPE dictionary...')
+	download_archives('https://static.nvd.nist.gov/feeds/xml/cpe/dictionary/official-cpe-dictionary_v2.3.xml.gz', 'nvd/cpe-dict.xml.gz')
+
+	currentyear = datetime.datetime.now().year
+
+	for year in range(2002, currentyear):
+		if os.path.exists('nvd/cve-items-' + str(year) + '.xml'):
+			debug('Not downloading CVE entries for year ' + str(year) + ': file already exists.')
+			continue
+
+		info('Downloading CVE entries for year ' + str(year) + '...')
+		download_archives('https://static.nvd.nist.gov/feeds/xml/cve/nvdcve-2.0-' + str(year) + '.xml.gz', 'nvd/cve-items-' + str(year) + '.xml.gz')
+
+	if os.path.exists('nvd/cve-items-' + str(currentyear) + '.xml'):
+		os.unlink('nvd/cve-items-' + str(currentyear) + '.xml')
+
+	info('Downloading CVE entries for year ' + str(currentyear) + '...')
+	download_archives('https://static.nvd.nist.gov/feeds/xml/cve/nvdcve-2.0-' + str(currentyear) + '.xml.gz', 'nvd/cve-items-' + str(currentyear) + '.xml.gz')
+
+
+def parse_nvd_dbs():
+	names = []
+
+	info('Initiating XML parsing...')
+
+	info('Parsing file ' + Fore.GREEN + Style.BRIGHT + 'cves/cpe-dict.xml' + Style.NORMAL + Fore.RESET + '...')
+
+	tree = etree.parse('nvd/cpe-dict.xml')
+	root = tree.getroot()
+
+	for entry in root.findall('{http://cpe.mitre.org/dictionary/2.0}cpe-item'):
+		name = parse.unquote(entry.attrib['name'][5:])
+		titles = entry.findall('{http://cpe.mitre.org/dictionary/2.0}title')
+		if titles is not None:
+			if len(titles) > 1:
+				for localtitle in titles:
+					if localtitle.attrib['{http://www.w3.org/XML/1998/namespace}lang'] == 'en-US':
+						title = localtitle
+			else:
+				title = titles[0]
+
+			names.append([name, title.text])
+
+	vulns = []
+
+	for file in glob.glob('nvd/cve-items-*.xml'):
+		info('Parsing file ' + Fore.GREEN + Style.BRIGHT + file + Style.NORMAL + Fore.RESET + '...')
+
+		tree = etree.parse(file)
+		root = tree.getroot()
+
+		for entry in root.findall('{http://scap.nist.gov/schema/feed/vulnerability/2.0}entry'):
+			vuln = {'id': None, 'date': None, 'description': None, 'availability': None, 'affected': []}
+
+			id = entry.find('{http://scap.nist.gov/schema/vulnerability/0.4}cve-id')
+			if id is not None:
+				vuln['id'] = id.text[4:]
+
+			date = entry.find('{http://scap.nist.gov/schema/vulnerability/0.4}published-datetime')
+			if date is not None:
+				vuln['date'] = date.text
+
+			description = entry.find('{http://scap.nist.gov/schema/vulnerability/0.4}summary')
+			if description is not None:
+				vuln['description'] = description.text
+
+			cvss = entry.find('{http://scap.nist.gov/schema/vulnerability/0.4}cvss')
+			if cvss is not None:
+				metrics = cvss.find('{http://scap.nist.gov/schema/cvss-v2/0.2}base_metrics')
+				if metrics is not None:
+					availability = metrics.find('{http://scap.nist.gov/schema/cvss-v2/0.2}availability-impact')
+					if availability is not None:
+						vuln['availability'] = availability.text[0]
+
+			affected = entry.find('{http://scap.nist.gov/schema/vulnerability/0.4}vulnerable-software-list')
+			if affected is not None:
+				for item in affected:
+					vuln['affected'].append(parse.unquote(item.text[5:]))
+
+				vulns.append(vuln)
+
+	info('Extracted ' + Fore.YELLOW + Style.BRIGHT + '{:,}'.format(len(vulns)) + Style.NORMAL + Fore.RESET + ' vulnerabilites.')
+
+	return (names, vulns)
+
+
+def create_vulndb(names, vulns):
+	info('Initiating SQLite creation...')
+
+	if os.path.isfile('vulns.db'):
+		os.unlink('vulns.db')
+
+	conn = sqlite3.connect('vulns.db')
+	c = conn.cursor()
+
+	c.execute('create table vulns (id integer primary key autoincrement, cve text, date datetime, description text, availability char(1))')
+	c.execute('create table affected (vuln_id integer not null, cpe text, foreign key(vuln_id) references vulns(id))')
+	# c.execute('create table names (cpe text, name text, foreign key(cpe) references affected(cpe))')
+	c.execute('create virtual table names using fts4(cpe, name)')
+
+	for vuln in vulns:
+		c.execute('insert into vulns (cve, date, description, availability) values (?, ?, ?, ?)', [vuln['id'], vuln['date'], vuln['description'], vuln['availability']])
+
+		id = c.lastrowid
+
+		for affected in vuln['affected']:
+			c.execute('insert into affected (vuln_id, cpe) values (?, ?)', [id, affected])
+
+	for name in names:
+		c.execute('insert into names (cpe, name) values (?, ?)', name)
+
+	c.execute('create index cpe_vuln_idx on affected (cpe collate nocase)')
+
+	conn.commit()
+	conn.close()
+
+	info('Finished database creation.')
+
+
+def update_database():
+	download_nvd_dbs()
+	(names, vulns) = parse_nvd_dbs()
+	create_vulndb(names, vulns)
+
+
+# endregion
+
 # region Man functions
 
 
@@ -125,7 +270,7 @@ def get_vulns(cpe):
 	cparts = cpe.split(':')
 	if len(cparts) < 4 and not dumpall:
 		warn('Name ' + Fore.YELLOW + Style.BRIGHT + 'cpe:/' + cpe + Style.NORMAL + Fore.RESET + ' has no version. Use ' + Fore.BLUE + Style.BRIGHT + '-a' + Style.NORMAL + Fore.RESET + ' to dump all vulnerabilities.')
-		return vulns
+		return None
 
 	for row in c.execute('select cve, cpe, date, description, availability from affected join vulns on vulns.id = affected.vuln_id where cpe like ? or cpe like ? order by id desc', (cpe, cpe + ':%')):
 		vulns.append(row)
@@ -139,8 +284,12 @@ def get_vulns_cli(cpe):
 	if not cpe.startswith('cpe:/'):
 		cpe = 'cpe:/' + cpe
 
-	if not vulns:
+	if vulns is not None and len(vulns) == 0:
 		info('Entry ' + Fore.YELLOW + Style.BRIGHT + cpe + Style.NORMAL + Fore.RESET + ' has no vulnerabilities.')
+		return
+
+	if vulns is None:
+		# get_vulns() returns None on error, which is already printed to the user
 		return
 
 	info('Entry ' + Fore.YELLOW + Style.BRIGHT + cpe + Style.NORMAL + Fore.RESET + ' has the following vulnerabilities:')
@@ -196,12 +345,24 @@ if __name__ == '__main__':
 		os.environ['COLUMNS'] = str(shutil.get_terminal_size((80, 20)).columns)
 
 	parser = argparse.ArgumentParser(description='Vulnerability database query tool for exploitation assistance.')
-	parser.add_argument('query', action='store', help='CPE name, full name and version to fuzzy match, or path to nmap report (generated with -sV)')
+	parser.add_argument('query', action='store', nargs='?', help='CPE name, full name and version to fuzzy match, or path to nmap report (generated with -sV)')
 	parser.add_argument('-a', '--all', action='store_true', help='dump all vulnerabilities for a CPE when no version is included (off by default)')
+	parser.add_argument('-u', '--update', action='store_true', help='download the CVE dumps and recreate the local database')
 	parser.error = lambda s: fail(s[0].upper() + s[1:])
 	args = parser.parse_args()
 
+	if args.query is None:
+		if args.update:
+			update_database()
+		else:
+			parser.error('the following arguments are required: query')
+
+		exit()
+
 	dumpall = args.all
+
+	if not os.path.isfile('vulns.db'):
+		fail('Failed to find ' + Fore.GREEN + Style.BRIGHT + 'vulns.db' + Style.NORMAL + Fore.RESET + '. Use ' + Fore.BLUE + Style.BRIGHT + '-u' + Style.NORMAL + Fore.RESET + ' to download the dependencies and build the database.')
 
 	conn = sqlite3.connect('vulns.db')
 	c = conn.cursor()
