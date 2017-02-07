@@ -7,6 +7,7 @@
 #    GNU General Public License, either version 3 of the License, or (at your
 #    option) any later version.
 #
+
 import os
 import re
 import sys
@@ -25,6 +26,7 @@ from colorama import init, Fore, Back, Style
 init()
 
 dumpall = False
+dumpexp = False
 conn = None
 c = None
 
@@ -110,17 +112,23 @@ def download_archives(url, out, uncompress=True):
 def download_nvd_dbs():
 	os.makedirs('nvd', exist_ok=True)
 
-	if os.path.exists('nvd/cpe-dict.xml'):
+	if os.path.exists('nvd/cpe-dict.xml') and (datetime.datetime.today() - datetime.datetime.fromtimestamp(os.path.getmtime('nvd/cpe-dict.xml'))).days > 1:
 		os.unlink('nvd/cpe-dict.xml')
 
-	info('Downloading CPE dictionary...')
-	download_archives('https://static.nvd.nist.gov/feeds/xml/cpe/dictionary/official-cpe-dictionary_v2.3.xml.gz', 'nvd/cpe-dict.xml.gz')
+	if not os.path.exists('nvd/cpe-dict.xml'):
+		info('Downloading CPE dictionary...')
+		download_archives('https://static.nvd.nist.gov/feeds/xml/cpe/dictionary/official-cpe-dictionary_v2.3.xml.gz', 'nvd/cpe-dict.xml.gz')
+	else:
+		debug('Not downloading CPE dictionary: file is less than 24 hours old.')
 
-	if os.path.exists('nvd/cpe-aliases.lst'):
+	if os.path.exists('nvd/cpe-aliases.lst') and (datetime.datetime.today() - datetime.datetime.fromtimestamp(os.path.getmtime('nvd/cpe-aliases.lst'))).days > 1:
 		os.unlink('nvd/cpe-aliases.lst')
 
-	info('Downloading CPE aliases...')
-	download_archives('https://anonscm.debian.org/viewvc/secure-testing/data/CPE/aliases?view=co', 'nvd/cpe-aliases.lst', False)
+	if not os.path.exists('nvd/cpe-aliases.lst'):
+		info('Downloading CPE aliases...')
+		download_archives('https://anonscm.debian.org/viewvc/secure-testing/data/CPE/aliases?view=co', 'nvd/cpe-aliases.lst', False)
+	else:
+		debug('Not downloading CPE aliases: file is less than 24 hours old.')
 
 	currentyear = datetime.datetime.now().year
 
@@ -132,11 +140,14 @@ def download_nvd_dbs():
 		info('Downloading CVE entries for year ' + str(year) + '...')
 		download_archives('https://static.nvd.nist.gov/feeds/xml/cve/nvdcve-2.0-' + str(year) + '.xml.gz', 'nvd/cve-items-' + str(year) + '.xml.gz')
 
-	if os.path.exists('nvd/cve-items-' + str(currentyear) + '.xml'):
+	if os.path.exists('nvd/cve-items-' + str(currentyear) + '.xml') and (datetime.datetime.today() - datetime.datetime.fromtimestamp(os.path.getmtime('nvd/cve-items-' + str(currentyear) + '.xml'))).days > 1:
 		os.unlink('nvd/cve-items-' + str(currentyear) + '.xml')
 
-	info('Downloading CVE entries for year ' + str(currentyear) + '...')
-	download_archives('https://static.nvd.nist.gov/feeds/xml/cve/nvdcve-2.0-' + str(currentyear) + '.xml.gz', 'nvd/cve-items-' + str(currentyear) + '.xml.gz')
+	if not os.path.exists('nvd/cve-items-' + str(currentyear) + '.xml'):
+		info('Downloading CVE entries for year ' + str(currentyear) + '...')
+		download_archives('https://static.nvd.nist.gov/feeds/xml/cve/nvdcve-2.0-' + str(currentyear) + '.xml.gz', 'nvd/cve-items-' + str(currentyear) + '.xml.gz')
+	else:
+		debug('Not downloading CVE entries for year ' + str(currentyear) + ': file is less than 24 hours old.')
 
 
 def parse_nvd_dbs():
@@ -190,7 +201,7 @@ def parse_nvd_dbs():
 		root = tree.getroot()
 
 		for entry in root.findall('{http://scap.nist.gov/schema/feed/vulnerability/2.0}entry'):
-			vuln = {'id': None, 'date': None, 'description': None, 'availability': None, 'affected': []}
+			vuln = {'id': None, 'date': None, 'description': None, 'availability': None, 'affected': [], 'vendor': [], 'exploitdb': [], 'securityfocus': []}
 
 			id = entry.find('{http://scap.nist.gov/schema/vulnerability/0.4}cve-id')
 			if id is not None:
@@ -217,11 +228,36 @@ def parse_nvd_dbs():
 				for item in affected:
 					vuln['affected'].append(parse.unquote(item.text[5:]))
 
-				vulns.append(vuln)
+			references = entry.findall('{http://scap.nist.gov/schema/vulnerability/0.4}references')
+			if references is not None:
+				for reference in references:
+					reftype   = reference.attrib['reference_type']
+					refsource = None
+					reflink   = None
+
+					source = reference.find('{http://scap.nist.gov/schema/vulnerability/0.4}source')
+					if source is not None:
+						refsource = source.text
+
+					link = reference.find('{http://scap.nist.gov/schema/vulnerability/0.4}reference')
+					if link is not None:
+						if reftype == 'VENDOR_ADVISORY' and refsource != 'BID' and refsource != 'EXPLOIT-DB':
+							reflink = link.attrib['href']
+						else:
+							reflink = link.text
+
+					if refsource == 'EXPLOIT-DB':
+						vuln['exploitdb'].append(reflink)
+					elif refsource == 'BID':
+						vuln['securityfocus'].append(reflink)
+					elif reftype == 'VENDOR_ADVISORY':
+						vuln['vendor'].append(reflink)
+
+			vulns.append(vuln)
 
 	info('Extracted ' + Fore.YELLOW + Style.BRIGHT + '{:,}'.format(len(vulns)) + Style.NORMAL + Fore.RESET + ' vulnerabilites.')
 
-	return (names, aliases, vulns)
+	return names, aliases, vulns
 
 
 def create_vulndb(names, aliases, vulns):
@@ -233,22 +269,28 @@ def create_vulndb(names, aliases, vulns):
 	conn = sqlite3.connect('vulns.db')
 	c = conn.cursor()
 
-	c.execute('create table vulns (id integer primary key autoincrement, cve text, date datetime, description text, availability char(1))')
+	c.execute('create table vulns (id integer primary key autoincrement, cve text, date datetime, description text, availability char(1), vendor text, exploitdb text, securityfocus text)')
 	c.execute('create table affected (vuln_id integer not null, cpe text, foreign key(vuln_id) references vulns(id))')
 	c.execute('create table aliases (class int, cpe text)')
 	# c.execute('create table names (cpe text, name text, foreign key(cpe) references affected(cpe))')
 	c.execute('create virtual table names using fts4(cpe, name)')
 
+	info('Creating tables ' + Fore.GREEN + Style.BRIGHT + 'vulns' + Style.NORMAL + Fore.RESET + ' and ' + Fore.GREEN + Style.BRIGHT + 'affected' + Style.NORMAL + Fore.RESET + '...')
+
 	for vuln in vulns:
-		c.execute('insert into vulns (cve, date, description, availability) values (?, ?, ?, ?)', [vuln['id'], vuln['date'], vuln['description'], vuln['availability']])
+		c.execute('insert into vulns (cve, date, description, availability, vendor, exploitdb, securityfocus) values (?, ?, ?, ?, ?, ?, ?)', [vuln['id'], vuln['date'], vuln['description'], vuln['availability'], '\x1e'.join(vuln['vendor']) if vuln['vendor'] else None, '\x1e'.join(vuln['exploitdb']) if vuln['exploitdb'] else None, '\x1e'.join(vuln['securityfocus']) if vuln['securityfocus'] else None])
 
 		id = c.lastrowid
 
 		for affected in vuln['affected']:
 			c.execute('insert into affected (vuln_id, cpe) values (?, ?)', [id, affected])
 
+	info('Creating table ' + Fore.GREEN + Style.BRIGHT + 'names' + Style.NORMAL + Fore.RESET + '...')
+
 	for name in names:
 		c.execute('insert into names (cpe, name) values (?, ?)', name)
+
+	info('Creating table ' + Fore.GREEN + Style.BRIGHT + 'aliases' + Style.NORMAL + Fore.RESET + '...')
 
 	group_counter = 0
 	for alias_group in aliases:
@@ -256,6 +298,8 @@ def create_vulndb(names, aliases, vulns):
 			c.execute('insert into aliases (class, cpe) values (?, ?)', [group_counter, alias])
 
 		group_counter += 1
+
+	info('Creating indices...')
 
 	c.execute('create index cpe_vuln_idx on affected (cpe collate nocase)')
 	c.execute('create index cpe_alias_cpe_idx on aliases (cpe collate nocase)')
@@ -343,7 +387,7 @@ def get_vulns(cpe):
 		query  = 'cpe like ? or cpe like ?'
 		params = [cpe, cpe + ':%']
 
-	for row in c.execute('select cve, cpe, date, description, availability from affected join vulns on vulns.id = affected.vuln_id where ' + query + ' order by id desc', params):
+	for row in c.execute('select cve, cpe, date, description, availability, exploitdb, securityfocus from affected join vulns on vulns.id = affected.vuln_id where ' + query + ' order by id desc', params):
 		vulns.append(row)
 
 	return vulns
@@ -363,11 +407,20 @@ def get_vulns_cli(cpe):
 		# get_vulns() returns None on error, which is already printed to the user
 		return
 
-	info('Entry ' + Fore.YELLOW + Style.BRIGHT + cpe + Style.NORMAL + Fore.RESET + ' has the following vulnerabilities:')
+	if not dumpexp:
+		info('Entry ' + Fore.YELLOW + Style.BRIGHT + cpe + Style.NORMAL + Fore.RESET + ' has the following vulnerabilities:')
 
 	cols = int(os.environ['COLUMNS'])
 
+	exploitable = []
+
 	for vuln in vulns:
+		if vuln[5] is not None or vuln[6] is not None:
+			exploitable.append(vuln)
+
+		if dumpexp:
+			continue
+
 		color = Fore.RED if vuln[4] == 'C' else Fore.YELLOW if vuln[4] == 'P' else Fore.RESET
 
 		descr = vuln[3]
@@ -377,6 +430,32 @@ def get_vulns_cli(cpe):
 		descr = re.sub(r'\b(denial.of.service|execute|arbitrary|code|overflow|gain|escalate|privileges?)\b', Fore.GREEN + Style.BRIGHT + r'\1' + Style.NORMAL + Fore.RESET, descr)
 
 		liprint(color + Style.BRIGHT + 'CVE-' + vuln[0] + Style.NORMAL + Fore.RESET + ' ' + descr)
+
+	if exploitable:
+		info('Entry ' + Fore.YELLOW + Style.BRIGHT + cpe + Style.NORMAL + Fore.RESET + ' has the following public exploits:')
+
+		for vuln in exploitable:
+			descr = ''
+
+			if vuln[5] is not None:
+				descr += Fore.GREEN + Style.BRIGHT + 'ExploitDB' + Style.NORMAL + Fore.RESET + ': '
+
+				links = vuln[5].split('\x1e')
+				for link in links:
+					descr += 'https://www.exploit-db.com/exploits/' + link + ' | '
+
+			if vuln[6] is not None:
+				descr += Fore.GREEN + Style.BRIGHT + 'SecurityFocus' + Style.NORMAL + Fore.RESET + ': '
+
+				links = vuln[6].split('\x1e')
+				for link in links:
+					descr += 'http://www.securityfocus.com/bid/' + link + '/exploit | '
+
+			descr = descr.rstrip('| ').replace(' | ', Fore.BLUE + Style.BRIGHT + ' | ' + Style.NORMAL + Fore.RESET)
+
+			liprint(Fore.RED + Style.BRIGHT + 'CVE-' + vuln[0] + Style.NORMAL + Fore.RESET + ' ' + descr)
+	else:
+		info('Entry ' + Fore.YELLOW + Style.BRIGHT + cpe + Style.NORMAL + Fore.RESET + ' has no public exploits.')
 
 
 def process_nmap(file):
@@ -418,6 +497,7 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Vulnerability database query tool for exploitation assistance.')
 	parser.add_argument('query', action='store', nargs='?', help='CPE name, full name and version to fuzzy match, or path to nmap report (generated with -sV)')
 	parser.add_argument('-a', '--all', action='store_true', help='dump all vulnerabilities for a CPE when no version is included (off by default)')
+	parser.add_argument('-e', '--exploits', action='store_true', help='dump only vulnerabilities with public exploits available')
 	parser.add_argument('-u', '--update', action='store_true', help='download the CVE dumps and recreate the local database')
 	parser.error = lambda s: fail(s[0].upper() + s[1:])
 	args = parser.parse_args()
@@ -431,6 +511,7 @@ if __name__ == '__main__':
 		exit()
 
 	dumpall = args.all
+	dumpexp = args.exploits
 
 	if not os.path.isfile('vulns.db'):
 		fail('Failed to find ' + Fore.GREEN + Style.BRIGHT + 'vulns.db' + Style.NORMAL + Fore.RESET + '. Use ' + Fore.BLUE + Style.BRIGHT + '-u' + Style.NORMAL + Fore.RESET + ' to download the dependencies and build the database.')
