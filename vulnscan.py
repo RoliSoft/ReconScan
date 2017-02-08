@@ -192,6 +192,45 @@ def parse_nvd_dbs():
 
 			alias_group.append(parse.unquote(line.strip()[5:]))
 
+	exploitdb = None
+
+	if os.path.exists('nvd/exploitdb.lst'):
+		info('Using curated ' + Fore.BLUE + Style.BRIGHT + 'ExploitDB' + Style.NORMAL + Fore.RESET + ' references.')
+
+		exploitdb = {}
+
+		with open('nvd/exploitdb.lst') as file:
+			for line in file:
+				if line.startswith('#'):
+					continue
+
+				fields = line.strip().split(';')
+				cves = fields[1].split(',')
+
+				for cve in cves:
+					if cve not in exploitdb:
+						exploitdb[cve] = []
+
+					exploitdb[cve].append(fields[0])
+	else:
+		info('Using ' + Fore.BLUE + Style.BRIGHT + 'ExploitDB' + Style.NORMAL + Fore.RESET + ' links from CVE references.')
+
+	secfocus = None
+
+	if os.path.exists('nvd/securityfocus.lst'):
+		info('Using curated ' + Fore.BLUE + Style.BRIGHT + 'SecurityFocus' + Style.NORMAL + Fore.RESET + ' references.')
+
+		secfocus = set()
+
+		with open('nvd/securityfocus.lst') as file:
+			for line in file:
+				if line.startswith('#'):
+					continue
+
+				secfocus.add(line.strip())
+	else:
+		info('Using ' + Fore.BLUE + Style.BRIGHT + 'SecurityFocus' + Style.NORMAL + Fore.RESET + ' links from CVE references.')
+
 	vulns = []
 
 	for file in glob.glob('nvd/cve-items-*.xml'):
@@ -252,6 +291,21 @@ def parse_nvd_dbs():
 						vuln['securityfocus'].append(reflink)
 					elif reftype == 'VENDOR_ADVISORY':
 						vuln['vendor'].append(reflink)
+
+			if exploitdb is not None and vuln['id'] in exploitdb:
+				for expid in exploitdb[vuln['id']]:
+					vuln['exploitdb'].append(expid)
+
+				vuln['exploitdb'] = set(vuln['exploitdb'])
+
+			if secfocus is not None and vuln['securityfocus']:
+				exploits = []
+
+				for sfid in vuln['securityfocus']:
+					if sfid in secfocus:
+						exploits.append(sfid)
+
+				vuln['securityfocus'] = exploits
 
 			vulns.append(vuln)
 
