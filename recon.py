@@ -11,6 +11,7 @@
 import os
 import sys
 import csv
+import string
 import shutil
 import argparse
 import threading
@@ -29,29 +30,58 @@ outdir     = ''
 # region Colors
 
 
-def cprint(*args, color=Fore.RESET, char='*', sep=' ', end='\n', file=sys.stdout):
-	print(color + '[' + Style.BRIGHT + char + Style.NORMAL + ']' + Fore.RESET, *args, sep=sep, end=end, file=file)
+def cprint(*args, color=Fore.RESET, char='*', sep=' ', end='\n', frame_index=1, file=sys.stdout, **kvargs):
+	frame = sys._getframe(frame_index)
+
+	vals = {
+		'bgreen':  Fore.GREEN  + Style.BRIGHT,
+		'bred':    Fore.RED    + Style.BRIGHT,
+		'bblue':   Fore.BLUE   + Style.BRIGHT,
+		'byellow': Fore.YELLOW + Style.BRIGHT,
+
+		'green':  Fore.GREEN,
+		'red':    Fore.RED,
+		'blue':   Fore.BLUE,
+		'yellow': Fore.YELLOW,
+
+		'bright': Style.BRIGHT,
+		'srst':   Style.NORMAL,
+		'crst':   Fore.RESET,
+		'rst':    Style.NORMAL + Fore.RESET
+	}
+
+	vals.update(frame.f_globals)
+	vals.update(frame.f_locals)
+	vals.update(kvargs)
+
+	unfmt = ''
+	if char is not None:
+		unfmt += color + '[' + Style.BRIGHT + char + Style.NORMAL + ']' + Fore.RESET + sep
+	unfmt += sep.join(args)
+
+	fmted = string.Formatter().vformat(unfmt, args, vals)
+	print(fmted, sep=sep, end=end, file=file)
 
 
-def debug(*args, color=Fore.BLUE, sep=' ', end='\n', file=sys.stdout):
+def debug(*args, color=Fore.BLUE, sep=' ', end='\n', file=sys.stdout, **kvargs):
 	if verbose >= 1:
-		cprint(*args, color=color, char='-', sep=sep, end=end, file=file)
+		cprint(*args, color=color, char='-', sep=sep, end=end, file=file, frame_index=2, **kvargs)
 
 
-def info(*args, sep=' ', end='\n', file=sys.stdout):
-	cprint(*args, color=Fore.GREEN, char='*', sep=sep, end=end, file=file)
+def info(*args, sep=' ', end='\n', file=sys.stdout, **kvargs):
+	cprint(*args, color=Fore.GREEN, char='*', sep=sep, end=end, file=file, frame_index=2, **kvargs)
 
 
-def warn(*args, sep=' ', end='\n', file=sys.stderr):
-	cprint(*args, color=Fore.YELLOW, char='!', sep=sep, end=end, file=file)
+def warn(*args, sep=' ', end='\n', file=sys.stderr, **kvargs):
+	cprint(*args, color=Fore.YELLOW, char='!', sep=sep, end=end, file=file, frame_index=2, **kvargs)
 
 
-def error(*args, sep=' ', end='\n', file=sys.stderr):
-	cprint(*args, color=Fore.RED, char='!', sep=sep, end=end, file=file)
+def error(*args, sep=' ', end='\n', file=sys.stderr, **kvargs):
+	cprint(*args, color=Fore.RED, char='!', sep=sep, end=end, file=file, frame_index=2, **kvargs)
 
 
-def fail(*args, sep=' ', end='\n', file=sys.stderr):
-	error(*args, sep=sep, end=end, file=file)
+def fail(*args, sep=' ', end='\n', file=sys.stderr, **kvargs):
+	cprint(*args, color=Fore.RED, char='!', sep=sep, end=end, file=file, frame_index=2, **kvargs)
 	exit(-1)
 
 
@@ -72,7 +102,7 @@ def run_cmd(cmd, tag='?', redirect=None):
 	if redirect is None:
 		redirect = verbose >= 2
 
-	info(('Skipping' if dryrun else 'Running') + ' task ' + Fore.GREEN + Style.BRIGHT + tag + Style.NORMAL + Fore.RESET + (' with ' + Fore.BLUE + Style.BRIGHT + cmd + Style.NORMAL + Fore.RESET if verbose >= 1 else '...'))
+	info(('Skipping' if dryrun else 'Running') + ' task {bgreen}{tag}{rst}' + (' with {bblue}{cmd}{rst}' if verbose >= 1 else '...'))
 
 	if dryrun:
 		return True
@@ -93,9 +123,9 @@ def run_cmd(cmd, tag='?', redirect=None):
 		thderr.set()
 
 	if ret != 0:
-		error('Task ' + Fore.RED + Style.BRIGHT + tag + Style.NORMAL + Fore.RESET + ' returned non-zero exit code: ' + str(ret))
+		error('Task {bred}{tag}{rst} returned non-zero exit code: {ret}')
 	else:
-		info('Task ' + Fore.GREEN + Style.BRIGHT + tag + Style.NORMAL + Fore.RESET + ' finished successfully.')
+		info('Task {bgreen}{tag}{rst} finished successfully.')
 
 	return ret == 0
 
@@ -142,7 +172,7 @@ def run_nmap(address):
 		if 'open' not in service.state:
 			continue
 
-		info('Service ' + Fore.GREEN + Style.BRIGHT + str(service.port) + Style.NORMAL + Fore.RESET + '/' + Fore.GREEN + Style.BRIGHT + service.protocol + Style.NORMAL + Fore.RESET + ' is ' + Fore.GREEN + Style.BRIGHT + service.service + Style.NORMAL + Fore.RESET + (' running ' + Fore.GREEN + service.service_dict['product'] + Fore.RESET if 'product' in service.service_dict else '') + (' version ' + Fore.GREEN + service.service_dict['version'] + Fore.RESET if 'version' in service.service_dict else ''))
+		info('Service {bgreen}{service.port}{rst}/{bgreen}{service.protocol}{rst} is {bgreen}{service.service}{rst}' + (' running {green}' + service.service_dict['product'] + '{crst}' if 'product' in service.service_dict else '') + (' version {green}' + service.service_dict['version'] + '{crst}' if 'version' in service.service_dict else ''))
 		services.append((address, service.port * -1 if service.protocol == 'udp' else service.port, service.service))
 
 	return services
@@ -303,7 +333,7 @@ def enum_snmp(address, port, service, basedir):
 def enum_dns(address, port, service, basedir):
 	nmblookup = 'nmblookup -A ' + address + " | grep '<00>' | grep -v '<GROUP>' | cut -d' ' -f1"
 
-	info('Running task ' + Fore.GREEN + Style.BRIGHT + 'nmblookup-' + str(port) + Style.NORMAL + Fore.RESET + (' with ' + Fore.BLUE + Style.BRIGHT + nmblookup + Style.NORMAL + Fore.RESET if verbose >= 1 else '...'))
+	info('Running task {bgreen}nmblookup-{port}{rst}' + (' with {bblue}' + nmblookup + '{rst}' if verbose >= 1 else '...'))
 
 	try:
 		host = subprocess.check_output(nmblookup, shell=True, stderr=subprocess.DEVNULL).decode().strip()
@@ -324,7 +354,7 @@ def scan_service(address, port, service):
 	else:
 		is_udp = False
 
-	info('Scanning service ' + Fore.GREEN + Style.BRIGHT + service + Style.NORMAL + Fore.RESET + ' on port ' + Fore.GREEN + Style.BRIGHT + str(port) + Style.NORMAL + Fore.RESET + '/' + Fore.GREEN + Style.BRIGHT + ('udp' if is_udp else 'tcp') + Style.NORMAL + Fore.RESET + '...')
+	info('Scanning service {bgreen}{service}{rst} on port {bgreen}{port}{rst}/{bgreen}{proto}{rst}...', proto='udp' if is_udp else 'tcp')
 	basedir = os.path.join(outdir, address)
 	os.makedirs(basedir, exist_ok=True)
 
@@ -345,14 +375,14 @@ def scan_service(address, port, service):
 	elif 'domain' in service or 'dns' in service:
 		enum_dns(address, port, service, basedir)
 	else:
-		warn('Service ' + Fore.YELLOW + Style.BRIGHT + service + Style.NORMAL + Fore.RESET + ' has no scanner support.')
+		warn('Service {byellow}{service}{rst} has no scanner support.')
 
 		with open(os.path.join(basedir, '0_untouched.txt'), 'a') as file:
 			file.writelines(str(port) + '\t' + ('udp' if is_udp else 'tcp') + '\t' + service + '\n')
 
 
 def scan_host(address):
-	info('Scanning host ' + Fore.YELLOW + Style.BRIGHT + address + Style.NORMAL + Fore.RESET + '...')
+	info('Scanning host {byellow}{address}{rst}...')
 	basedir = os.path.join(outdir, address)
 	os.makedirs(basedir, exist_ok=True)
 

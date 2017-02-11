@@ -14,6 +14,7 @@ import sys
 import math
 import glob
 import struct
+import string
 import shutil
 import sqlite3
 import argparse
@@ -33,33 +34,62 @@ c = None
 # region Colors
 
 
-def cprint(*args, color=Fore.RESET, char='*', sep=' ', end='\n', file=sys.stdout):
-	print(color + '[' + Style.BRIGHT + char + Style.NORMAL + ']' + Fore.RESET, *args, sep=sep, end=end, file=file)
+def cprint(*args, color=Fore.RESET, char='*', sep=' ', end='\n', frame_index=1, file=sys.stdout, **kvargs):
+	frame = sys._getframe(frame_index)
+
+	vals = {
+		'bgreen':  Fore.GREEN  + Style.BRIGHT,
+		'bred':    Fore.RED    + Style.BRIGHT,
+		'bblue':   Fore.BLUE   + Style.BRIGHT,
+		'byellow': Fore.YELLOW + Style.BRIGHT,
+
+		'green':  Fore.GREEN,
+		'red':    Fore.RED,
+		'blue':   Fore.BLUE,
+		'yellow': Fore.YELLOW,
+
+		'bright': Style.BRIGHT,
+		'srst':   Style.NORMAL,
+		'crst':   Fore.RESET,
+		'rst':    Style.NORMAL + Fore.RESET
+	}
+
+	vals.update(frame.f_globals)
+	vals.update(frame.f_locals)
+	vals.update(kvargs)
+
+	unfmt = ''
+	if char is not None:
+		unfmt += color + '[' + Style.BRIGHT + char + Style.NORMAL + ']' + Fore.RESET + sep
+	unfmt += sep.join(args)
+
+	fmted = string.Formatter().vformat(unfmt, args, vals)
+	print(fmted, sep=sep, end=end, file=file)
 
 
-def debug(*args, color=Fore.BLUE, sep=' ', end='\n', file=sys.stdout):
-	cprint(*args, color=color, char='-', sep=sep, end=end, file=file)
+def debug(*args, color=Fore.BLUE, sep=' ', end='\n', file=sys.stdout, **kvargs):
+	cprint(*args, color=color, char='-', sep=sep, end=end, file=file, frame_index=2, **kvargs)
 
 
-def info(*args, sep=' ', end='\n', file=sys.stdout):
-	cprint(*args, color=Fore.GREEN, char='*', sep=sep, end=end, file=file)
+def info(*args, sep=' ', end='\n', file=sys.stdout, **kvargs):
+	cprint(*args, color=Fore.GREEN, char='*', sep=sep, end=end, file=file, frame_index=2, **kvargs)
 
 
-def warn(*args, sep=' ', end='\n', file=sys.stderr):
-	cprint(*args, color=Fore.YELLOW, char='!', sep=sep, end=end, file=file)
+def warn(*args, sep=' ', end='\n', file=sys.stderr, **kvargs):
+	cprint(*args, color=Fore.YELLOW, char='!', sep=sep, end=end, file=file, frame_index=2, **kvargs)
 
 
-def error(*args, sep=' ', end='\n', file=sys.stderr):
-	cprint(*args, color=Fore.RED, char='!', sep=sep, end=end, file=file)
+def error(*args, sep=' ', end='\n', file=sys.stderr, **kvargs):
+	cprint(*args, color=Fore.RED, char='!', sep=sep, end=end, file=file, frame_index=2, **kvargs)
 
 
-def fail(*args, sep=' ', end='\n', file=sys.stderr):
-	error(*args, sep=sep, end=end, file=file)
+def fail(*args, sep=' ', end='\n', file=sys.stderr, **kvargs):
+	cprint(*args, color=Fore.RED, char='!', sep=sep, end=end, file=file, frame_index=2, **kvargs)
 	exit(-1)
 
 
-def liprint(*args, color=Fore.BLUE, char='>>>', sep=' ', end='\n', file=sys.stdout):
-	print(color + Style.BRIGHT + char + Style.NORMAL + Fore.RESET, *args, sep=sep, end=end, file=file)
+def liprint(*args, color=Fore.BLUE, char='>>>', sep=' ', end='\n', file=sys.stdout, **kvargs):
+	cprint(color + '{bright}' + char + '{rst}', *args, char=None, sep=sep, end=end, file=file, frame_index=2, **kvargs)
 
 
 # endregion
@@ -134,20 +164,20 @@ def download_nvd_dbs():
 
 	for year in range(2002, currentyear):
 		if os.path.exists('nvd/cve-items-' + str(year) + '.xml'):
-			debug('Not downloading CVE entries for year ' + str(year) + ': file already exists.')
+			debug('Not downloading CVE entries for year {year}: file already exists.')
 			continue
 
-		info('Downloading CVE entries for year ' + str(year) + '...')
+		info('Downloading CVE entries for year {year}...')
 		download_archives('https://static.nvd.nist.gov/feeds/xml/cve/nvdcve-2.0-' + str(year) + '.xml.gz', 'nvd/cve-items-' + str(year) + '.xml.gz')
 
 	if os.path.exists('nvd/cve-items-' + str(currentyear) + '.xml') and (datetime.datetime.today() - datetime.datetime.fromtimestamp(os.path.getmtime('nvd/cve-items-' + str(currentyear) + '.xml'))).days > 1:
 		os.unlink('nvd/cve-items-' + str(currentyear) + '.xml')
 
 	if not os.path.exists('nvd/cve-items-' + str(currentyear) + '.xml'):
-		info('Downloading CVE entries for year ' + str(currentyear) + '...')
+		info('Downloading CVE entries for year {currentyear}...')
 		download_archives('https://static.nvd.nist.gov/feeds/xml/cve/nvdcve-2.0-' + str(currentyear) + '.xml.gz', 'nvd/cve-items-' + str(currentyear) + '.xml.gz')
 	else:
-		debug('Not downloading CVE entries for year ' + str(currentyear) + ': file is less than 24 hours old.')
+		debug('Not downloading CVE entries for year {currentyear}: file is less than 24 hours old.')
 
 
 def parse_nvd_dbs():
@@ -155,7 +185,7 @@ def parse_nvd_dbs():
 
 	names = []
 
-	info('Parsing file ' + Fore.GREEN + Style.BRIGHT + 'nvd/cpe-dict.xml' + Style.NORMAL + Fore.RESET + '...')
+	info('Parsing file {bgreen}nvd/cpe-dict.xml{rst}...')
 
 	tree = etree.parse('nvd/cpe-dict.xml')
 	root = tree.getroot()
@@ -175,7 +205,7 @@ def parse_nvd_dbs():
 
 	aliases = []
 
-	info('Parsing file ' + Fore.GREEN + Style.BRIGHT + 'nvd/cpe-aliases.lst' + Style.NORMAL + Fore.RESET + '...')
+	info('Parsing file {bgreen}nvd/cpe-aliases.lst{rst}...')
 
 	with open('nvd/cpe-aliases.lst') as file:
 		alias_group = []
@@ -195,7 +225,7 @@ def parse_nvd_dbs():
 	exploitdb = None
 
 	if os.path.exists('nvd/exploitdb.lst'):
-		info('Using curated ' + Fore.BLUE + Style.BRIGHT + 'ExploitDB' + Style.NORMAL + Fore.RESET + ' references.')
+		info('Using curated {bblue}ExploitDB{rst} references.')
 
 		exploitdb = {}
 
@@ -213,12 +243,12 @@ def parse_nvd_dbs():
 
 					exploitdb[cve].append(fields[0])
 	else:
-		info('Using ' + Fore.BLUE + Style.BRIGHT + 'ExploitDB' + Style.NORMAL + Fore.RESET + ' links from CVE references.')
+		info('Using {bblue}ExploitDB{rst} links from CVE references.')
 
 	secfocus = None
 
 	if os.path.exists('nvd/securityfocus.lst'):
-		info('Using curated ' + Fore.BLUE + Style.BRIGHT + 'SecurityFocus' + Style.NORMAL + Fore.RESET + ' references.')
+		info('Using curated {bblue}SecurityFocus{rst} references.')
 
 		secfocus = set()
 
@@ -229,12 +259,12 @@ def parse_nvd_dbs():
 
 				secfocus.add(line.strip())
 	else:
-		info('Using ' + Fore.BLUE + Style.BRIGHT + 'SecurityFocus' + Style.NORMAL + Fore.RESET + ' links from CVE references.')
+		info('Using {bblue}SecurityFocus{rst} links from CVE references.')
 
 	vulns = []
 
 	for file in glob.glob('nvd/cve-items-*.xml'):
-		info('Parsing file ' + Fore.GREEN + Style.BRIGHT + file + Style.NORMAL + Fore.RESET + '...')
+		info('Parsing file {bgreen}{file}{rst}...')
 
 		tree = etree.parse(file)
 		root = tree.getroot()
@@ -309,7 +339,7 @@ def parse_nvd_dbs():
 
 			vulns.append(vuln)
 
-	info('Extracted ' + Fore.YELLOW + Style.BRIGHT + '{:,}'.format(len(vulns)) + Style.NORMAL + Fore.RESET + ' vulnerabilites.')
+	info('Extracted {byellow}{vulncount:,}{rst} vulnerabilites.', vulncount=len(vulns))
 
 	return names, aliases, vulns
 
@@ -329,7 +359,7 @@ def create_vulndb(names, aliases, vulns):
 	# c.execute('create table names (cpe text, name text, foreign key(cpe) references affected(cpe))')
 	c.execute('create virtual table names using fts4(cpe, name)')
 
-	info('Creating tables ' + Fore.GREEN + Style.BRIGHT + 'vulns' + Style.NORMAL + Fore.RESET + ' and ' + Fore.GREEN + Style.BRIGHT + 'affected' + Style.NORMAL + Fore.RESET + '...')
+	info('Creating tables {bgreen}vulns{rst} and {bgreen}affected{rst}...')
 
 	for vuln in vulns:
 		c.execute('insert into vulns (cve, date, description, availability, vendor, exploitdb, securityfocus) values (?, ?, ?, ?, ?, ?, ?)', [vuln['id'], vuln['date'], vuln['description'], vuln['availability'], '\x1e'.join(vuln['vendor']) if vuln['vendor'] else None, '\x1e'.join(vuln['exploitdb']) if vuln['exploitdb'] else None, '\x1e'.join(vuln['securityfocus']) if vuln['securityfocus'] else None])
@@ -339,12 +369,12 @@ def create_vulndb(names, aliases, vulns):
 		for affected in vuln['affected']:
 			c.execute('insert into affected (vuln_id, cpe) values (?, ?)', [id, affected])
 
-	info('Creating table ' + Fore.GREEN + Style.BRIGHT + 'names' + Style.NORMAL + Fore.RESET + '...')
+	info('Creating table {bgreen}names{rst}...')
 
 	for name in names:
 		c.execute('insert into names (cpe, name) values (?, ?)', name)
 
-	info('Creating table ' + Fore.GREEN + Style.BRIGHT + 'aliases' + Style.NORMAL + Fore.RESET + '...')
+	info('Creating table {bgreen}aliases{rst}...')
 
 	group_counter = 0
 	for alias_group in aliases:
@@ -421,7 +451,7 @@ def get_vulns(cpe):
 
 	cparts = cpe.split(':')
 	if len(cparts) < 4 and not dumpall:
-		warn('Name ' + Fore.YELLOW + Style.BRIGHT + 'cpe:/' + cpe + Style.NORMAL + Fore.RESET + ' has no version. Use ' + Fore.BLUE + Style.BRIGHT + '-a' + Style.NORMAL + Fore.RESET + ' to dump all vulnerabilities.')
+		warn('Name {byellow}cpe:/{cpe}{rst} has no version. Use {bblue}-a{rst} to dump all vulnerabilities.')
 		return None
 
 	aliases = get_cpe_aliases(cpe)
@@ -454,7 +484,7 @@ def get_vulns_cli(cpe):
 		cpe = 'cpe:/' + cpe
 
 	if vulns is not None and len(vulns) == 0:
-		info('Entry ' + Fore.YELLOW + Style.BRIGHT + cpe + Style.NORMAL + Fore.RESET + ' has no vulnerabilities.')
+		info('Entry {byellow}{cpe}{rst} has no vulnerabilities.')
 		return
 
 	if vulns is None:
@@ -462,7 +492,7 @@ def get_vulns_cli(cpe):
 		return
 
 	if not dumpexp:
-		info('Entry ' + Fore.YELLOW + Style.BRIGHT + cpe + Style.NORMAL + Fore.RESET + ' has the following vulnerabilities:')
+		info('Entry {byellow}{cpe}{rst} has the following vulnerabilities:')
 
 	cols = int(os.environ['COLUMNS'])
 
@@ -475,41 +505,41 @@ def get_vulns_cli(cpe):
 		if dumpexp:
 			continue
 
-		color = Fore.RED if vuln[4] == 'C' else Fore.YELLOW if vuln[4] == 'P' else Fore.RESET
+		color = '{red}' if vuln[4] == 'C' else '{yellow}' if vuln[4] == 'P' else '{crst}'
 
 		descr = vuln[3]
 		if len(descr) > cols - 18:
 			descr = descr[:cols - 20] + ' >'
 
-		descr = re.sub(r'\b(denial.of.service|execute|arbitrary|code|overflow|gain|escalate|privileges?)\b', Fore.GREEN + Style.BRIGHT + r'\1' + Style.NORMAL + Fore.RESET, descr)
+		descr = re.sub(r'\b(denial.of.service|execute|arbitrary|code|overflow|gain|escalate|privileges?)\b', r'{bgreen}\1{rst}', descr)
 
-		liprint(color + Style.BRIGHT + 'CVE-' + vuln[0] + Style.NORMAL + Fore.RESET + ' ' + descr)
+		liprint(color + '{bright}CVE-{vuln[0]}{rst} ' + descr)
 
 	if exploitable:
-		info('Entry ' + Fore.YELLOW + Style.BRIGHT + cpe + Style.NORMAL + Fore.RESET + ' has the following public exploits:')
+		info('Entry {byellow}{cpe}{rst} has the following public exploits:')
 
 		for vuln in exploitable:
 			descr = ''
 
 			if vuln[5] is not None:
-				descr += Fore.GREEN + Style.BRIGHT + 'ExploitDB' + Style.NORMAL + Fore.RESET + ': '
+				descr += '{bgreen}ExploitDB{rst}: '
 
 				links = vuln[5].split('\x1e')
 				for link in links:
 					descr += 'https://www.exploit-db.com/exploits/' + link + ' | '
 
 			if vuln[6] is not None:
-				descr += Fore.GREEN + Style.BRIGHT + 'SecurityFocus' + Style.NORMAL + Fore.RESET + ': '
+				descr += '{bgreen}SecurityFocus{rst}: '
 
 				links = vuln[6].split('\x1e')
 				for link in links:
 					descr += 'http://www.securityfocus.com/bid/' + link + '/exploit | '
 
-			descr = descr.rstrip('| ').replace(' | ', Fore.BLUE + Style.BRIGHT + ' | ' + Style.NORMAL + Fore.RESET)
+			descr = descr.rstrip('| ').replace(' | ', '{bblue} | {rst}')
 
-			liprint(Fore.RED + Style.BRIGHT + 'CVE-' + vuln[0] + Style.NORMAL + Fore.RESET + ' ' + descr)
+			liprint('{bred}CVE-{vuln[0]}{rst} ' + descr)
 	else:
-		info('Entry ' + Fore.YELLOW + Style.BRIGHT + cpe + Style.NORMAL + Fore.RESET + ' has no public exploits.')
+		info('Entry {byellow}{cpe}{rst} has no public exploits.')
 
 
 def process_nmap(file):
@@ -517,10 +547,10 @@ def process_nmap(file):
 
 	for host in report.hosts:
 		for service in host.services:
-			msg  = 'Service ' + Fore.GREEN + Style.BRIGHT + host.address + Style.NORMAL + Fore.RESET + ':' + Fore.GREEN + Style.BRIGHT + str(service.port) + Style.NORMAL + Fore.RESET + '/' + Fore.GREEN + Style.BRIGHT + service.protocol + Style.NORMAL + Fore.RESET
+			msg  = 'Service {bgreen}{host.address}{rst}:{bgreen}{service.port}{rst}/{bgreen}{service.protocol}{rst}'
 
 			if 'cpelist' in service.service_dict and len(service.service_dict['cpelist']) > 0:
-				info(msg + ' is ' + Fore.YELLOW + Style.BRIGHT + (Style.NORMAL + Fore.RESET + ', ' + Fore.YELLOW + Style.BRIGHT).join(service.service_dict['cpelist']) + Style.NORMAL + Fore.RESET)
+				info(msg + ' is {byellow}' + '{rst}, {byellow}'.join(service.service_dict['cpelist']) + '{rst}')
 
 				for cpe in service.service_dict['cpelist']:
 					get_vulns_cli(cpe)
@@ -533,9 +563,9 @@ def process_nmap(file):
 
 				cpe = fuzzy_find_cpe(product + ' ' + extrainfo, version)
 				if cpe is None:
-					warn(msg + ' was identified as ' + Fore.BLUE + Style.BRIGHT + full + Style.NORMAL + Fore.RESET + ' with no matching CPE name.')
+					warn(msg + ' was identified as {bblue}{full}{rst} with no matching CPE name.')
 				else:
-					info(msg + ' was identified as ' + Fore.BLUE + Style.BRIGHT + full + Style.NORMAL + Fore.RESET + ' and fuzzy-matched to ' + Fore.YELLOW + Style.BRIGHT + 'cpe:/' + cpe + Style.NORMAL + Fore.RESET + '.')
+					info(msg + ' was identified as {bblue}{full}{rst} and fuzzy-matched to {byellow}cpe:/{cpe}{rst}.')
 					get_vulns_cli(cpe)
 			else:
 				warn(msg + ' was not identified.')
@@ -568,27 +598,27 @@ if __name__ == '__main__':
 	dumpexp = args.exploits
 
 	if not os.path.isfile('vulns.db'):
-		fail('Failed to find ' + Fore.GREEN + Style.BRIGHT + 'vulns.db' + Style.NORMAL + Fore.RESET + '. Use ' + Fore.BLUE + Style.BRIGHT + '-u' + Style.NORMAL + Fore.RESET + ' to download the dependencies and build the database.')
+		fail('Failed to find {bgreen}vulns.db{rst}. Use {bblue}-u{rst} to download the dependencies and build the database.')
 
 	conn = sqlite3.connect('vulns.db')
 	c = conn.cursor()
 
 	if args.query.lower().startswith('cpe:/'):
-		info('Finding vulnerabilities for ' + Fore.GREEN + Style.BRIGHT + args.query.lower() + Style.NORMAL + Fore.RESET + '...')
+		info('Finding vulnerabilities for {bgreen}{query}{rst}...', query=args.query.lower())
 		get_vulns_cli(args.query.lower())
 
 	elif os.path.isfile(args.query):
-		info('Processing nmap report ' + Fore.GREEN + Style.BRIGHT + args.query + Style.NORMAL + Fore.RESET + '...')
+		info('Processing nmap report {bgreen}{args.query}{rst}...')
 		process_nmap(args.query)
 
 	else:
-		info('Performing fuzzy matching for ' + Fore.GREEN + Style.BRIGHT + args.query + Style.NORMAL + Fore.RESET + '...')
+		info('Performing fuzzy matching for {bgreen}{args.query}{rst}...')
 
 		cpe = fuzzy_find_cpe(args.query)
 		if cpe is None:
 			error('Failed to resolve query to a CPE name.')
 		else:
-			info('Fuzzy-matched query to name ' + Fore.YELLOW + Style.BRIGHT + 'cpe:/' + cpe + Style.NORMAL + Fore.RESET)
+			info('Fuzzy-matched query to name {byellow}cpe:/{cpe}{rst}')
 			get_vulns_cli(cpe)
 
 	conn.close()
