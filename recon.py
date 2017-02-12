@@ -11,6 +11,7 @@
 import os
 import sys
 import csv
+import atexit
 import string
 import shutil
 import argparse
@@ -421,6 +422,8 @@ if __name__ == '__main__':
 	dryrun     = args.dry_run
 	bruteforce = args.bruteforce
 
+	atexit.register(lambda: os.system('stty sane'))
+
 	if args.port is not None:
 		if args.service is None:
 			fail('Service type is required when scanning only one port.')
@@ -428,5 +431,3 @@ if __name__ == '__main__':
 		scan_service(args.address, args.port, args.service)
 	else:
 		scan_host(args.address)
-
-	os.system('stty sane')
