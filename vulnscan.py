@@ -222,12 +222,14 @@ def parse_nvd_dbs():
 
 			alias_group.append(parse.unquote(line.strip()[5:]))
 
-	exploitdb = None
+	exploitdb_names = None
+	exploitdb_map = None
 
 	if os.path.exists('nvd/exploitdb.lst'):
 		info('Using curated {bblue}ExploitDB{rst} references.')
 
-		exploitdb = {}
+		exploitdb_names = {}
+		exploitdb_map = {}
 
 		with open('nvd/exploitdb.lst') as file:
 			for line in file:
@@ -237,27 +239,34 @@ def parse_nvd_dbs():
 				fields = line.strip().split(';')
 				cves = fields[1].split(',')
 
-				for cve in cves:
-					if cve not in exploitdb:
-						exploitdb[cve] = []
+				exploitdb_names[fields[0]] = fields[2] if len(fields) > 2 else None
 
-					exploitdb[cve].append(fields[0])
+				for cve in cves:
+					if cve not in exploitdb_map:
+						exploitdb_map[cve] = []
+
+					exploitdb_map[cve].append(fields[0])
 	else:
 		info('Using {bblue}ExploitDB{rst} links from CVE references.')
 
-	secfocus = None
+	secfocus_names = None
+	secfocus_map = None
 
 	if os.path.exists('nvd/securityfocus.lst'):
 		info('Using curated {bblue}SecurityFocus{rst} references.')
 
-		secfocus = set()
+		secfocus_names = {}
+		secfocus_map = set()
 
 		with open('nvd/securityfocus.lst') as file:
 			for line in file:
 				if line.startswith('#'):
 					continue
 
-				secfocus.add(line.strip())
+				fields = line.strip().split(';')
+
+				secfocus_names[fields[0]] = fields[1] if len(fields) > 1 else None
+				secfocus_map.add(fields[0])
 	else:
 		info('Using {bblue}SecurityFocus{rst} links from CVE references.')
 
@@ -270,7 +279,7 @@ def parse_nvd_dbs():
 		root = tree.getroot()
 
 		for entry in root.findall('{http://scap.nist.gov/schema/feed/vulnerability/2.0}entry'):
-			vuln = {'id': None, 'date': None, 'description': None, 'availability': None, 'affected': [], 'vendor': [], 'exploitdb': [], 'securityfocus': []}
+			vuln = {'id': None, 'date': None, 'description': None, 'availability': None, 'affected': [], 'vendor': [], '_exploitdb': [], '_securityfocus': []}
 
 			id = entry.find('{http://scap.nist.gov/schema/vulnerability/0.4}cve-id')
 			if id is not None:
@@ -316,26 +325,46 @@ def parse_nvd_dbs():
 							reflink = link.text
 
 					if refsource == 'EXPLOIT-DB':
-						vuln['exploitdb'].append(reflink)
+						vuln['_exploitdb'].append(reflink)
 					elif refsource == 'BID':
-						vuln['securityfocus'].append(reflink)
+						vuln['_securityfocus'].append(reflink)
 					elif reftype == 'VENDOR_ADVISORY':
 						vuln['vendor'].append(reflink)
 
-			if exploitdb is not None and vuln['id'] in exploitdb:
-				for expid in exploitdb[vuln['id']]:
-					vuln['exploitdb'].append(expid)
+			if exploitdb_map is not None and vuln['id'] in exploitdb_map:
+				for expid in exploitdb_map[vuln['id']]:
+					vuln['_exploitdb'].append(expid)
 
-				vuln['exploitdb'] = set(vuln['exploitdb'])
+				vuln['_exploitdb'] = set(vuln['_exploitdb'])
 
-			if secfocus is not None and vuln['securityfocus']:
+				vuln['exploitdb'] = []
+				for exploit in vuln['_exploitdb']:
+					vuln['exploitdb'].append({'id': exploit, 'title': exploitdb_names[exploit] if exploit in exploitdb_names else None})
+
+				vuln['_exploitdb'] = None
+			else:
+				vuln['exploitdb'] = []
+				for exploit in vuln['_exploitdb']:
+					vuln['exploitdb'].append({'id': exploit, 'title': None})
+				vuln['_exploitdb'] = None
+
+			if secfocus_map is not None and vuln['_securityfocus']:
 				exploits = []
 
-				for sfid in vuln['securityfocus']:
-					if sfid in secfocus:
+				for sfid in vuln['_securityfocus']:
+					if sfid in secfocus_map:
 						exploits.append(sfid)
 
-				vuln['securityfocus'] = exploits
+				vuln['securityfocus'] = []
+				for exploit in exploits:
+					vuln['securityfocus'].append({'id': exploit, 'title': secfocus_names[exploit] if exploit in secfocus_names else None})
+
+				vuln['_securityfocus'] = None
+			else:
+				vuln['securityfocus'] = []
+				for exploit in vuln['_securityfocus']:
+					vuln['securityfocus'].append({'id': exploit, 'title': None})
+				vuln['_securityfocus'] = None
 
 			vulns.append(vuln)
 
@@ -353,21 +382,30 @@ def create_vulndb(names, aliases, vulns):
 	conn = sqlite3.connect('vulns.db')
 	c = conn.cursor()
 
-	c.execute('create table vulns (id integer primary key autoincrement, cve text, date datetime, description text, availability char(1), vendor text, exploitdb text, securityfocus text)')
+	c.execute('create table vulns (id integer primary key autoincrement, cve text, date datetime, description text, availability char(1), vendor text)')
 	c.execute('create table affected (vuln_id integer not null, cpe text, foreign key(vuln_id) references vulns(id))')
 	c.execute('create table aliases (class int, cpe text)')
+	c.execute('create table exploits (site int, sid text, cve text, title text)')
 	# c.execute('create table names (cpe text, name text, foreign key(cpe) references affected(cpe))')
 	c.execute('create virtual table names using fts4(cpe, name)')
 
-	info('Creating tables {bgreen}vulns{rst} and {bgreen}affected{rst}...')
+	info('Creating tables {bgreen}vulns{rst}, {bgreen}affected{rst} and {bgreen}exploits{rst}...')
 
 	for vuln in vulns:
-		c.execute('insert into vulns (cve, date, description, availability, vendor, exploitdb, securityfocus) values (?, ?, ?, ?, ?, ?, ?)', [vuln['id'], vuln['date'], vuln['description'], vuln['availability'], '\x1e'.join(vuln['vendor']) if vuln['vendor'] else None, '\x1e'.join(vuln['exploitdb']) if vuln['exploitdb'] else None, '\x1e'.join(vuln['securityfocus']) if vuln['securityfocus'] else None])
+		c.execute('insert into vulns (cve, date, description, availability, vendor) values (?, ?, ?, ?, ?)', [vuln['id'], vuln['date'], vuln['description'], vuln['availability'], '\x1e'.join(vuln['vendor']) if vuln['vendor'] else None])
 
 		id = c.lastrowid
 
 		for affected in vuln['affected']:
 			c.execute('insert into affected (vuln_id, cpe) values (?, ?)', [id, affected])
+
+		if 'exploitdb' in vuln:
+			for exploit in vuln['exploitdb']:
+				c.execute('insert into exploits (site, sid, cve, title) values (?, ?, ?, ?)', [1, exploit['id'], vuln['id'], exploit['title']])
+
+		if 'securityfocus' in vuln:
+			for exploit in vuln['securityfocus']:
+				c.execute('insert into exploits (site, sid, cve, title) values (?, ?, ?, ?)', [2, exploit['id'], vuln['id'], exploit['title']])
 
 	info('Creating table {bgreen}names{rst}...')
 
@@ -388,6 +426,7 @@ def create_vulndb(names, aliases, vulns):
 	c.execute('create index cpe_vuln_idx on affected (cpe collate nocase)')
 	c.execute('create index cpe_alias_cpe_idx on aliases (cpe collate nocase)')
 	c.execute('create index cpe_alias_class_idx on aliases (class)')
+	c.execute('create index cve_exploit_idx on exploits (cve, site)')
 
 	conn.commit()
 	conn.close()
@@ -471,10 +510,24 @@ def get_vulns(cpe):
 		query  = 'cpe like ? or cpe like ?'
 		params = [cpe, cpe + ':%']
 
-	for row in c.execute('select cve, cpe, date, description, availability, exploitdb, securityfocus from affected join vulns on vulns.id = affected.vuln_id where ' + query + ' order by id desc', params):
+	for row in c.execute('select cve, cpe, date, description, availability from affected join vulns on vulns.id = affected.vuln_id where ' + query + ' order by id desc', params):
 		vulns.append(row)
 
 	return vulns
+
+
+def get_exploits(cves):
+	exploits = []
+
+	params = ''
+	for cve in cves:
+		params += '?, '
+	params = params.rstrip(', ')
+
+	for row in c.execute('select site, sid, cve, title from exploits where cve in (' + params + ') order by cve desc, site asc', cves):
+		exploits.append(row)
+
+	return exploits
 
 
 def get_vulns_cli(cpe):
@@ -496,11 +549,10 @@ def get_vulns_cli(cpe):
 
 	cols = int(os.environ['COLUMNS'])
 
-	exploitable = []
+	cves = []
 
 	for vuln in vulns:
-		if vuln[5] is not None or vuln[6] is not None:
-			exploitable.append(vuln)
+		cves.append(vuln[0])
 
 		if dumpexp:
 			continue
@@ -515,29 +567,32 @@ def get_vulns_cli(cpe):
 
 		liprint(color + '{bright}CVE-{vuln[0]}{rst} ' + descr)
 
-	if exploitable:
+	exploits = get_exploits(cves)
+
+	if exploits:
 		info('Entry {byellow}{cpe}{rst} has the following public exploits:')
 
-		for vuln in exploitable:
-			descr = ''
+		last_cve = ''
+		descr = ''
 
-			if vuln[5] is not None:
-				descr += '{bgreen}ExploitDB{rst}: '
+		for exploit in exploits:
+			if last_cve != exploit[2]:
+				if last_cve:
+					liprint('{bred}CVE-{last_cve}{rst} ' + descr)
+					descr = ''
 
-				links = vuln[5].split('\x1e')
-				for link in links:
-					descr += 'https://www.exploit-db.com/exploits/' + link + ' | '
+				last_cve = exploit[2]
 
-			if vuln[6] is not None:
-				descr += '{bgreen}SecurityFocus{rst}: '
+			descr += '\n    - {bright}' + exploit[3] + '{srst}\n      '
 
-				links = vuln[6].split('\x1e')
-				for link in links:
-					descr += 'http://www.securityfocus.com/bid/' + link + '/exploit | '
+			if exploit[0] == 1:
+				descr += 'https://www.exploit-db.com/exploits/' + exploit[1]
+			elif exploit[0] == 2:
+				descr += 'http://www.securityfocus.com/bid/' + exploit[1] + '/exploit'
+			else:
+				descr += exploit[1]
 
-			descr = descr.rstrip('| ').replace(' | ', '{bblue} | {rst}')
-
-			liprint('{bred}CVE-{vuln[0]}{rst} ' + descr)
+		liprint('{bred}CVE-{last_cve}{rst} ' + descr)
 	else:
 		info('Entry {byellow}{cpe}{rst} has no public exploits.')
 
