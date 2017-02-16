@@ -624,7 +624,9 @@ def get_vulns_cli(cpe):
 
 				last_cve = exploit[2]
 
-			descr += '\n    - {bright}' + exploit[3] + '{srst}\n      '
+			descr += '\n    - '
+			if exploit[3] is not None:
+				descr += '{bright}' + exploit[3] + '{srst}\n      '
 
 			if exploit[0] == 1:
 				descr += 'https://www.exploit-db.com/exploits/' + exploit[1]
