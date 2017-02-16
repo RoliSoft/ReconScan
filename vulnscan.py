@@ -270,6 +270,31 @@ def parse_nvd_dbs():
 	else:
 		info('Using {bblue}SecurityFocus{rst} links from CVE references.')
 
+	l337day_names = None
+	l337day_map = None
+
+	if os.path.exists('nvd/exploitdb.lst'):
+		info('Using curated {bblue}1337day{rst} references.')
+
+		l337day_names = {}
+		l337day_map = {}
+
+		with open('nvd/1337day.lst') as file:
+			for line in file:
+				if line.startswith('#'):
+					continue
+
+				fields = line.strip().split(';')
+				cves = fields[1].split(',')
+
+				l337day_names[fields[0]] = fields[2] if len(fields) > 2 else None
+
+				for cve in cves:
+					if cve not in l337day_map:
+						l337day_map[cve] = []
+
+					l337day_map[cve].append(fields[0])
+
 	vulns = []
 
 	for file in glob.glob('nvd/cve-items-*.xml'):
@@ -279,7 +304,7 @@ def parse_nvd_dbs():
 		root = tree.getroot()
 
 		for entry in root.findall('{http://scap.nist.gov/schema/feed/vulnerability/2.0}entry'):
-			vuln = {'id': None, 'date': None, 'description': None, 'availability': None, 'affected': [], 'vendor': [], '_exploitdb': [], '_securityfocus': []}
+			vuln = {'id': None, 'date': None, 'description': None, 'availability': None, 'affected': [], 'vendor': [], '_exploitdb': [], '_securityfocus': [], '_l337day': []}
 
 			id = entry.find('{http://scap.nist.gov/schema/vulnerability/0.4}cve-id')
 			if id is not None:
@@ -366,6 +391,18 @@ def parse_nvd_dbs():
 					vuln['securityfocus'].append({'id': exploit, 'title': None})
 				vuln['_securityfocus'] = None
 
+			if l337day_map is not None and vuln['id'] in l337day_map:
+				for expid in l337day_map[vuln['id']]:
+					vuln['_l337day'].append(expid)
+
+				vuln['_l337day'] = set(vuln['_l337day'])
+
+				vuln['l337day'] = []
+				for exploit in vuln['_l337day']:
+					vuln['l337day'].append({'id': exploit, 'title': l337day_names[exploit] if exploit in l337day_names else None})
+
+				vuln['_l337day'] = None
+
 			vulns.append(vuln)
 
 	info('Extracted {byellow}{vulncount:,}{rst} vulnerabilites.', vulncount=len(vulns))
@@ -406,6 +443,10 @@ def create_vulndb(names, aliases, vulns):
 		if 'securityfocus' in vuln:
 			for exploit in vuln['securityfocus']:
 				c.execute('insert into exploits (site, sid, cve, title) values (?, ?, ?, ?)', [2, exploit['id'], vuln['id'], exploit['title']])
+
+		if 'l337day' in vuln:
+			for exploit in vuln['l337day']:
+				c.execute('insert into exploits (site, sid, cve, title) values (?, ?, ?, ?)', [10, exploit['id'], vuln['id'], exploit['title']])
 
 	info('Creating table {bgreen}names{rst}...')
 
@@ -589,6 +630,8 @@ def get_vulns_cli(cpe):
 				descr += 'https://www.exploit-db.com/exploits/' + exploit[1]
 			elif exploit[0] == 2:
 				descr += 'http://www.securityfocus.com/bid/' + exploit[1] + '/exploit'
+			elif exploit[0] == 10:
+				descr += 'http://0day.today/exploit/' + exploit[1]
 			else:
 				descr += exploit[1]
 
