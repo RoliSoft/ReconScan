@@ -1,0 +1,1502 @@
+post/linux/dos/xen_420_dos;2012-5525;Linux DoS Xen 4.2.0 2012-5525
+post/multi/escalate/cups_root_file_read;2012-5519;CUPS 1.6.1 Root File Read
+post/windows/escalate/ms10_073_kbdlayout;2010-2743;Windows Escalate NtUserLoadKeyboardLayoutEx Privilege Escalation
+post/windows/gather/forensics/duqu_check;2011-3402;Windows Gather Forensics Duqu Registry Check
+post/android/manage/remove_lock;2013-6271;Android Settings Remove Device Locks (4.0-4.3)
+auxiliary/sqli/oracle/lt_findricset_cursor;2007-5511;Oracle DB SQL Injection via SYS.LT.FINDRICSET Evil Cursor Method
+auxiliary/sqli/oracle/lt_mergeworkspace;2008-3983;Oracle DB SQL Injection via SYS.LT.MERGEWORKSPACE
+auxiliary/sqli/oracle/dbms_cdc_publish2;2010-0870;Oracle DB SQL Injection via SYS.DBMS_CDC_PUBLISH.DROP_CHANGE_SOURCE
+auxiliary/sqli/oracle/dbms_cdc_publish3;2010-2415;Oracle DB SQL Injection via SYS.DBMS_CDC_PUBLISH.CREATE_CHANGE_SET
+auxiliary/sqli/oracle/lt_compressworkspace;2008-3982;Oracle DB SQL Injection via SYS.LT.COMPRESSWORKSPACE
+auxiliary/sqli/oracle/dbms_cdc_ipublish;2008-3996;Oracle DB SQL Injection via SYS.DBMS_CDC_IPUBLISH.ALTER_HOTLOG_INTERNAL_CSOURCE
+auxiliary/sqli/oracle/jvm_os_code_11g;2010-0866;Oracle DB 11g R1/R2 DBMS_JVM_EXP_PERMS OS Code Execution
+auxiliary/sqli/oracle/droptable_trigger;2008-3979;Oracle DB SQL Injection in MDSYS.SDO_TOPO_DROP_FTBL Trigger
+auxiliary/sqli/oracle/lt_removeworkspace;2008-3984;Oracle DB SQL Injection via SYS.LT.REMOVEWORKSPACE
+auxiliary/sqli/oracle/jvm_os_code_10g;2010-0866;Oracle DB 10gR2, 11gR1/R2 DBMS_JVM_EXP_PERMS OS Command Execution
+auxiliary/sqli/oracle/dbms_cdc_publish;2008-3995;Oracle DB SQL Injection via SYS.DBMS_CDC_PUBLISH.ALTER_AUTOLOG_CHANGE_SOURCE
+auxiliary/sqli/oracle/lt_rollbackworkspace;2009-0978;Oracle DB SQL Injection via SYS.LT.ROLLBACKWORKSPACE
+auxiliary/sqli/oracle/dbms_cdc_subscribe_activate_subscription;2005-4832;Oracle DB SQL Injection via SYS.DBMS_CDC_SUBSCRIBE.ACTIVATE_SUBSCRIPTION
+auxiliary/sqli/oracle/dbms_export_extension;2006-2081;Oracle DB SQL Injection via DBMS_EXPORT_EXTENSION
+auxiliary/server/wget_symlink_file_write;2014-4877;GNU Wget FTP Symlink Arbitrary Filesystem Access
+auxiliary/server/netbios_spoof_nat;2016-3213,2016-3236;NetBIOS Response "BadTunnel" Brute Force Spoof (NAT Tunnel)
+auxiliary/server/openssl_altchainsforgery_mitm_proxy;2015-1793;OpenSSL Alternative Chains Certificate Forgery MITM Proxy
+auxiliary/server/openssl_heartbeat_client_memory;2014-0160;OpenSSL Heartbeat (Heartbleed) Client Memory Exposure
+auxiliary/server/webkit_xslt_dropper;2011-1774;Cross Platform Webkit File Dropper
+auxiliary/server/tnftp_savefile;2014-8517;tnftp "savefile" Arbitrary Command Execution
+auxiliary/server/ms15_134_mcl_leak;2015-6127;MS15-134 Microsoft Windows Media Center MCL Information Disclosure
+auxiliary/server/dhclient_bash_env;2014-6271;DHCP Client Bash Environment Variable Code Injection (Shellshock)
+auxiliary/server/jsse_skiptls_mitm_proxy;2014-6593;Java Secure Socket Extension (JSSE) SKIP-TLS MITM Proxy
+auxiliary/admin/2wire/xslt_password_reset;2007-4387;2Wire Cross-Site Request Forgery Password Reset Vulnerability
+auxiliary/admin/smb/psexec_command;1999-0504;Microsoft Windows Authenticated Administration Utility
+auxiliary/admin/oracle/osb_execqr;2008-5448;Oracle Secure Backup exec_qr() Command Injection Vulnerability
+auxiliary/admin/oracle/osb_execqr2;2009-1978,2009-1977;Oracle Secure Backup Authentication Bypass/Command Injection Vulnerability
+auxiliary/admin/oracle/osb_execqr3;2010-0904;Oracle Secure Backup Authentication Bypass/Command Injection Vulnerability
+auxiliary/admin/kerberos/ms14_068_kerberos_checksum;2014-6324;MS14-068 Microsoft Kerberos Checksum Validation Vulnerability
+auxiliary/admin/scada/ge_proficy_substitute_traversal;2013-0653;GE Proficy Cimplicity WebView substitute.bcl Directory Traversal
+auxiliary/admin/scada/phoenix_command;2014-9195;PhoenixContact PLC Remote START/STOP Command
+auxiliary/admin/scada/advantech_webaccess_dbvisitor_sqli;2014-0763;Advantech WebAccess DBVisitor.dll ChartThemeConfig SQL Injection
+auxiliary/admin/ms/ms08_059_his2006;2008-3466;Microsoft Host Integration Server 2006 Command Execution Vulnerability
+auxiliary/admin/http/cfme_manageiq_evm_pass_reset;2013-2050;Red Hat CloudForms Management Engine 5.1 miq_policy/explorer SQL Injection
+auxiliary/admin/http/webnms_file_download;2016-6601;WebNMS Framework Server Arbitrary Text File Download
+auxiliary/admin/http/katello_satellite_priv_esc;2013-2143;Katello (Red Hat Satellite) users/update_roles Missing Authorization
+auxiliary/admin/http/manageengine_dir_listing;2014-7863;ManageEngine Multiple Products Arbitrary Directory Listing
+auxiliary/admin/http/iomega_storcenterpro_sessionid;2009-2367;Iomega StorCenter Pro NAS Web Authentication Bypass
+auxiliary/admin/http/jboss_deploymentfilerepository;2010-0738;JBoss JMX Console DeploymentFileRepository WAR Upload and Deployment
+auxiliary/admin/http/sysaid_admin_acct;2015-2993;SysAid Help Desk Administrator Account Creation
+auxiliary/admin/http/arris_motorola_surfboard_backdoor_xss;2015-0965,2015-0964,2015-0966;Arris / Motorola Surfboard SBG6580 Web Interface Takeover
+auxiliary/admin/http/sysaid_sql_creds;2015-2998,2015-2996;SysAid Help Desk Database Credentials Disclosure
+auxiliary/admin/http/kaseya_master_admin;2015-6922;Kaseya VSA Master Administrator Account Creation
+auxiliary/admin/http/scrutinizer_add_user;2012-2626;Plixer Scrutinizer NetFlow and sFlow Analyzer HTTP Authentication Bypass
+auxiliary/admin/http/foreman_openstack_satellite_priv_esc;2013-2113;Foreman (Red Hat OpenStack/Satellite) users/create Mass Assignment
+auxiliary/admin/http/wp_easycart_privilege_escalation;2015-2673;WordPress WP EasyCart Plugin Privilege Escalation
+auxiliary/admin/http/rails_devise_pass_reset;2013-0233;Ruby on Rails Devise Authentication Password Reset
+auxiliary/admin/http/iis_auth_bypass;2010-2731;MS10-065 Microsoft IIS 5 NTFS Stream Authentication Bypass
+auxiliary/admin/http/manage_engine_dc_create_admin;2014-7862;ManageEngine Desktop Central Administrator Account Creation
+auxiliary/admin/http/nuuo_nvrmini_reset;2016-5676;NUUO NVRmini 2 / NETGEAR ReadyNAS Surveillance Default Configuration Load and Administrator Password Reset
+auxiliary/admin/http/tomcat_utf8_traversal;2008-2938;Tomcat UTF-8 Directory Traversal Vulnerability
+auxiliary/admin/http/manageengine_pmp_privesc;2014-8499;ManageEngine Password Manager SQLAdvancedALSearchResult.cc Pro SQL Injection
+auxiliary/admin/http/trendmicro_dlp_traversal;2008-2938;TrendMicro Data Loss Prevention 5.5 Directory Traversal
+auxiliary/admin/http/novell_file_reporter_filedelete;2011-2750;Novell File Reporter Agent Arbitrary File Delete
+auxiliary/admin/http/sophos_wpa_traversal;2013-2641;Sophos Web Protection Appliance patience.cgi Directory Traversal
+auxiliary/admin/http/openbravo_xxe;2013-3617;Openbravo ERP XXE Arbitrary File Read
+auxiliary/admin/http/sysaid_file_download;2015-2996,2015-2997;SysAid Help Desk Arbitrary File Download
+auxiliary/admin/http/netflow_file_download;2014-5445;ManageEngine NetFlow Analyzer Arbitrary File Download
+auxiliary/admin/http/netgear_auth_download;2016-1524;NETGEAR ProSafe Network Management System 300 Authenticated File Download
+auxiliary/admin/http/jboss_bshdeployer;2010-0738;JBoss JMX Console Beanshell Deployer WAR Upload and Deployment
+auxiliary/admin/http/axigen_file_access;2012-4940;Axigen Arbitrary File Read and Delete
+auxiliary/admin/http/wp_symposium_sql_injection;2015-6522;WordPress Symposium Plugin SQL Injection
+auxiliary/admin/http/manageengine_file_download;2014-7863;ManageEngine Multiple Products Arbitrary File Download
+auxiliary/admin/http/jboss_seam_exec;2010-1871;JBoss Seam 2 Remote Command Execution
+auxiliary/admin/http/webnms_cred_disclosure;2016-6602,2016-6601;WebNMS Framework Server Credential Disclosure
+auxiliary/admin/http/typo3_sa_2009_002;2009-0815;Typo3 sa-2009-002 File Disclosure
+auxiliary/admin/http/mutiny_frontend_read_delete;2013-0136;Mutiny 5 Arbitrary File Read and Delete
+auxiliary/admin/http/joomla_registration_privesc;2016-8870,2016-8869;Joomla Account Creation and Privilege Escalation
+auxiliary/admin/vnc/realvnc_41_bypass;2006-2369;RealVNC NULL Authentication Mode Bypass
+auxiliary/admin/officescan/tmlisten_traversal;2008-2439;TrendMicro OfficeScanNT Listener Traversal Arbitrary File Access
+auxiliary/admin/cisco/cisco_asa_extrabacon;2016-6366;Cisco ASA Authentication Bypass (EXTRABACON)
+auxiliary/admin/cisco/cisco_secure_acs_bypass;2011-0951;Cisco Secure ACS Unauthorized Password Change
+auxiliary/admin/cisco/vpn_3000_ftp_bypass;2006-4313;Cisco VPN Concentrator 3000 FTP Unauthorized Administrative Access
+auxiliary/admin/db2/db2rcmd;2004-0795;IBM DB2 db2rcmd.exe Command Execution Vulnerability
+auxiliary/admin/edirectory/edirectory_edirutil;2008-0926;Novell eDirectory eMBox Unauthenticated File Access
+auxiliary/admin/sunrpc/solaris_kcms_readfile;2003-0027;Solaris KCMS + TTDB Arbitrary File Read
+auxiliary/admin/serverprotect/file;2007-6507;TrendMicro ServerProtect File Access
+auxiliary/admin/hp/hp_imc_som_create_account;2013-4824;HP Intelligent Management SOM Account Creation
+auxiliary/admin/hp/hp_data_protector_cmd;2011-0923;HP Data Protector 6.1 EXEC_CMD Command Execution
+auxiliary/admin/motorola/wr850g_cred;2004-1550;Motorola WR850G v4.03 Credentials
+auxiliary/admin/maxdb/maxdb_cons_exec;2008-0244;SAP MaxDB cons.exe Remote Command Injection
+auxiliary/admin/android/google_play_store_uxss_xframe_rce;2014-6041;Android Browser RCE Through Google Play Store XFO
+auxiliary/admin/emc/alphastor_librarymanager_exec;2008-2157;EMC AlphaStor Library Manager Arbitrary Command Execution
+auxiliary/admin/emc/alphastor_devicemanager_exec;2008-2157;EMC AlphaStor Device Manager Arbitrary Command Execution
+auxiliary/admin/tikiwiki/tikidblib;2006-5702;TikiWiki Information Disclosure
+auxiliary/admin/backupexec/dump;2005-2611;Veritas Backup Exec Windows Remote File Access
+auxiliary/admin/backupexec/registry;2005-0771;Veritas Backup Exec Server Registry Access
+auxiliary/admin/webmin/edit_html_fileaccess;2012-2983;Webmin edit_html.cgi file Parameter Traversal Arbitrary File Access
+auxiliary/admin/webmin/file_disclosure;2006-3392;Webmin File Disclosure
+auxiliary/pdf/foxit/authbypass;2009-0836;Foxit Reader Authorization Bypass
+auxiliary/voip/cisco_cucdm_speed_dials;2014-3300;Viproy CUCDM IP Phone XML Services - Speed Dial Attack Tool
+auxiliary/voip/cisco_cucdm_call_forward;2014-3300;Viproy CUCDM IP Phone XML Services - Call Forwarding Tool
+auxiliary/gather/advantech_webaccess_creds;2017-5154;Advantech WebAccess 8.1 Post Authentication Credential Collector
+auxiliary/gather/android_htmlfileprovider;2010-4804;Android Content Provider File Disclosure
+auxiliary/gather/firefox_pdfjs_file_theft;2015-4495;Firefox PDF.js Browser File Theft
+auxiliary/gather/ie_sandbox_findfiles;2016-3321;Internet Explorer Iframe Sandbox File Name Disclosure Vulnerability
+auxiliary/gather/mcafee_epo_xxe;2015-0922,2015-0921;McAfee ePolicy Orchestrator Authenticated XXE Credentials Exposure
+auxiliary/gather/trackit_sql_domain_creds;2014-4872;BMC / Numara Track-It! Domain Administrator and SQL Server User Password Disclosure
+auxiliary/gather/netgear_password_disclosure;2017-5521;NETGEAR Administrator Password Disclosure
+auxiliary/gather/huawei_wifi_info;2013-6031;Huawei Datacard Information Disclosure Vulnerability
+auxiliary/gather/ibm_sametime_room_brute;2013-3977;IBM Lotus Notes Sametime Room Name Bruteforce
+auxiliary/gather/vbulletin_vote_sqli;2013-3522;vBulletin Password Collector via nodeid SQL Injection
+auxiliary/gather/mantisbt_admin_sqli;2014-2238;MantisBT Admin SQL Injection Arbitrary File Read
+auxiliary/gather/ibm_sametime_enumerate_users;2013-3975;IBM Lotus Notes Sametime User Enumeration
+auxiliary/gather/ibm_sametime_version;2013-3982;IBM Lotus Sametime Version Enumeration
+auxiliary/gather/apache_rave_creds;2013-1814;Apache Rave User Information Disclosure
+auxiliary/gather/solarwinds_orion_sqli;2014-9566;Solarwinds Orion AccountManagement.asmx GetAccounts Admin Creation
+auxiliary/gather/opennms_xxe;2015-0975;OpenNMS Authenticated XXE
+auxiliary/gather/joomla_contenthistory_sqli;2015-7297;Joomla com_contenthistory Error-Based SQL Injection
+auxiliary/gather/drupal_openid_xxe;2012-4554;Drupal OpenID External Entity Injection
+auxiliary/gather/android_stock_browser_uxss;2014-6041;Android Open Source Platform (AOSP) Browser UXSS
+auxiliary/gather/ie_uxss_injection;2015-0072;MS15-018 Microsoft Internet Explorer 10 and 11 Cross-Domain JavaScript Injection
+auxiliary/gather/safari_file_url_navigation;2015-1155;Mac OS X Safari file:// Redirection Sandbox Escape
+auxiliary/gather/apple_safari_ftp_url_cookie_theft;2015-1126;Apple OSX/iOS/Windows Safari Non-HTTPOnly Cookie Theft
+auxiliary/gather/ssllabs_scan;2014-0224;SSL Labs API Client
+auxiliary/gather/d20pass;2012-6663;General Electric D20 Password Recovery
+auxiliary/gather/flash_rosetta_jsonp_url_disclosure;2014-4671;Flash "Rosetta" JSONP GET/POST Response Disclosure
+auxiliary/gather/ms14_052_xmldom;2013-7331;MS14-052 Microsoft Internet Explorer XMLDOM Filename Disclosure
+auxiliary/gather/enum_dns;1999-0532;DNS Record Scanner and Enumerator
+auxiliary/gather/eventlog_cred_disclosure;2014-6038,2014-6039;ManageEngine Eventlog Analyzer Managed Hosts Administrator Credential Disclosure
+auxiliary/scanner/upnp/ssdp_msearch;2013-0230,2013-0229,2012-5958,2012-5959;UPnP SSDP M-SEARCH Information Discovery
+auxiliary/scanner/snmp/snmp_login;1999-0508;SNMP Community Login Scanner
+auxiliary/scanner/snmp/arris_dg950;2014-4863,2014-4862;Arris DG950A Cable Modem Wifi Enumeration
+auxiliary/scanner/smb/smb_login;1999-0506;SMB Login Check Scanner
+auxiliary/scanner/smb/psexec_loggedin_users;1999-0504;Microsoft Windows Authenticated Logged In Users Enumeration
+auxiliary/scanner/smb/smb_uninit_cred;2015-0240;Samba _netr_ServerPasswordSet Uninitialized Credential State
+auxiliary/scanner/ssh/ssh_login;1999-0502;SSH Login Check Scanner
+auxiliary/scanner/ssh/fortinet_backdoor;2016-1909;Fortinet SSH Backdoor Scanner
+auxiliary/scanner/ssh/ssh_enumusers;2006-5229;SSH Username Enumeration
+auxiliary/scanner/ssh/juniper_backdoor;2015-7755;Juniper SSH Backdoor Scanner
+auxiliary/scanner/ssl/openssl_heartbleed;2014-0160;OpenSSL Heartbeat (Heartbleed) Information Leak
+auxiliary/scanner/ssl/openssl_ccs;2014-0224;OpenSSL Server-Side ChangeCipherSpec Injection Scanner
+auxiliary/scanner/oracle/oracle_login;1999-0502;Oracle RDBMS Login Utility
+auxiliary/scanner/rdp/ms12_020_check;2012-0002;MS12-020 Microsoft Remote Desktop Checker
+auxiliary/scanner/scada/indusoft_ntwebserver_fileaccess;2011-1900;Indusoft WebStudio NTWebServer Remote File Access
+auxiliary/scanner/pcanywhere/pcanywhere_login;1999-0502;PcAnywhere Login Scanner
+auxiliary/scanner/mssql/mssql_login;1999-0506;MSSQL Login Utility
+auxiliary/scanner/backdoor/energizer_duo_detect;2010-0103;Energizer DUO Trojan Scanner
+auxiliary/scanner/smtp/smtp_enum;1999-0531;SMTP User Enumeration Utility
+auxiliary/scanner/dlsw/dlsw_leak_capture;2014-7992;Cisco DLSw Information Disclosure Scanner
+auxiliary/scanner/x11/open_x11;1999-0526;X11 No-Auth Scanner
+auxiliary/scanner/postgres/postgres_dbname_flag_injection;2013-1899;PostgreSQL Database Name Command Line Flag Injection
+auxiliary/scanner/postgres/postgres_login;1999-0502;PostgreSQL Login Utility
+auxiliary/scanner/http/joomla_bruteforce_login;1999-0502;Joomla Bruteforce Login Utility
+auxiliary/scanner/http/dir_webdav_unicode_bypass;2009-1535,2009-1122;MS09-020 IIS6 WebDAV Unicode Auth Bypass Directory Scanner
+auxiliary/scanner/http/tomcat_mgr_login;2009-3843,2009-3548,2009-4189,2010-0557,2010-4094,1999-0502,2009-4188;Tomcat Application Manager Login Utility
+auxiliary/scanner/http/hp_imc_som_file_download;2013-4826;HP Intelligent Management SOM FileDownloadServlet Arbitrary Download
+auxiliary/scanner/http/hp_imc_bims_downloadservlet_traversal;2013-4823;HP Intelligent Management BIMS DownloadServlet Directory Traversal
+auxiliary/scanner/http/atlassian_crowd_fileaccess;2012-2926;Atlassian Crowd XML Entity Expansion Remote File Access
+auxiliary/scanner/http/rewrite_proxy_bypass;2011-3368;Apache Reverse Proxy Bypass Vulnerability Scanner
+auxiliary/scanner/http/rails_xml_yaml_scanner;2013-0156;Ruby on Rails XML Processor YAML Deserialization Scanner
+auxiliary/scanner/http/apache_activemq_source_disclosure;2010-1587;Apache ActiveMQ JSP Files Source Disclosure
+auxiliary/scanner/http/wordpress_login_enum;2009-2335;WordPress Brute Force and User Enumeration Utility
+auxiliary/scanner/http/dlink_dir_session_cgi_http_login;1999-0502;D-Link DIR-300B / DIR-600B / DIR-815 / DIR-645 HTTP Login Utility
+auxiliary/scanner/http/novell_file_reporter_srs_fileaccess;2012-4957,2012-4959;NFR Agent SRS Record Arbitrary Remote File Access
+auxiliary/scanner/http/http_login;1999-0502;HTTP Login Utility
+auxiliary/scanner/http/cisco_ios_auth_bypass;2001-0537;Cisco IOS HTTP Unauthorized Administrative Access
+auxiliary/scanner/http/axis_login;2010-0219;Apache Axis2 Brute Force Utility
+auxiliary/scanner/http/smt_ipmi_static_cert_scanner;2013-3619;Supermicro Onboard IPMI Static SSL Certificate Scanner
+auxiliary/scanner/http/goahead_traversal;2014-9707;Embedthis GoAhead Embedded Web Server Directory Traversal
+auxiliary/scanner/http/elasticsearch_traversal;2015-5531;ElasticSearch Snapshot API Directory Traversal
+auxiliary/scanner/http/joomla_ecommercewd_sqli_scanner;2015-2562;Web-Dorado ECommerce WD for Joomla! search_category_id SQL Injection Scanner
+auxiliary/scanner/http/dlink_dir_615h_http_login;1999-0502;D-Link DIR-615H HTTP Login Utility
+auxiliary/scanner/http/bitweaver_overlay_type_traversal;2012-5192;Bitweaver overlay_type Directory Traversal
+auxiliary/scanner/http/glassfish_login;2011-0807;GlassFish Brute Force Utility
+auxiliary/scanner/http/zenworks_assetmanagement_getconfig;2012-4933;Novell ZENworks Asset Management 7.5 Configuration Access
+auxiliary/scanner/http/accellion_fta_statecode_file_read;2015-2856;Accellion FTA 'statecode' Cookie Arbitrary File Read
+auxiliary/scanner/http/yaws_traversal;2011-4350;Yaws Web Server Directory Traversal
+auxiliary/scanner/http/tplink_traversal_noauth;2012-5687;TP-Link Wireless Lite N Access Point Directory Traversal Vulnerability
+auxiliary/scanner/http/oracle_demantra_database_credentials_leak;2013-5880,2013-5795;Oracle Demantra Database Credentials Leak
+auxiliary/scanner/http/zenworks_assetmanagement_fileaccess;2012-4933;Novell ZENworks Asset Management 7.5 Remote File Access
+auxiliary/scanner/http/novell_file_reporter_fsfui_fileaccess;2012-4958,2012-4959;NFR Agent FSFUI Record Arbitrary Remote File Access
+auxiliary/scanner/http/ms09_020_webdav_unicode_bypass;2009-1535,2009-1122;MS09-020 IIS6 WebDAV Unicode Authentication Bypass
+auxiliary/scanner/http/cisco_device_manager;2000-0945;Cisco Device HTTP Device Manager Access
+auxiliary/scanner/http/majordomo2_directory_traversal;2011-0063,2011-0049;Majordomo2 _list_file_get() Directory Traversal
+auxiliary/scanner/http/cisco_firepower_download;2016-6435;Cisco Firepower Management Console 6.0 Post Auth Report Download Directory Traversal
+auxiliary/scanner/http/groupwise_agents_http_traversal;2012-0419;Novell Groupwise Agents HTTP Directory Traversal
+auxiliary/scanner/http/bmc_trackit_passwd_reset;2014-8270;BMC TrackIt! Unauthenticated Arbitrary User Password Change
+auxiliary/scanner/http/smt_ipmi_cgi_scanner;2013-3621,2013-3623;Supermicro Onboard IPMI CGI Vulnerability Scanner
+auxiliary/scanner/http/wp_dukapress_file_read;2014-8799;WordPress DukaPress Plugin File Read Vulnerability
+auxiliary/scanner/http/hp_imc_ictdownloadservlet_traversal;2012-5204;HP Intelligent Management IctDownloadServlet Directory Traversal
+auxiliary/scanner/http/wordpress_xmlrpc_login;1999-0502;Wordpress XML-RPC Username/Password Login Scanner
+auxiliary/scanner/http/titan_ftp_admin_pwd;2013-1625;Titan FTP Administrative Password Disclosure
+auxiliary/scanner/http/litespeed_source_disclosure;2010-2333;LiteSpeed Source Code Disclosure/Download
+auxiliary/scanner/http/hp_imc_faultdownloadservlet_traversal;2012-5202;HP Intelligent Management FaultDownloadServlet Directory Traversal
+auxiliary/scanner/http/hp_imc_reportimgservlt_traversal;2012-5203;HP Intelligent Management ReportImgServlt Directory Traversal
+auxiliary/scanner/http/canon_wireless;2013-4614;Canon Printer Wireless Configuration Disclosure
+auxiliary/scanner/http/ms15_034_http_sys_memory_dump;2015-1635;MS15-034 HTTP Protocol Stack Request Handling HTTP.SYS Memory Information Disclosure
+auxiliary/scanner/http/wordpress_ghost_scanner;2015-0235;WordPress XMLRPC GHOST Vulnerability Scanner
+auxiliary/scanner/http/adobe_xml_inject;2009-3960;Adobe XML External Entity Injection
+auxiliary/scanner/http/dell_idrac;1999-0502;Dell iDRAC Default Login
+auxiliary/scanner/http/oracle_demantra_file_retrieval;2013-5880,2013-5877;Oracle Demantra Arbitrary File Retrieval with Authentication Bypass
+auxiliary/scanner/http/ssl_version;2014-3566;HTTP SSL/TLS Version Detection (POODLE scanner)
+auxiliary/scanner/http/nginx_source_disclosure;2010-2263;Nginx Source Code Disclosure/Download
+auxiliary/scanner/http/rails_json_yaml_scanner;2013-0333,2013-0156;Ruby on Rails JSON Processor YAML Deserialization Scanner
+auxiliary/scanner/http/cisco_ssl_vpn_priv_esc;2014-2127;Cisco ASA SSL VPN Privilege Escalation Vulnerability
+auxiliary/scanner/http/jboss_vulnscan;2010-0738;JBoss Vulnerability Scanner
+auxiliary/scanner/http/apache_userdir_enum;2001-1013;Apache "mod_userdir" User Enumeration
+auxiliary/scanner/http/dlink_dir_300_615_http_login;1999-0502;D-Link DIR-300A / DIR-320 / DIR-615D HTTP Login Utility
+auxiliary/scanner/http/allegro_rompager_misfortune_cookie;2014-9222;Allegro Software RomPager 'Misfortune Cookie' (CVE-2014-9222) Scanner
+auxiliary/scanner/http/novell_mdm_creds;2013-1081;Novell Zenworks Mobile Device Managment Admin Credentials
+auxiliary/scanner/http/jboss_status;2008-3273;JBoss Status Servlet Information Gathering
+auxiliary/scanner/http/cisco_nac_manager_traversal;2011-3305;Cisco Network Access Manager Directory Traversal Vulnerability
+auxiliary/scanner/http/sybase_easerver_traversal;2011-2474;Sybase Easerver 6.3 Directory Traversal
+auxiliary/scanner/http/meteocontrol_weblog_extractadmin;2016-2298,2016-2296;Meteocontrol WEBlog Password Extractor
+auxiliary/scanner/http/tomcat_enum;2009-0580;Apache Tomcat User Enumeration
+auxiliary/scanner/http/symantec_brightmail_ldapcreds;2016-2203;Symantec Messaging Gateway 10 Exposure of Stored AD Password Vulnerability
+auxiliary/scanner/http/options;2005-3398,2005-3498;HTTP Options Detection
+auxiliary/scanner/http/apache_mod_cgi_bash_env;2014-6271,2014-6278;Apache mod_cgi Bash Environment Variable Injection (Shellshock) Scanner
+auxiliary/scanner/http/symantec_brightmail_logfile;2012-4347;Symantec Messaging Gateway 9.5 Log File Download Vulnerability
+auxiliary/scanner/http/wildfly_traversal;2014-7816;WildFly Directory Traversal
+auxiliary/scanner/http/manageengine_deviceexpert_user_creds;2014-5377;ManageEngine DeviceExpert User Credentials
+auxiliary/scanner/http/coldfusion_locale_traversal;2010-2861;ColdFusion Server Check
+auxiliary/scanner/http/wp_contus_video_gallery_sqli;2015-2065;WordPress Contus Video Gallery Unauthenticated SQL Injection Scanner
+auxiliary/scanner/vnc/vnc_login;1999-0506;VNC Authentication Scanner
+auxiliary/scanner/telnet/brocade_enable_login;1999-0502;Brocade Enable Login Check Scanner
+auxiliary/scanner/telnet/telnet_encrypt_overflow;2011-4862;Telnet Service Encryption Key ID Overflow Detection
+auxiliary/scanner/telnet/telnet_ruggedcom;2012-1803;RuggedCom Telnet Password Generator
+auxiliary/scanner/telnet/telnet_login;1999-0502;Telnet Login Check Scanner
+auxiliary/scanner/ipmi/ipmi_dumphashes;2013-4786;IPMI 2.0 RAKP Remote SHA1 Password Hash Retreival
+auxiliary/scanner/vmware/vmware_server_dir_trav;2009-3733;VMware Server Directory Traversal Vulnerability
+auxiliary/scanner/vmware/vmauthd_login;1999-0502;VMWare Authentication Daemon Login Scanner
+auxiliary/scanner/vmware/vmware_update_manager_traversal;2011-4404;VMWare Update Manager 4 Directory Traversal
+auxiliary/scanner/vmware/vmware_http_login;1999-0502;VMWare Web Login Scanner
+auxiliary/scanner/acpp/login;2003-0270;Apple Airport ACPP Authentication Scanner
+auxiliary/scanner/mysql/mysql_authbypass_hashdump;2012-2122;MySQL Authentication Bypass Password Dump
+auxiliary/scanner/mysql/mysql_login;1999-0502;MySQL Login Utility
+auxiliary/scanner/db2/db2_auth;1999-0502;DB2 Authentication Brute Force Utility
+auxiliary/scanner/tftp/ipswitch_whatsupgold_tftp;2011-4722;IpSwitch WhatsUp Gold TFTP Directory Traversal
+auxiliary/scanner/tftp/netdecision_tftp;2009-1730;NetDecision 4.2 TFTP Directory Traversal
+auxiliary/scanner/nfs/nfsmount;1999-0170;NFS Mount Scanner
+auxiliary/scanner/rservices/rlogin_login;1999-0651,1999-0502;rlogin Authentication Scanner
+auxiliary/scanner/rservices/rexec_login;1999-0651,1999-0502;rexec Authentication Scanner
+auxiliary/scanner/rservices/rsh_login;1999-0651,1999-0502;rsh Authentication Scanner
+auxiliary/scanner/sap/sap_icm_urlscan;2010-0738;SAP URL Scanner
+auxiliary/scanner/sap/sap_hostctrl_getcomputersystem;2013-3319;SAP Host Agent Information Disclosure
+auxiliary/scanner/sap/sap_soap_rfc_system_info;2006-6010;SAP /sap/bc/soap/rfc SOAP Service RFC_SYSTEM_INFO Function Sensitive Information Gathering
+auxiliary/scanner/ntp/ntp_monlist;2013-5211;NTP Monitor List Scanner
+auxiliary/scanner/ntp/ntp_nak_to_the_future;2015-7871;NTP "NAK to the Future"
+auxiliary/scanner/misc/dvr_config_disclosure;2013-1391;Multiple DVR Manufacturers Configuration Disclosure
+auxiliary/scanner/misc/dahua_dvr_auth_bypass;2013-6117;Description
+auxiliary/scanner/misc/zenworks_preboot_fileaccess;2012-2215;Novell ZENworks Configuration Management Preboot Service Remote File Access
+auxiliary/scanner/dns/dns_amp;2006-0988,2006-0987;DNS Amplification Scanner
+auxiliary/scanner/chargen/chargen_probe;1999-0103;Chargen Probe Utility
+auxiliary/scanner/winrm/winrm_login;1999-0502;WinRM Login Utility
+auxiliary/scanner/ike/cisco_ike_benigncertain;2016-6415;Cisco IKE Information Disclosure
+auxiliary/scanner/ftp/konica_ftp_traversal;2015-7603;Konica Minolta FTP Utility 1.00 Directory Traversal Information Disclosure
+auxiliary/scanner/ftp/bison_ftp_traversal;2015-7602;BisonWare BisonFTP Server 3.5 Directory Traversal Information Disclosure
+auxiliary/scanner/ftp/ftp_login;1999-0502;FTP Authentication Scanner
+auxiliary/scanner/ftp/pcman_ftp_traversal;2015-7601;PCMan FTP Server 2.0.7 Directory Traversal Information Disclosure
+auxiliary/dos/upnp/miniupnpd_dos;2013-0229;MiniUPnPd 1.4 Denial of Service (DoS) Exploit
+auxiliary/dos/ssl/dtls_fragment_overflow;2014-0195;OpenSSL DTLS Fragment Buffer Overflow DoS
+auxiliary/dos/ssl/openssl_aesni;2012-2686;OpenSSL TLS 1.1 and 1.2 AES-NI DoS
+auxiliary/dos/ssl/dtls_changecipherspec;2009-1386;OpenSSL DTLS ChangeCipherSpec Remote DoS
+auxiliary/dos/scada/igss9_dataserver;2011-4050;7-Technologies IGSS 9 IGSSdataServer.exe DoS
+auxiliary/dos/scada/beckhoff_twincat;2011-3486;Beckhoff TwinCAT SCADA PLC 2.11.0.2004 DoS
+auxiliary/dos/scada/yokogawa_logsvr;2014-0781;Yokogawa CENTUM CS 3000 BKCLogSvr.exe Heap Buffer Overflow
+auxiliary/dos/smtp/sendmail_prescan;2003-0694;Sendmail SMTP Address prescan Memory Corruption
+auxiliary/dos/freebsd/nfsd/nfsd_mount;2006-0900;FreeBSD Remote NFS RPC Request Denial of Service
+auxiliary/dos/http/dell_openmanage_post;2004-0331;Dell OpenManage POST Request Heap Overflow (win32)
+auxiliary/dos/http/monkey_headers;2013-3843;Monkey HTTPD Header Parsing Denial of Service (DoS)
+auxiliary/dos/http/3com_superstack_switch;2004-2691;3Com SuperStack Switch Denial of Service
+auxiliary/dos/http/canon_wireless_printer;2013-4615;Canon Wireless Printer Denial Of Service
+auxiliary/dos/http/hashcollision_dos;2011-5035,2011-4858,2011-5034,2011-4885;Hashtable Collisions
+auxiliary/dos/http/novell_file_reporter_heap_bof;2012-4959,2012-4956;NFR Agent Heap Overflow Vulnerability
+auxiliary/dos/http/ms15_034_ulonglongadd;2015-1635;MS15-034 HTTP Protocol Stack Request Handling Denial-of-Service
+auxiliary/dos/http/apache_commons_fileupload_dos;2014-0050;Apache Commons FileUpload and Apache Tomcat DoS
+auxiliary/dos/http/nodejs_pipelining;2013-4450;Node.js HTTP Pipelining Denial of Service
+auxiliary/dos/http/wordpress_long_password_dos;2014-9034;WordPress Long Password DoS
+auxiliary/dos/http/rails_action_view;2013-6414;Ruby on Rails Action View MIME Memory Exhaustion
+auxiliary/dos/http/rails_json_float_dos;2013-4164;Ruby on Rails JSON Processor Floating Point Heap Overflow DoS
+auxiliary/dos/http/apache_range_dos;2011-3192;Apache Range Header DoS (Apache Killer)
+auxiliary/dos/http/webrick_regex;2008-3656;Ruby WEBrick::HTTP::DefaultFileHandler DoS
+auxiliary/dos/http/apache_mod_isapi;2010-0425;Apache mod_isapi Dangling Pointer
+auxiliary/dos/http/apache_tomcat_transfer_encoding;2010-2227;Apache Tomcat Transfer-Encoding Information Disclosure and DoS
+auxiliary/dos/dhcp/isc_dhcpd_clientid;2010-2156;ISC DHCP Zero Length ClientID Denial of Service Module
+auxiliary/dos/pptp/ms02_063_pptp_dos;2002-1214;MS02-063 PPTP Malformed Control Data Kernel Denial of Service
+auxiliary/dos/mdns/avahi_portzero;2008-5081;Avahi Source Port 0 DoS
+auxiliary/dos/solaris/lpd/cascade_delete;2005-4797;Solaris LPD Arbitrary File Delete
+auxiliary/dos/samba/lsa_transnames_heap;2007-2446;Samba lsa_io_trans_names Heap Overflow
+auxiliary/dos/samba/lsa_addprivs_heap;2007-2446;Samba lsa_io_privilege_set Heap Overflow
+auxiliary/dos/samba/read_nttrans_ea_list;2013-4124;Samba read_nttrans_ea_list Integer Overflow
+auxiliary/dos/cisco/ios_http_percentpercent;2000-0380;Cisco IOS HTTP GET /%% Request Denial of Service
+auxiliary/dos/windows/llmnr/ms11_030_dnsapi;2011-0657;Microsoft Windows DNSAPI.dll LLMNR Buffer Underrun DoS
+auxiliary/dos/windows/smb/ms09_050_smb2_negotiate_pidhigh;2009-3103;Microsoft SRV2.SYS SMB Negotiate ProcessID Function Table Dereference
+auxiliary/dos/windows/smb/ms06_035_mailslot;2006-3942;Microsoft SRV.SYS Mailslot Write Corruption
+auxiliary/dos/windows/smb/ms10_054_queryfs_pool_overflow;2010-2550;Microsoft Windows SRV.SYS SrvSmbQueryFsInformation Pool Overflow DoS
+auxiliary/dos/windows/smb/ms09_001_write;2008-4114;Microsoft SRV.SYS WriteAndX Invalid DataOffset
+auxiliary/dos/windows/smb/ms06_063_trans;2006-3942;Microsoft SRV.SYS Pipe Transaction No Null
+auxiliary/dos/windows/smb/ms09_050_smb2_session_logoff;2009-3103;Microsoft SRV2.SYS SMB2 Logoff Remote Kernel NULL Pointer Dereference
+auxiliary/dos/windows/smb/ms10_006_negotiate_response_loop;2010-0017;Microsoft Windows 7 / Server 2008 R2 SMB Client Infinite Loop
+auxiliary/dos/windows/smb/ms05_047_pnp;2005-2120;Microsoft Plug and Play Service Registry Overflow
+auxiliary/dos/windows/smb/ms11_019_electbowser;2011-0654;Microsoft Windows Browser Pool DoS
+auxiliary/dos/windows/rdp/ms12_020_maxchannelids;2012-0002;MS12-020 Microsoft Remote Desktop Use-After-Free DoS
+auxiliary/dos/windows/appian/appian_bpm;2007-6509;Appian Enterprise Business Suite 5.6 SP1 DoS
+auxiliary/dos/windows/smtp/ms06_019_exchange;2006-0027;MS06-019 Exchange MODPROP Heap Overflow
+auxiliary/dos/windows/http/ms10_065_ii6_asp_dos;2010-1899;Microsoft IIS 6.0 ASP Stack Exhaustion Denial of Service
+auxiliary/dos/windows/http/pi3web_isapi;2008-6938;Pi3Web ISAPI DoS
+auxiliary/dos/windows/browser/ms09_065_eot_integer;2009-2514;Microsoft Windows EOT Font Table Directory Integer Overflow
+auxiliary/dos/windows/nat/nat_helper;2006-5614;Microsoft Windows NAT Helper Denial of Service
+auxiliary/dos/windows/tftp/solarwinds;2010-2115;SolarWinds TFTP Server 10.4.0.10 Denial of Service
+auxiliary/dos/windows/tftp/pt360_write;2008-1311;PacketTrap TFTP Server 2.2.5459.0 DoS
+auxiliary/dos/windows/ftp/iis75_ftpd_iac_bof;2010-3972;Microsoft IIS FTP Server Encoded Response Overflow Trigger
+auxiliary/dos/windows/ftp/filezilla_server_port;2006-6565;FileZilla FTP Server Malformed PORT Denial of Service
+auxiliary/dos/windows/ftp/xmeasy570_nlst;2008-5626;XM Easy Personal FTP Server 5.7.0 NLST DoS
+auxiliary/dos/windows/ftp/guildftp_cwdlist;2008-4572;Guild FTPd 0.999.8.11/0.999.14 Heap Corruption
+auxiliary/dos/windows/ftp/titan626_site;2008-6082;Titan FTP Server 6.26.630 SITE WHO DoS
+auxiliary/dos/windows/ftp/winftp230_nlst;2008-5666;WinFTP 2.3.0 NLST Denial of Service
+auxiliary/dos/windows/ftp/xmeasy560_nlst;2008-5626;XM Easy Personal FTP Server 5.6.0 NLST DoS
+auxiliary/dos/windows/ftp/iis_list_exhaustion;2009-2521;Microsoft IIS FTP Server LIST Stack Exhaustion
+auxiliary/dos/windows/ftp/vicftps50_list;2008-6829,2008-2031;Victory FTP Server 5.0 LIST DoS
+auxiliary/dos/windows/ftp/filezilla_admin_user;2005-3589;FileZilla FTP Server Admin Interface Denial of Service
+auxiliary/dos/hp/data_protector_rds;2011-0514;HP Data Protector Manager RDS DOS
+auxiliary/dos/ntp/ntpd_reserved_dos;2009-3563;NTP.org ntpd Reserved Mode Denial of Service
+auxiliary/dos/misc/memcached;2011-4971;Memcached Remote Denial of Service
+auxiliary/dos/misc/dopewars;2009-3591;Dopewars Denial of Service
+auxiliary/dos/misc/ibm_sametime_webplayer_dos;2013-3986;IBM Lotus Sametime WebPlayer DoS
+auxiliary/dos/syslog/rsyslog_long_tag;2011-3200;rsyslog Long Tag Off-By-Two DoS
+auxiliary/dos/dns/bind_tkey;2015-5477;BIND TKEY Query Denial of Service
+auxiliary/dos/android/android_stock_browser_iframe;2012-6301;Android Stock Browser Iframe DOS
+auxiliary/dos/wireshark/cldap;2011-1140;Wireshark CLDAP Dissector DOS
+auxiliary/dos/wireshark/capwap;2013-4074;Wireshark CAPWAP Dissector DoS
+auxiliary/dos/wireshark/ldap;2008-1562;Wireshark LDAP Dissector DOS
+auxiliary/dos/wireshark/chunked;2007-3389;Wireshark chunked_encoding_dissector Function DOS
+auxiliary/spoof/arp/arp_poisoning;1999-0667;ARP Spoof
+auxiliary/spoof/dns/bailiwicked_domain;2008-1447;DNS BailiWicked Domain Attack
+auxiliary/spoof/dns/bailiwicked_host;2008-1447;DNS BailiWicked Host Attack
+encoders/x86/avoid_underscore_tolower;2012-2329;Avoid underscore/tolower
+exploit/irix/lpd/tagprinter_exec;2001-0800;Irix LPD tagprinter Command Execution
+exploit/hpux/lpd/cleanup_exec;2002-1473;HP-UX LPD Command Execution
+exploit/osx/local/rsh_libmalloc;2015-5889;Mac OS X 10.9.5 / 10.10.5 - rsh/libmalloc Privilege Escalation
+exploit/osx/local/setuid_viscosity;2012-4284;Viscosity setuid-set ViscosityHelper Privilege Escalation
+exploit/osx/local/iokit_keyboard_root;2014-4404;Mac OS X IOKit Keyboard Driver Root Privilege Escalation
+exploit/osx/local/sudo_password_bypass;2013-1775;Mac OS X Sudo Password Bypass
+exploit/osx/local/vmware_bash_function_root;2014-6271;OS X VMWare Fusion Privilege Escalation via Bash Environment Code Injection (Shellshock)
+exploit/osx/local/setuid_tunnelblick;2012-3485;Setuid Tunnelblick Privilege Escalation
+exploit/osx/local/rootpipe_entitlements;2015-3673;Apple OS X Entitlements Rootpipe Privilege Escalation
+exploit/osx/local/rootpipe;2015-1130;Apple OS X Rootpipe Privilege Escalation
+exploit/osx/http/evocam_webserver;2010-2309;MacOS X EvoCam HTTP GET Buffer Overflow
+exploit/osx/afp/loginext;2004-0430;AppleFileServer LoginExt PathName Overflow
+exploit/osx/rtsp/quicktime_rtsp_content_type;2007-6166;MacOS X QuickTime RTSP Content-Type Overflow
+exploit/osx/browser/mozilla_mchannel;2011-0065;Mozilla Firefox 3.6.16 mChannel Use-After-Free
+exploit/osx/browser/safari_metadata_archive;2006-0848;Safari Archive Metadata Command Execution
+exploit/osx/browser/software_update;2007-5863;Apple OS X Software Update Command Execution
+exploit/osx/browser/safari_user_assisted_applescript_exec;2015-7007;Safari User-Assisted Applescript Exec Attack
+exploit/osx/browser/safari_file_policy;2011-3230;Apple Safari file:// Arbitrary Code Execution
+exploit/osx/email/mailapp_image_exec;2007-6165,2006-0395;Mail.app Image Attachment Command Execution
+exploit/osx/mdns/upnp_location;2007-2386;Mac OS X mDNSResponder UPnP Location Overflow
+exploit/osx/samba/lsa_transnames_heap;2007-2446;Samba lsa_io_trans_names Heap Overflow
+exploit/osx/samba/trans2open;2003-0201;Samba trans2open Overflow (Mac OS X PPC)
+exploit/osx/arkeia/type77;2005-0491;Arkeia Backup Client Type 77 Overflow (Mac OS X)
+exploit/osx/ftp/webstar_ftp_user;2004-0695;WebSTAR FTP Server USER Overflow
+exploit/apple_ios/browser/safari_libtiff;2006-3459;Apple iOS MobileSafari LibTIFF Buffer Overflow
+exploit/apple_ios/email/mobilemail_libtiff;2006-3459;Apple iOS MobileMail LibTIFF Buffer Overflow
+exploit/linux/upnp/miniupnpd_soap_bof;2013-0230;MiniUPnPd 1.0 Stack Buffer Overflow Remote Code Execution
+exploit/linux/pop3/cyrus_pop3d_popsubfolders;2006-2502;Cyrus IMAPD pop3d popsubfolders USER Buffer Overflow
+exploit/linux/ssh/f5_bigip_known_privkey;2012-1493;F5 BIG-IP SSH Private Key Exposure
+exploit/linux/ssh/exagrid_known_privkey;2016-1560,2016-1561;ExaGrid Known SSH Key and Default Password
+exploit/linux/ssh/symantec_smg_ssh;2012-3579;Symantec Messaging Gateway 9.5 Default SSH Password Vulnerability
+exploit/linux/ssh/ceragon_fibeair_known_privkey;2015-0936;Ceragon FibeAir IP-10 SSH Private Key Exposure
+exploit/linux/smtp/exim_gethostbyname_bof;2015-0235;Exim GHOST (glibc gethostbyname) Buffer Overflow
+exploit/linux/local/recvmmsg_priv_esc;2014-0038;Linux Kernel 3.13.1 Recvmmsg Privilege Escalation
+exploit/linux/local/sock_sendpage;2009-2692;Linux Kernel Sendpage Local Privilege Escalation
+exploit/linux/local/overlayfs_priv_esc;2015-1328,2015-8660;Overlayfs Privilege Escalation
+exploit/linux/local/udev_netlink;2009-1185;Linux udev Netlink Local Privilege Escalation
+exploit/linux/local/bpf_priv_esc;2016-4557;Linux BPF Local Privilege Escalation
+exploit/linux/local/vmware_mount;2013-1662;VMWare Setuid vmware-mount Unsafe popen(3)
+exploit/linux/local/pkexec;2011-1485;Linux PolicyKit Race Condition Privilege Escalation
+exploit/linux/local/netfilter_priv_esc_ipv4;2016-4997;Linux Kernel 4.6.3 Netfilter Privilege Escalation
+exploit/linux/local/sophos_wpa_clear_keys;2013-4984;Sophos Web Protection Appliance clear_keys.pl Local Privilege Escalation
+exploit/linux/http/webcalendar_settings_exec;2012-1495;WebCalendar 1.2.4 Pre-Auth Remote Code Injection
+exploit/linux/http/mutiny_frontend_upload;2013-0136;Mutiny 5 Arbitrary File Upload
+exploit/linux/http/dlink_hnap_bof;2014-3936;D-Link HNAP Request Remote Buffer Overflow
+exploit/linux/http/realtek_miniigd_upnp_exec_noauth;2014-8361;Realtek SDK Miniigd UPnP SOAP Command Execution
+exploit/linux/http/symantec_web_gateway_restore;2014-7285;Symantec Web Gateway 5 restore.php Post Authentication Command Injection
+exploit/linux/http/nuuo_nvrmini_unauth_rce;2016-5674;NUUO NVRmini 2 / NETGEAR ReadyNAS Surveillance Unauthenticated Remote Code Execution
+exploit/linux/http/symantec_web_gateway_pbcontrol;2012-2953;Symantec Web Gateway 5.0.2.18 pbcontrol.php Command Injection
+exploit/linux/http/efw_chpasswd_exec;2015-5082;Endian Firewall Proxy Password Change Command Injection
+exploit/linux/http/synology_dsm_sliceupload_exec_noauth;2013-6955;Synology DiskStation Manager SLICEUPLOAD Remote Command Execution
+exploit/linux/http/sophos_wpa_sblistpack_exec;2013-4983;Sophos Web Protection Appliance sblistpack Arbitrary Command Execution
+exploit/linux/http/seagate_nas_php_exec_noauth;2014-8687,2014-8686,2014-8684;Seagate Business NAS Unauthenticated Remote Command Execution
+exploit/linux/http/cfme_manageiq_evm_upload_exec;2013-2068;Red Hat CloudForms Management Engine 5.1 agent/linuxpkgs Path Traversal
+exploit/linux/http/dlink_dcs931l_upload;2015-2049;D-Link DCS-931L File Upload
+exploit/linux/http/linksys_apply_cgi;2005-2799;Linksys WRT54 Access Point apply.cgi Buffer Overflow
+exploit/linux/http/nginx_chunked_size;2013-2028;Nginx HTTP Server 1.3.9-1.4.0 Chunked Encoding Stack Buffer Overflow
+exploit/linux/http/groundwork_monarch_cmd_exec;2013-3502;GroundWork monarch_scan.cgi OS Command Injection
+exploit/linux/http/ddwrt_cgibin_exec;2009-2765;DD-WRT HTTP Daemon Arbitrary Command Execution
+exploit/linux/http/netgear_readynas_exec;2013-2751;NETGEAR ReadyNAS Perl Code Evaluation
+exploit/linux/http/symantec_web_gateway_file_upload;2012-0299;Symantec Web Gateway 5.0.2.8 Arbitrary PHP File Upload Vulnerability
+exploit/linux/http/pineapple_preconfig_cmdinject;2015-4624;Hak5 WiFi Pineapple Preconfiguration Command Injection
+exploit/linux/http/linksys_wrt110_cmd_exec;2013-3568;Linksys Devices pingstr Remote Command Injection
+exploit/linux/http/trendmicro_sps_exec;2016-6267;Trend Micro Smart Protection Server Exec Remote Code Injection
+exploit/linux/http/dlink_hnap_login_bof;2016-6563;Dlink DIR Routers Unauthenticated HNAP Login Stack Buffer Overflow
+exploit/linux/http/foreman_openstack_satellite_code_exec;2013-2121;Foreman (Red Hat OpenStack/Satellite) bookmarks/create Code Injection
+exploit/linux/http/accellion_fta_getstatus_oauth;2015-2857;Accellion FTA getStatus verify_oauth_token Command Execution
+exploit/linux/http/belkin_login_bof;2014-1635;Belkin Play N750 login.cgi Buffer Overflow
+exploit/linux/http/f5_icall_cmd;2015-3628;F5 iControl iCall::Script Root Command Execution
+exploit/linux/http/peercast_url;2006-1148;PeerCast URL Handling Buffer Overflow
+exploit/linux/http/cisco_firepower_useradd;2016-6433;Cisco Firepower Management Console 6.0 Post Authentication UserAdd Vulnerability
+exploit/linux/http/piranha_passwd_exec;2000-0322,2000-0248;RedHat Piranha Virtual Server Package passwd.php3 Arbitrary Command Execution
+exploit/linux/http/nuuo_nvrmini_auth_rce;2016-5675;NUUO NVRmini 2 / Crystal / NETGEAR ReadyNAS Surveillance Authenticated Remote Code Execution
+exploit/linux/http/vcms_upload;2011-4828;V-CMS PHP File Upload and Execute
+exploit/linux/http/gitlist_exec;2014-4511;Gitlist Unauthenticated Remote Command Execution
+exploit/linux/http/zabbix_sqli;2013-5743;Zabbix 2.0.8 SQL Injection and Remote Code Execution
+exploit/linux/http/ipfire_bashbug_exec;2014-6271;IPFire Bash Environment Variable Injection (Shellshock)
+exploit/linux/http/f5_icontrol_exec;2014-2928;F5 iControl Remote Root Command Execution
+exploit/linux/http/railo_cfml_rfi;2014-5468;Railo Remote File Include
+exploit/linux/http/alcatel_omnipcx_mastercgi_exec;2007-3010;Alcatel-Lucent OmniPCX Enterprise masterCGI Arbitrary Command Execution
+exploit/linux/http/smt_ipmi_close_window_bof;2013-3623;Supermicro Onboard IPMI close_window.cgi Buffer Overflow
+exploit/linux/http/symantec_web_gateway_lfi;2012-0297;Symantec Web Gateway 5.0.2.8 relfile File Inclusion Vulnerability
+exploit/linux/http/symantec_web_gateway_exec;2012-0297;Symantec Web Gateway 5.0.2.8 ipchange.php Command Injection
+exploit/linux/http/centreon_sqli_exec;2014-3829,2014-3828;Centreon SQL and Command Injection
+exploit/linux/http/gpsd_format_string;2004-1388;Berlios GPSD Format String Vulnerability
+exploit/linux/http/vap2500_tools_command_exec;2014-8423,2014-8424;Arris VAP2500 tools_command.php Command Execution
+exploit/linux/http/advantech_switch_bash_env_exec;2014-6271;Advantech Switch Bash Environment Variable Code Injection (Shellshock)
+exploit/linux/http/multi_ncc_ping_exec;2015-1187;D-Link/TRENDnet NCC Service Command Injection
+exploit/linux/proxy/squid_ntlm_authenticate;2004-0541;Squid NTLM Authenticate Overflow
+exploit/linux/browser/adobe_flashplayer_aslaunch;2008-5499;Adobe Flash Player ActionScript Launch Command Execution Vulnerability
+exploit/linux/telnet/telnet_encrypt_keyid;2011-4862;Linux BSD-derived Telnet Service Encryption Key ID Buffer Overflow
+exploit/linux/ids/alienvault_centerd_soap_exec;2014-3804;AlienVault OSSIM av-centerd Command Injection
+exploit/linux/ids/snortbopre;2005-3252;Snort Back Orifice Pre-Preprocessor Buffer Overflow
+exploit/linux/pptp/poptop_negative_read;2003-0213;Poptop Negative Read Overflow
+exploit/linux/samba/lsa_transnames_heap;2007-2446;Samba lsa_io_trans_names Heap Overflow
+exploit/linux/samba/setinfopolicy_heap;2012-1182;Samba SetInformationPolicy AuditEventsInfo Heap Overflow
+exploit/linux/samba/chain_reply;2010-2063;Samba chain_reply Memory Corruption (Linux x86)
+exploit/linux/samba/trans2open;2003-0201;Samba trans2open Overflow (Linux x86)
+exploit/linux/mysql/mysql_yassl_getname;2009-4484;MySQL yaSSL CertDecoder::GetName Buffer Overflow
+exploit/linux/mysql/mysql_yassl_hello;2008-0226;MySQL yaSSL SSL Hello Message Buffer Overflow
+exploit/linux/misc/lprng_format_string;2000-0917;LPRng use_syslog Remote Format String Vulnerability
+exploit/linux/misc/hp_data_protector_cmd_exec;2011-0923;HP Data Protector 6 EXEC_CMD Remote Code Execution
+exploit/linux/misc/hp_vsa_login_bof;2013-2343;HP StorageWorks P4000 Virtual SAN Appliance Login Buffer Overflow
+exploit/linux/misc/ib_pwd_db_aliased;2007-5243;Borland InterBase PWD_db_aliased() Buffer Overflow
+exploit/linux/misc/jenkins_java_deserialize;2015-8103;Jenkins CLI RMI Java Deserialization Vulnerability
+exploit/linux/misc/ib_open_marker_file;2007-5244;Borland InterBase open_marker_file() Buffer Overflow
+exploit/linux/misc/hp_nnmi_pmd_bof;2014-2624;HP Network Node Manager I PMD Buffer Overflow
+exploit/linux/misc/hikvision_rtsp_bof;2014-4880;Hikvision DVR RTSP Request Remote Code Execution
+exploit/linux/misc/zabbix_server_exec;2009-4498;Zabbix Server Arbitrary Command Execution
+exploit/linux/misc/hplip_hpssd_exec;2007-5208;HPLIP hpssd.py From Address Arbitrary Command Execution
+exploit/linux/misc/novell_edirectory_ncp_bof;2012-0432;Novell eDirectory 8 Buffer Overflow
+exploit/linux/misc/mongod_native_helper;2013-1892;MongoDB nativeHelper.apply Remote Code Execution
+exploit/linux/misc/ib_inet_connect;2007-5243;Borland InterBase INET_connect() Buffer Overflow
+exploit/linux/misc/gld_postfix;2005-1099;GLD (Greylisting Daemon) Postfix Buffer Overflow
+exploit/linux/misc/netsupport_manager_agent;2011-0404;NetSupport Manager Agent Remote Buffer Overflow
+exploit/linux/misc/ib_jrd8_create_database;2007-5243;Borland InterBase jrd8_create_database() Buffer Overflow
+exploit/linux/misc/nagios_nrpe_arguments;2013-1362;Nagios Remote Plugin Executor Arbitrary Command Execution
+exploit/linux/imap/imap_uw_lsub;2000-0284;UoW IMAP Server LSUB Buffer Overflow
+exploit/linux/games/ut2004_secure;2004-0608;Unreal Tournament 2004 "secure" Overflow (Linux)
+exploit/linux/ftp/proftp_telnet_iac;2010-4221;ProFTPD 1.3.2rc3 - 1.3.3b Telnet IAC Buffer Overflow (Linux)
+exploit/linux/ftp/proftp_sreplace;2006-5815;ProFTPD 1.2 - 1.3.0 sreplace Buffer Overflow (Linux)
+exploit/freebsd/tacacs/xtacacsd_report;2008-7232;XTACACSD report() Buffer Overflow
+exploit/freebsd/local/mmap;2013-2171;FreeBSD 9 Address Space Manipulation Privilege Escalation
+exploit/freebsd/telnet/telnet_encrypt_keyid;2011-4862;FreeBSD Telnet Service Encryption Key ID Buffer Overflow
+exploit/freebsd/samba/trans2open;2003-0201;Samba trans2open Overflow (*BSD x86)
+exploit/freebsd/ftp/proftp_telnet_iac;2010-4221;ProFTPD 1.3.2rc3 - 1.3.3b Telnet IAC Buffer Overflow (FreeBSD)
+exploit/multi/upnp/libupnp_ssdp_overflow;2012-5958;Portable UPnP SDK unique_service_name() Remote Code Execution
+exploit/multi/fileformat/nodejs_js_yaml_load_code_exec;2013-4660;Nodejs js-yaml load() Code Execution
+exploit/multi/fileformat/adobe_u3d_meshcont;2009-2990;Adobe U3D CLODProgressiveMeshDeclaration Array Overrun
+exploit/multi/fileformat/swagger_param_inject;2016-5641;JSON Swagger CodeGen Parameter Injector
+exploit/multi/fileformat/peazip_command_injection;2009-2261;PeaZip Zip Processing Command Injection
+exploit/multi/ssh/sshexec;1999-0502;SSH User Code Execution
+exploit/multi/http/rails_json_yaml_code_exec;2013-0333,2013-0156;Ruby on Rails JSON Processor YAML Deserialization Code Execution
+exploit/multi/http/cups_bash_env_exec;2014-6271,2014-6278;CUPS Filter Bash Environment Variable Code Injection (Shellshock)
+exploit/multi/http/manage_engine_dc_pmp_sqli;2014-3996;ManageEngine Desktop Central / Password Manager LinkViewFetchServlet.dat SQL Injection
+exploit/multi/http/phpmyadmin_3522_backdoor;2012-5159;phpMyAdmin 3.5.2.2 server_sync.php Backdoor
+exploit/multi/http/tomcat_mgr_upload;2009-3843,2009-3548,2009-4189,2010-0557,2010-4094,2009-4188;Apache Tomcat Manager Authenticated Upload Code Execution
+exploit/multi/http/hp_sys_mgmt_exec;2013-3576;HP System Management Homepage JustGetSNMPQueue Command Injection
+exploit/multi/http/jboss_seam_upload_exec;2010-1871;JBoss Seam 2 File Upload and Execute
+exploit/multi/http/struts_dev_mode;2012-0394;Apache Struts 2 Developer Mode OGNL Execution
+exploit/multi/http/openx_backdoor_php;2013-4211;OpenX Backdoor PHP Code Execution
+exploit/multi/http/zabbix_script_exec;2013-3628;Zabbix Authenticated Remote Command Execution
+exploit/multi/http/openmediavault_cmd_exec;2013-3632;OpenMediaVault Cron Remote Command Execution
+exploit/multi/http/joomla_http_header_rce;2015-8562,2015-6835;Joomla HTTP Header Unauthenticated Remote Code Execution
+exploit/multi/http/sonicwall_scrutinizer_methoddetail_sqli;2014-4977;Dell SonicWALL Scrutinizer 11.01 methodDetail SQL Injection
+exploit/multi/http/phpscheduleit_start_date;2008-6132;phpScheduleIt PHP reserve.php start_date Parameter Arbitrary Code Injection
+exploit/multi/http/plone_popen2;2011-3587;Plone and Zope XMLTools Remote Command Execution
+exploit/multi/http/jboss_deploymentfilerepository;2010-0738;JBoss Java Class DeploymentFileRepository WAR Deployment
+exploit/multi/http/sit_file_upload;2011-3829,2011-3833;Support Incident Tracker Remote Command Execution
+exploit/multi/http/apache_jetspeed_file_upload;2016-0710,2016-0709;Apache Jetspeed Arbitrary File Upload
+exploit/multi/http/wp_ninja_forms_unauthenticated_file_upload;2016-1209;WordPress Ninja Forms Unauthenticated File Upload
+exploit/multi/http/splunk_mappy_exec;2011-4642;Splunk Search Remote Code Execution
+exploit/multi/http/polarcms_upload_exec;2013-0803;PolarBear CMS PHP File Upload Vulnerability
+exploit/multi/http/struts_include_params;2013-2115,2013-1966;Apache Struts includeParams Remote Code Execution
+exploit/multi/http/glassfish_deployer;2011-0807;Sun/Oracle GlassFish Server Authenticated Code Execution
+exploit/multi/http/jboss_maindeployer;2007-1036,2010-0738;JBoss JMX Console Deployer Upload and Execute
+exploit/multi/http/struts_dmi_rest_exec;2016-3087;Apache Struts REST Plugin With Dynamic Method Invocation Remote Code Execution
+exploit/multi/http/rails_actionpack_inline_exec;2016-2098;Ruby on Rails ActionPack Inline ERB Code Execution
+exploit/multi/http/zenworks_control_center_upload;2013-1080;Novell ZENworks Configuration Management Remote Execution
+exploit/multi/http/gitlab_shell_exec;2013-4490;Gitlab-shell Code Execution
+exploit/multi/http/sysaid_rdslogs_file_upload;2015-2995;SysAid Help Desk 'rdslogs' Arbitrary File Upload
+exploit/multi/http/nas4free_php_exec;2013-3631;NAS4Free Arbitrary Remote Code Execution
+exploit/multi/http/vtiger_install_rce;2014-2269,2014-2268;Vtiger Install Unauthenticated Remote Command Execution
+exploit/multi/http/op5_license;2012-0261;OP5 license.php Remote Command Execution
+exploit/multi/http/glpi_install_rce;2013-5696;GLPI install.php Remote Command Execution
+exploit/multi/http/horde_href_backdoor;2012-0209;Horde 3.3.12 Backdoor Arbitrary PHP Code Execution
+exploit/multi/http/jboss_invoke_deploy;2007-1036;JBoss DeploymentFileRepository WAR Deployment (via JMXInvokerServlet)
+exploit/multi/http/vtiger_php_exec;2013-3591;vTigerCRM v5.4.0/v5.3.0 Authenticated Remote Code Execution
+exploit/multi/http/mutiny_subnetmask_exec;2012-3001;Mutiny Remote Command Execution
+exploit/multi/http/bassmaster_js_injection;2014-7205;Bassmaster Batch Arbitrary JavaScript Injection Remote Code Execution
+exploit/multi/http/oracle_reports_rce;2012-3152,2012-3153;Oracle Forms and Reports Remote Code Execution
+exploit/multi/http/openfire_auth_bypass;2008-6508;Openfire Admin Console Authentication Bypass
+exploit/multi/http/novell_servicedesk_rce;2016-1593;Novell ServiceDesk Authenticated File Upload
+exploit/multi/http/phpldapadmin_query_engine;2011-4075;phpLDAPadmin query_engine Remote PHP Code Injection
+exploit/multi/http/wikka_spam_exec;2011-4451;WikkaWiki 1.3.2 Spam Logging PHP Injection
+exploit/multi/http/familycms_less_exec;2011-5130;Family Connections less.php Remote Command Execution
+exploit/multi/http/struts_code_exec_exception_delegator;2012-0391;Apache Struts Remote Command Execution
+exploit/multi/http/log1cms_ajax_create_folder;2011-4825;Log1 CMS writeInfo() PHP Code Injection
+exploit/multi/http/webnms_file_upload;2016-6600;WebNMS Framework Server Arbitrary File Upload
+exploit/multi/http/vbulletin_unserialize;2015-7808;vBulletin 5.1.2 Unserialize Code Execution
+exploit/multi/http/manageengine_auth_upload;2014-5301;ManageEngine Multiple Products Authenticated File Upload
+exploit/multi/http/rails_web_console_v2_code_exec;2015-3224;Ruby on Rails Web Console (v2) Whitelist Bypass Code Execution
+exploit/multi/http/hp_sitescope_issuesiebelcmd;2013-4835;HP SiteScope issueSiebelCmd Remote Code Execution
+exploit/multi/http/struts_code_exec;2010-1870;Apache Struts Remote Command Execution
+exploit/multi/http/zenworks_configuration_management_upload;2015-0779;Novell ZENworks Configuration Management Arbitrary File Upload
+exploit/multi/http/sysaid_auth_file_upload;2015-2994;SysAid Help Desk Administrator Portal Arbitrary File Upload
+exploit/multi/http/jira_hipchat_template;2015-5603;Atlassian HipChat for Jira Plugin Velocity Template Injection
+exploit/multi/http/rails_xml_yaml_code_exec;2013-0156;Ruby on Rails XML Processor YAML Deserialization Code Execution
+exploit/multi/http/phpwiki_ploticus_exec;2014-5519;Phpwiki Ploticus Remote Code Execution
+exploit/multi/http/struts_default_action_mapper;2013-2251;Apache Struts 2 DefaultActionMapper Prefixes OGNL Code Execution
+exploit/multi/http/phpmyadmin_preg_replace;2013-3238;phpMyAdmin Authenticated Remote Code Execution via preg_replace()
+exploit/multi/http/op5_welcome;2012-0262;OP5 welcome Remote Command Execution
+exploit/multi/http/apache_mod_cgi_bash_env_exec;2014-6271,2014-6278;Apache mod_cgi Bash Environment Variable Code Injection (Shellshock)
+exploit/multi/http/struts_dmi_exec;2016-3081;Apache Struts Dynamic Method Invocation Remote Code Execution
+exploit/multi/http/tomcat_mgr_deploy;2009-3843,2009-3548,2009-4189,2010-0557,2010-4094,2009-4188;Apache Tomcat Manager Application Deployer Authenticated Code Execution
+exploit/multi/http/drupal_drupageddon;2014-3704;Drupal HTTP Parameter Key/Value SQL Injection
+exploit/multi/http/activecollab_chat;2012-6554;Active Collab "chat module" Remote PHP Code Injection Exploit
+exploit/multi/http/php_cgi_arg_injection;2012-1823;PHP CGI Argument Injection
+exploit/multi/http/git_client_command_exec;2014-9390;Malicious Git and Mercurial HTTP Server For CVE-2014-9390
+exploit/multi/http/coldfusion_rds;2013-0632;Adobe ColdFusion 9 Administrative Login Bypass
+exploit/multi/http/apprain_upload_exec;2012-1153;appRain CMF Arbitrary PHP File Upload Vulnerability
+exploit/multi/http/oracle_ats_file_upload;2016-0491,2016-0492;Oracle ATS Arbitrary File Upload
+exploit/multi/http/visual_mining_netcharts_upload;2014-8516;Visual Mining NetCharts Server Remote Code Execution
+exploit/multi/http/rails_dynamic_render_code_exec;2016-0752;Ruby on Rails Dynamic Render File Upload Remote Code Execution
+exploit/multi/http/mantisbt_php_exec;2014-7146,2014-8598;MantisBT XmlImportExport Plugin PHP Code Injection Vulnerability
+exploit/multi/http/phpmoadmin_exec;2015-2208;PHPMoAdmin 1.1.2 Remote Code Execution
+exploit/multi/http/struts_code_exec_classloader;2014-0114,2014-0094,2014-0112;Apache Struts ClassLoader Manipulation Remote Code Execution
+exploit/multi/http/pandora_upload_exec;2010-4279;Pandora FMS v3.1 Auth Bypass and Arbitrary File Upload Vulnerability
+exploit/multi/http/vtiger_soap_upload;2013-3214,2013-3215;vTiger CRM SOAP AddEmailAttachment Arbitrary File Upload
+exploit/multi/http/jboss_bshdeployer;2010-0738;JBoss JMX Console Beanshell Deployer WAR Upload and Deployment
+exploit/multi/http/phpmailer_arg_injection;2016-10045,2016-10033;PHPMailer Sendmail Argument Injection
+exploit/multi/http/struts_code_exec_parameters;2011-3923;Apache Struts ParametersInterceptor Remote Code Execution
+exploit/multi/http/mediawiki_thumb;2014-1610;MediaWiki Thumb.php Remote Command Execution
+exploit/multi/http/opmanager_socialit_file_upload;2014-6034;ManageEngine OpManager and Social IT Arbitrary File Upload
+exploit/multi/http/sun_jsws_dav_options;2010-0361;Sun Java System Web Server WebDAV OPTIONS Buffer Overflow
+exploit/multi/http/moodle_cmd_exec;2013-3630;Moodle Remote Command Execution
+exploit/multi/http/axis2_deployer;2010-0219;Axis2 / SAP BusinessObjects Authenticated Code Execution (via SOAP)
+exploit/multi/http/magento_unserialize;2016-4010;Magento 2.0.6 Unserialize Remote Code Execution
+exploit/multi/http/atutor_sqli;2016-2555;ATutor 2.2.1 SQL Injection / Remote Code Execution
+exploit/multi/http/rocket_servergraph_file_requestor_rce;2014-3914;Rocket Servergraph Admin Center fileRequestor Remote Code Execution
+exploit/multi/http/pmwiki_pagelist;2011-4453;PmWiki pagelist.php Remote PHP Code Injection Exploit
+exploit/multi/http/sonicwall_gms_upload;2013-1359;SonicWALL GMS 6 Arbitrary File Upload
+exploit/multi/http/movabletype_upgrade_exec;2012-6315,2013-0209;Movable Type 4.2x, 4.3x Web Upgrade Remote Code Execution
+exploit/multi/http/ispconfig_php_exec;2013-3629;ISPConfig Authenticated Arbitrary PHP Code Execution
+exploit/multi/http/apache_roller_ognl_injection;2013-4212;Apache Roller OGNL Injection
+exploit/multi/http/eventlog_file_upload;2014-6037;ManageEngine Eventlog Analyzer Arbitrary File Upload
+exploit/multi/http/cisco_dcnm_upload;2013-5486;Cisco Prime Data Center Network Manager Arbitrary File Upload
+exploit/multi/browser/adobe_flash_shader_job_overflow;2015-3090;Adobe Flash Player ShaderJob Buffer Overflow
+exploit/multi/browser/firefox_proto_crmfrequest;2012-3993,2013-1710;Firefox 5.0 - 15.0.1 __exposedProps__ XCS Code Execution
+exploit/multi/browser/mozilla_compareto;2005-2265;Mozilla Suite/Firefox compareTo() Code Execution
+exploit/multi/browser/java_storeimagearray;2013-2465;Java storeImageArray() Invalid Array Indexing Vulnerability
+exploit/multi/browser/qtjava_pointer;2007-2175;Apple QTJava toQTPointer() Arbitrary Memory Access
+exploit/multi/browser/java_rhino;2011-3544;Java Applet Rhino Script Engine Remote Code Execution
+exploit/multi/browser/adobe_flash_pixel_bender_bof;2014-0515;Adobe Flash Player Shader Buffer Overflow
+exploit/multi/browser/firefox_webidl_injection;2014-1511,2014-1510;Firefox WebIDL Privileged Javascript Injection
+exploit/multi/browser/java_trusted_chain;2010-0840;Java Statement.invoke() Trusted Method Chain Privilege Escalation
+exploit/multi/browser/firefox_tostring_console_injection;2013-1710,2013-1670;Firefox toString console.time Privileged Javascript Injection
+exploit/multi/browser/java_jre17_reflection_types;2013-2423;Java Applet Reflection Type Confusion Remote Code Execution
+exploit/multi/browser/java_setdifficm_bof;2009-3869;Sun Java JRE AWT setDiffICM Buffer Overflow
+exploit/multi/browser/mozilla_navigatorjava;2006-3677;Mozilla Suite/Firefox Navigator Object Code Execution
+exploit/multi/browser/firefox_proxy_prototype;2014-8636,2015-0802;Firefox Proxy Prototype Privileged Javascript Injection
+exploit/multi/browser/firefox_svg_plugin;2013-0757,2013-0758;Firefox 17.0.1 Flash Privileged Code Injection
+exploit/multi/browser/java_jre17_exec;2012-4681;Java 7 Applet Remote Code Execution
+exploit/multi/browser/java_atomicreferencearray;2012-0507;Java AtomicReferenceArray Type Violation Vulnerability
+exploit/multi/browser/java_calendar_deserialize;2008-5353;Sun Java Calendar Deserialization Privilege Escalation
+exploit/multi/browser/adobe_flash_opaque_background_uaf;2015-5122;Adobe Flash opaqueBackground Use After Free
+exploit/multi/browser/itms_overflow;2009-0950;Apple OS X iTunes 8.1.1 ITMS Overflow
+exploit/multi/browser/java_jre17_jaxws;2012-5067,2012-5076;Java Applet JAX-WS Remote Code Execution
+exploit/multi/browser/java_jre17_glassfish_averagerangestatisticimpl;2012-5076;Java Applet AverageRangeStatisticImpl Remote Code Execution
+exploit/multi/browser/java_jre17_jmxbean;2013-0422;Java Applet JMX Remote Code Execution
+exploit/multi/browser/firefox_queryinterface;2006-0295;Firefox location.QueryInterface() Code Execution
+exploit/multi/browser/java_jre17_provider_skeleton;2013-2460;Java Applet ProviderSkeleton Insecure Invoke Method
+exploit/multi/browser/firefox_escape_retval;2009-2477;Firefox 3.5 escape() Return Value Memory Corruption
+exploit/multi/browser/java_jre17_jmxbean_2;2013-0431;Java Applet JMX Remote Code Execution
+exploit/multi/browser/java_verifier_field_access;2012-1723;Java Applet Field Bytecode Verifier Cache Remote Code Execution
+exploit/multi/browser/adobe_flash_hacking_team_uaf;2015-5119;Adobe Flash Player ByteArray Use After Free
+exploit/multi/browser/opera_historysearch;2008-4696;Opera historysearch XSS
+exploit/multi/browser/adobe_flash_net_connection_confusion;2015-0336;Adobe Flash Player NetConnection Type Confusion
+exploit/multi/browser/java_rmi_connection_impl;2010-0094;Java RMIConnectionImpl Deserialization Privilege Escalation
+exploit/multi/browser/java_getsoundbank_bof;2009-3867;Sun Java JRE getSoundbank file:// URI Buffer Overflow
+exploit/multi/browser/firefox_pdfjs_privilege_escalation;2015-0802,2015-0816;Firefox PDF.js Privileged Javascript Injection
+exploit/multi/browser/adobe_flash_shader_drawing_fill;2015-3105;Adobe Flash Player Drawing Fill Shader Memory Corruption
+exploit/multi/browser/adobe_flash_nellymoser_bof;2015-3113,2015-3043;Adobe Flash Player Nellymoser Audio Decoding Buffer Overflow
+exploit/multi/browser/java_jre17_driver_manager;2013-1488;Java Applet Driver Manager Privileged toString() Remote Code Execution
+exploit/multi/browser/adobe_flash_uncompress_zlib_uaf;2015-0311;Adobe Flash Player ByteArray UncompressViaZlibVariant Use After Free
+exploit/multi/browser/java_jre17_method_handle;2012-5088;Java Applet Method Handle Remote Code Execution
+exploit/multi/wyse/hagent_untrusted_hsdata;2009-0695;Wyse Rapport Hagent Fake Hserver Command Execution
+exploit/multi/ids/snort_dce_rpc;2006-5276;Snort 2 DCE/RPC Preprocessor Buffer Overflow
+exploit/multi/samba/usermap_script;2007-2447;Samba "username map script" Command Execution
+exploit/multi/samba/nttrans;2002-1318;Samba 2.2.2 - 2.2.6 nttrans Buffer Overflow
+exploit/multi/vpn/tincd_bof;2013-1428;Tincd Post-Authentication Remote TCP Stack Buffer Overflow
+exploit/multi/php/php_unserialize_zval_cookie;2007-1286;PHP 4 unserialize() ZVAL Reference Counter Overflow (Cookie)
+exploit/multi/svn/svnserve_date;2004-0397;Subversion Date Svnserve
+exploit/multi/ntp/ntp_overflow;2001-0414;NTP Daemon readvar Buffer Overflow
+exploit/multi/realserver/describe;2002-1643;RealServer Describe Buffer Overflow
+exploit/multi/misc/wireshark_lwres_getaddrbyname;2010-0304;Wireshark LWRES Dissector getaddrsbyname_request Buffer Overflow
+exploit/multi/misc/arkeia_agent_exec;2015-7709;Western Digital Arkeia Remote Code Execution
+exploit/multi/misc/persistent_hpca_radexec_exec;2015-1497;HP Client Automation Command Injection
+exploit/multi/misc/veritas_netbackup_cmdexec;2004-1389;VERITAS NetBackup Remote Command Execution
+exploit/multi/misc/wireshark_lwres_getaddrbyname_loop;2010-0304;Wireshark LWRES Dissector getaddrsbyname_request Buffer Overflow (loop)
+exploit/multi/misc/java_jmx_server;2015-2342;Java JMX Server Insecure Configuration Java Code Execution
+exploit/multi/misc/hp_vsa_exec;2012-4361;HP StorageWorks P4000 Virtual SAN Appliance Command Execution
+exploit/multi/misc/openview_omniback_exec;2001-0311;HP OpenView OmniBack II Command Execution
+exploit/multi/elasticsearch/script_mvel_rce;2014-3120;ElasticSearch Dynamic Script Arbitrary Java Execution
+exploit/multi/elasticsearch/search_groovy_script;2015-1427;ElasticSearch Search Groovy Sandbox Bypass
+exploit/multi/ftp/pureftpd_bash_env_exec;2014-6271;Pure-FTPd External Authentication Bash Environment Variable Code Injection (Shellshock)
+exploit/multi/ftp/wuftpd_site_exec_format;2000-0573;WU-FTPD SITE EXEC/INDEX Format String Vulnerability
+exploit/bsdi/softcart/mercantec_softcart;2004-2221;Mercantec SoftCart CGI Overflow
+exploit/dialup/multi/login/manyargs;2001-0797;System V Derived /bin/login Extraneous Arguments Buffer Overflow
+exploit/solaris/lpd/sendmail_exec;2001-1583;Solaris LPD Command Execution
+exploit/solaris/telnet/fuser;2007-0882;Sun Solaris Telnet Remote Authentication Bypass Vulnerability
+exploit/solaris/telnet/ttyprompt;2001-0797;Solaris in.telnetd TTYPROMPT Buffer Overflow
+exploit/solaris/samba/lsa_transnames_heap;2007-2446;Samba lsa_io_trans_names Heap Overflow
+exploit/solaris/samba/trans2open;2003-0201;Samba trans2open Overflow (Solaris SPARC)
+exploit/solaris/sunrpc/sadmind_adm_build_path;2008-4556;Sun Solaris sadmind adm_build_path() Buffer Overflow
+exploit/solaris/sunrpc/sadmind_exec;2003-0722;Solaris sadmind Command Execution
+exploit/solaris/sunrpc/ypupdated_exec;1999-0209;Solaris ypupdated Command Execution
+exploit/solaris/dtspcd/heap_noir;2001-0803;Solaris dtspcd Heap Overflow
+exploit/windows/fileformat/adobe_geticon;2009-0927;Adobe Collab.getIcon() Buffer Overflow
+exploit/windows/fileformat/ms13_071_theme;2013-0810;MS13-071 Microsoft Windows Theme File Handling Arbitrary Code Execution
+exploit/windows/fileformat/ezip_wizard_bof;2009-1028;eZip Wizard 3.0 Stack Buffer Overflow
+exploit/windows/fileformat/ms_visual_basic_vbp;2007-4776;Microsoft Visual Basic VBP Buffer Overflow
+exploit/windows/fileformat/coolpdf_image_stream_bof;2012-4914;Cool PDF Image Stream Buffer Overflow
+exploit/windows/fileformat/adobe_illustrator_v14_eps;2009-4195;Adobe Illustrator CS4 v14.0.0
+exploit/windows/fileformat/erdas_er_viewer_rf_report_error;2013-3482;ERS Viewer 2013 ERS File Handling Buffer Overflow
+exploit/windows/fileformat/adobe_media_newplayer;2009-4324;Adobe Doc.media.newPlayer Use After Free Vulnerability
+exploit/windows/fileformat/msworks_wkspictureinterface;2008-1898;Microsoft Works 7 WkImgSrv.dll WKsPictureInterface() ActiveX Code Execution
+exploit/windows/fileformat/irfanview_jpeg2000_bof;2012-0897;Irfanview JPEG2000 jp2 Stack Buffer Overflow
+exploit/windows/fileformat/fatplayer_wav;2009-4962;Fat Player Media Player 0.6b0 Buffer Overflow
+exploit/windows/fileformat/ms15_020_shortcut_icon_dllloader;2015-0096;Microsoft Windows Shell LNK Code Execution
+exploit/windows/fileformat/acdsee_fotoslate_string;2011-2595;ACDSee FotoSlate PLP File id Parameter Overflow
+exploit/windows/fileformat/erdas_er_viewer_bof;2013-0726;ERS Viewer 2011 ERS File Handling Buffer Overflow
+exploit/windows/fileformat/ms11_021_xlb_bof;2011-0105;MS11-021 Microsoft Office 2007 Excel .xlb Buffer Overflow
+exploit/windows/fileformat/fdm_torrent;2009-0184;Free Download Manager Torrent Parsing Buffer Overflow
+exploit/windows/fileformat/bpftp_client_bps_bof;2014-2973;BulletProof FTP Client BPS Buffer Overflow
+exploit/windows/fileformat/orbital_viewer_orb;2010-0688;Orbital Viewer ORB File Parsing Buffer Overflow
+exploit/windows/fileformat/orbit_download_failed_bof;2008-1602;Orbit Downloader URL Unicode Conversion Overflow
+exploit/windows/fileformat/wireshark_packet_dect;2011-1591;Wireshark packet-dect.c Stack Buffer Overflow (local)
+exploit/windows/fileformat/ultraiso_cue;2007-2888;UltraISO CUE File Parsing Buffer Overflow
+exploit/windows/fileformat/altap_salamander_pdb;2007-3314;Altap Salamander 2.5 PE Viewer Buffer Overflow
+exploit/windows/fileformat/hhw_hhp_indexfile_bof;2009-0133;HTML Help Workshop 4.74 (hhp Project File) Buffer Overflow
+exploit/windows/fileformat/apple_quicktime_pnsize;2011-0257;Apple QuickTime PICT PnSize Buffer Overflow
+exploit/windows/fileformat/zinfaudioplayer221_pls;2004-0964;Zinf Audio Player 2.2.1 (PLS File) Stack Buffer Overflow
+exploit/windows/fileformat/etrust_pestscan;2009-4225;CA eTrust PestPatrol ActiveX Control Buffer Overflow
+exploit/windows/fileformat/hhw_hhp_contentfile_bof;2006-0564;HTML Help Workshop 4.74 (hhp Project File) Buffer Overflow
+exploit/windows/fileformat/moxa_mediadbplayback;2010-4742;MOXA MediaDBPlayback ActiveX Control Buffer Overflow
+exploit/windows/fileformat/videospirit_visprj;2011-0499,2011-0500;VeryTools Video Spirit Pro
+exploit/windows/fileformat/adobe_toolbutton;2013-3346;Adobe Reader ToolButton Use After Free
+exploit/windows/fileformat/lotusnotes_lzh;2011-1213;Lotus Notes 8.0.x - 8.5.2 FP2 - Autonomy Keyview (.lzh Attachment)
+exploit/windows/fileformat/ms14_064_packager_python;2014-6352,2014-4114;MS14-064 Microsoft Windows OLE Package Manager Code Execution Through Python
+exploit/windows/fileformat/blazedvd_plf;2006-6199;BlazeDVD 6.1 PLF Buffer Overflow
+exploit/windows/fileformat/icofx_bof;2013-4988;IcoFX Stack Buffer Overflow
+exploit/windows/fileformat/vlc_webm;2011-0531;VideoLAN VLC MKV Memory Corruption
+exploit/windows/fileformat/ovf_format_string;2012-3569;VMWare OVF Tools Format String Vulnerability
+exploit/windows/fileformat/adobe_pdf_embedded_exe;2010-1240;Adobe PDF Embedded EXE Social Engineering
+exploit/windows/fileformat/mswin_tiff_overflow;2013-3906;MS13-096 Microsoft Tagged Image File Format (TIFF) Integer Overflow
+exploit/windows/fileformat/ibm_pcm_ws;2012-0201;IBM Personal Communications iSeries Access WorkStation 5.9 Profile
+exploit/windows/fileformat/deepburner_path;2006-6665;AstonSoft DeepBurner (DBR File) Path Buffer Overflow
+exploit/windows/fileformat/openoffice_ole;2008-0320;OpenOffice OLE Importer DocumentSummaryInformation Stream Handling Overflow
+exploit/windows/fileformat/ms10_087_rtf_pfragments_bof;2010-3333;MS10-087 Microsoft Word RTF pFragments Stack Buffer Overflow (File Format)
+exploit/windows/fileformat/proshow_cellimage_bof;2009-3214;ProShow Gold v4.0.2549 (PSH File) Stack Buffer Overflow
+exploit/windows/fileformat/ms15_100_mcl_exe;2015-2509;MS15-100 Microsoft Windows Media Center MCL Vulnerability
+exploit/windows/fileformat/winamp_maki_bof;2009-1831;Winamp MAKI Buffer Overflow
+exploit/windows/fileformat/ms10_004_textbytesatom;2010-0033;MS10-004 Microsoft PowerPoint Viewer TextBytesAtom Stack Buffer Overflow
+exploit/windows/fileformat/acdsee_xpm;2007-2193;ACDSee XPM File Section Buffer Overflow
+exploit/windows/fileformat/cain_abel_4918_rdp;2008-5405;Cain and Abel RDP Buffer Overflow
+exploit/windows/fileformat/adobe_pdf_embedded_exe_nojs;2010-1240;Adobe PDF Escape EXE Social Engineering (No JavaScript)
+exploit/windows/fileformat/adobe_jbig2decode;2009-0658;Adobe JBIG2Decode Memory Corruption
+exploit/windows/fileformat/adobe_reader_u3d;2011-2462;Adobe Reader U3D Memory Corruption Vulnerability
+exploit/windows/fileformat/ibm_forms_viewer_fontname;2013-5447;IBM Forms Viewer Unicode Buffer Overflow
+exploit/windows/fileformat/lattice_pac_bof;2012-2915;Lattice Semiconductor PAC-Designer 6.21 Symbol Value Buffer Overflow
+exploit/windows/fileformat/vlc_smb_uri;2009-2484;VideoLAN Client (VLC) Win32 smb:// URI Buffer Overflow
+exploit/windows/fileformat/ht_mp3player_ht3_bof;2009-2485;HT-MP3Player 1.0 HT3 File Parsing Buffer Overflow
+exploit/windows/fileformat/ms12_027_mscomctl_bof;2012-0158;MS12-027 MSCOMCTL ActiveX Buffer Overflow
+exploit/windows/fileformat/visiwave_vwr_type;2011-2386;VisiWave VWR File Parsing Vulnerability
+exploit/windows/fileformat/real_player_url_property_bof;2012-5691;RealPlayer RealMedia File Handling Buffer Overflow
+exploit/windows/fileformat/publishit_pui;2014-0980;Publish-It PUI Buffer Overflow (SEH)
+exploit/windows/fileformat/foxit_reader_launch;2009-0837;Foxit Reader 3.0 Open Execute Action Stack Based Buffer Overflow
+exploit/windows/fileformat/ms14_060_sandworm;2014-4114;MS14-060 Microsoft Windows OLE Package Manager Code Execution
+exploit/windows/fileformat/audio_wkstn_pls;2009-0476;Audio Workstation 6.4.2.4.3 pls Buffer Overflow
+exploit/windows/fileformat/ms09_067_excel_featheader;2009-3129;MS09-067 Microsoft Excel Malformed FEATHEADER Record Vulnerability
+exploit/windows/fileformat/chasys_draw_ies_bmp_bof;2013-3928;Chasys Draw IES Buffer Overflow
+exploit/windows/fileformat/ms14_064_packager_run_as_admin;2014-6352;MS14-064 Microsoft Windows OLE Package Manager Code Execution
+exploit/windows/fileformat/ms12_005;2012-0013;MS12-005 Microsoft Office ClickOnce Unsafe Object Package Handling Vulnerability
+exploit/windows/fileformat/vlc_realtext;2008-5036;VLC Media Player RealText Subtitle Overflow
+exploit/windows/fileformat/ultraiso_ccd;2009-1260;UltraISO CCD File Parsing Buffer Overflow
+exploit/windows/fileformat/vlc_modplug_s3m;2011-1574;VideoLAN VLC ModPlug ReadS3M Stack Buffer Overflow
+exploit/windows/fileformat/corelpdf_fusion_bof;2013-3248;Corel PDF Fusion Stack Buffer Overflow
+exploit/windows/fileformat/adobe_cooltype_sing;2010-2883;Adobe CoolType SING Table "uniqueName" Stack Buffer Overflow
+exploit/windows/fileformat/ideal_migration_ipj;2009-4265;PointDev IDEAL Migration Buffer Overflow
+exploit/windows/fileformat/wireshark_mpeg_overflow;2014-2299;Wireshark wiretap/mpeg.c Stack Buffer Overflow
+exploit/windows/fileformat/tugzip;2008-4779;TugZip 3.5 Zip File Parsing Buffer Overflow Vulnerability
+exploit/windows/fileformat/adobe_utilprintf;2008-2992;Adobe util.printf() Buffer Overflow
+exploit/windows/fileformat/kingview_kingmess_kvl;2012-4711;KingView Log File Parsing Buffer Overflow
+exploit/windows/fileformat/ms14_017_rtf;2014-1761;MS14-017 Microsoft Word RTF Object Confusion
+exploit/windows/fileformat/apple_quicktime_texml;2012-0663,2012-0664;Apple QuickTime TeXML Style Element Stack Buffer Overflow
+exploit/windows/fileformat/djvu_imageurl;2008-4922;DjVu DjVu_ActiveX_MSOffice.dll ActiveX ComponentBuffer Overflow
+exploit/windows/fileformat/feeddemon_opml;2009-0546;FeedDemon Stack Buffer Overflow
+exploit/windows/fileformat/adobe_u3d_meshdecl;2009-3953;Adobe U3D CLODProgressiveMeshDeclaration Array Overrun
+exploit/windows/fileformat/videolan_tivo;2008-4654;VideoLAN VLC TiVo Buffer Overflow
+exploit/windows/fileformat/ms10_038_excel_obj_bof;2010-0822;MS11-038 Microsoft Office Excel Malformed OBJ Record Handling Overflow
+exploit/windows/fileformat/csound_getnum_bof;2012-0270;Csound hetro File Handling Stack Buffer Overflow
+exploit/windows/fileformat/vuplayer_m3u;2006-6251;VUPlayer M3U Buffer Overflow
+exploit/windows/fileformat/esignal_styletemplate_bof;2011-3494;eSignal and eSignal Pro File Parsing Buffer Overflow in QUO
+exploit/windows/fileformat/ursoft_w32dasm;2005-0308;URSoft W32Dasm Disassembler Function Buffer Overflow
+exploit/windows/fileformat/office_ole_multiple_dll_hijack;2016-0041,2015-6132,2016-3235,2015-6128,2016-0100,2015-6133;Office OLE Multiple DLL Side Loading Vulnerabilities
+exploit/windows/fileformat/visio_dxf_bof;2010-1681;Microsoft Office Visio VISIODWG.DLL DXF File Handling Vulnerability
+exploit/windows/fileformat/adobe_flashplayer_button;2010-3654;Adobe Flash Player "Button" Remote Code Execution
+exploit/windows/fileformat/adobe_flatedecode_predictor02;2009-3459;Adobe FlateDecode Stream Predictor 02 Integer Overflow
+exploit/windows/fileformat/scadaphone_zip;2011-4535;ScadaTEC ScadaPhone Stack Buffer Overflow
+exploit/windows/fileformat/apple_quicktime_rdrf;2013-1017;Apple Quicktime 7 Invalid Atom Length Buffer Overflow
+exploit/windows/fileformat/destinymediaplayer16;2009-3429;Destiny Media Player 1.61 PLS M3U Buffer Overflow
+exploit/windows/fileformat/realplayer_ver_attribute_bof;2013-7260;RealNetworks RealPlayer Version Attribute Buffer Overflow
+exploit/windows/fileformat/ms11_006_createsizeddibsection;2010-3970;MS11-006 Microsoft Windows CreateSizedDIBSECTION Stack Buffer Overflow
+exploit/windows/fileformat/adobe_libtiff;2010-0188;Adobe Acrobat Bundled LibTIFF Integer Overflow
+exploit/windows/fileformat/mediajukebox;2009-2650;Media Jukebox 8.0.400 Buffer Overflow (SEH)
+exploit/windows/fileformat/easycdda_pls_bof;2010-2343;Easy CD-DA Recorder PLS Buffer Overflow
+exploit/windows/fileformat/adobe_collectemailinfo;2007-5659;Adobe Collab.collectEmailInfo() Buffer Overflow
+exploit/windows/fileformat/xradio_xrl_sehbof;2008-2789;xRadio 0.95b Buffer Overflow
+exploit/windows/fileformat/ca_cab;2007-2864;CA Antivirus Engine CAB Buffer Overflow
+exploit/windows/fileformat/sascam_get;2008-6898;SasCam Webcam Server v.2.6.5 Get() Method Buffer Overflow
+exploit/windows/fileformat/djstudio_pls_bof;2009-4656;DJ Studio Pro 5.1 .pls Stack Buffer Overflow
+exploit/windows/fileformat/audiotran_pls;2009-0476;Audiotran 1.4.1 (PLS File) Stack Buffer Overflow
+exploit/windows/fileformat/dvdx_plf_bof;2007-3068;DVD X Player 5.5 .plf PlayList Buffer Overflow
+exploit/windows/fileformat/adobe_flashplayer_newfunction;2010-1297;Adobe Flash Player "newfunction" Invalid Pointer Use
+exploit/windows/fileformat/watermark_master;2013-6935;Watermark Master Buffer Overflow (SEH)
+exploit/windows/fileformat/hhw_hhp_compiledfile_bof;2006-0564;HTML Help Workshop 4.74 (hhp Project File) Buffer Overflow
+exploit/windows/fileformat/safenet_softremote_groupname;2009-3861;SafeNet SoftRemote GROUPNAME Buffer Overflow
+exploit/windows/iis/msadc;1999-1011;MS99-025 Microsoft IIS MDAC msadcs.dll RDS Arbitrary Remote Command Execution
+exploit/windows/iis/ms03_007_ntdll_webdav;2003-0109;MS03-007 Microsoft IIS 5.0 WebDAV ntdll.dll Path Overflow
+exploit/windows/iis/ms01_033_idq;2001-0500;MS01-033 Microsoft IIS 5.0 IDQ Path Overflow
+exploit/windows/iis/ms02_065_msadc;2002-1142;MS02-065 Microsoft IIS MDAC msadcs.dll RDS DataStub Content-Type Overflow
+exploit/windows/iis/ms02_018_htr;1999-0874;MS02-018 Microsoft IIS 4.0 .HTR Path Overflow
+exploit/windows/iis/ms01_023_printer;2001-0241;MS01-023 Microsoft IIS 5.0 Printer Host Header Overflow
+exploit/windows/iis/ms01_026_dbldecode;2001-0333;MS01-026 Microsoft IIS/PWS CGI Filename Double Decode Command Execution
+exploit/windows/pop3/seattlelab_pass;2003-0264;Seattle Lab Mail 5.5 POP3 Buffer Overflow
+exploit/windows/lpd/hummingbird_exceed;2005-1815;Hummingbird Connectivity 10 SP5 LPD Buffer Overflow
+exploit/windows/lpd/saplpd;2008-0621;SAP SAPLPD 6.28 Buffer Overflow
+exploit/windows/lpd/wincomlpd_admin;2008-5159;WinComLPD Buffer Overflow
+exploit/windows/lpd/niprint;2003-1141;NIPrint LPD Request Overflow
+exploit/windows/smb/ms06_025_rras;2006-2370;MS06-025 Microsoft RRAS Service Overflow
+exploit/windows/smb/ms04_031_netdde;2004-0206;MS04-031 Microsoft NetDDE Service Overflow
+exploit/windows/smb/ms15_020_shortcut_icon_dllloader;2015-0096;Microsoft Windows Shell LNK Code Execution
+exploit/windows/smb/ms06_025_rasmans_reg;2006-2370;MS06-025 Microsoft RRAS Service RASMAN Registry Overflow
+exploit/windows/smb/ms03_049_netapi;2003-0812;MS03-049 Microsoft Workstation Service NetAddAlternateComputerName Overflow
+exploit/windows/smb/ms04_007_killbill;2003-0818;MS04-007 Microsoft ASN.1 Library Bitstring Heap Overflow
+exploit/windows/smb/ms08_067_netapi;2008-4250;MS08-067 Microsoft Server Service Relative Path Stack Corruption
+exploit/windows/smb/ms07_029_msdns_zonename;2007-1748;MS07-029 Microsoft DNS RPC Service extractQuotedChar() Overflow (SMB)
+exploit/windows/smb/timbuktu_plughntcommand_bof;2009-1394;Timbuktu PlughNTCommand Named Pipe Buffer Overflow
+exploit/windows/smb/psexec;1999-0504;Microsoft Windows Authenticated User Code Execution
+exploit/windows/smb/ms10_061_spoolss;2010-2729;MS10-061 Microsoft Print Spooler Service Impersonation Vulnerability
+exploit/windows/smb/ms04_011_lsass;2003-0533;MS04-011 Microsoft LSASS Service DsRolerUpgradeDownlevelServer Overflow
+exploit/windows/smb/ms05_039_pnp;2005-1983;MS05-039 Microsoft Plug and Play Service Overflow
+exploit/windows/smb/psexec_psh;1999-0504;Microsoft Windows Authenticated Powershell Command Execution
+exploit/windows/smb/ipass_pipe_exec;2015-0925;IPass Control Pipe Remote Command Execution
+exploit/windows/smb/ms10_046_shortcut_icon_dllloader;2010-2568;Microsoft Windows Shell LNK Code Execution
+exploit/windows/smb/ms06_066_nwwks;2006-4688;MS06-066 Microsoft Services nwwks.dll Module Exploit
+exploit/windows/smb/ms06_070_wkssvc;2006-4691;MS06-070 Microsoft Workstation Service NetpManageIPCConnect Overflow
+exploit/windows/smb/ms06_040_netapi;2006-3439;MS06-040 Microsoft Server Service NetpwPathCanonicalize Overflow
+exploit/windows/smb/netidentity_xtierrpcpipe;2009-1350;Novell NetIdentity Agent XTIERRPCPIPE Named Pipe Buffer Overflow
+exploit/windows/smb/smb_relay;2008-4037;MS08-068 Microsoft Windows SMB Relay Code Execution
+exploit/windows/smb/ms09_050_smb2_negotiate_func_index;2009-3103;MS09-050 Microsoft SRV2.SYS SMB Negotiate ProcessID Function Table Dereference
+exploit/windows/smb/ms06_066_nwapi;2006-4688;MS06-066 Microsoft Services nwapi32.dll Module Exploit
+exploit/windows/ssh/putty_msg_debug;2002-1359;PuTTY Buffer Overflow
+exploit/windows/ssh/freesshd_key_exchange;2006-2407;FreeSSHd 1.0.9 Key Exchange Algorithm String Buffer Overflow
+exploit/windows/ssh/securecrt_ssh1;2002-1059;SecureCRT SSH1 Buffer Overflow
+exploit/windows/ssh/freesshd_authbypass;2012-6066;Freesshd Authentication Bypass
+exploit/windows/ssh/freeftpd_key_exchange;2006-2407;FreeFTPd 1.0.10 Key Exchange Algorithm String Buffer Overflow
+exploit/windows/ssl/ms04_011_pct;2003-0719;MS04-011 Microsoft Private Communications Transport Overflow
+exploit/windows/oracle/tns_service_name;2002-0965;Oracle 8i TNS Listener SERVICE_NAME Buffer Overflow
+exploit/windows/oracle/client_system_analyzer_upload;2010-3600;Oracle Database Client System Analyzer Arbitrary File Upload
+exploit/windows/oracle/tns_auth_sesskey;2009-1979;Oracle 10gR2 TNS Listener AUTH_SESSKEY Buffer Overflow
+exploit/windows/oracle/tns_arguments;2001-0499;Oracle 8i TNS Listener (ARGUMENTS) Buffer Overflow
+exploit/windows/oracle/osb_ndmp_auth;2008-5444;Oracle Secure Backup NDMP_CONNECT_CLIENT_AUTH Buffer Overflow
+exploit/windows/scada/realwin_on_fcs_login;2011-1563;RealWin SCADA Server DATAC Login Buffer Overflow
+exploit/windows/scada/igss9_igssdataserver_listall;2011-1567;7-Technologies IGSS IGSSdataServer.exe Stack Buffer Overflow
+exploit/windows/scada/yokogawa_bkesimmgr_bof;2014-0782;Yokogawa CS3000 BKESimmgr.exe Buffer Overflow
+exploit/windows/scada/scadapro_cmdexe;2011-3497;Measuresoft ScadaPro Remote Command Execution
+exploit/windows/scada/realwin_scpc_txtevent;2010-4142;DATAC RealWin SCADA Server SCPC_TXTEVENT Buffer Overflow
+exploit/windows/scada/advantech_webaccess_dashboard_file_upload;2016-0854;Advantech WebAccess Dashboard Viewer uploadImageCommon Arbitrary File Upload
+exploit/windows/scada/realwin;2008-4322;DATAC RealWin SCADA Server Buffer Overflow
+exploit/windows/scada/igss9_misc;2011-1566,2011-1565;7-Technologies IGSS 9 Data Server/Collector Packet Handling Vulnerabilities
+exploit/windows/scada/iconics_webhmi_setactivexguid;2011-2089;ICONICS WebHMI ActiveX Buffer Overflow
+exploit/windows/scada/realwin_scpc_initialize;2010-4142;DATAC RealWin SCADA Server SCPC_INITIALIZE Buffer Overflow
+exploit/windows/scada/codesys_gateway_server_traversal;2012-4705;SCADA 3S CoDeSys Gateway Server Directory Traversal
+exploit/windows/scada/daq_factory_bof;2011-3492;DaqFactory HMI NETB Request Overflow
+exploit/windows/scada/yokogawa_bkhodeq_bof;2014-0783;Yokogawa CENTUM CS 3000 BKHOdeq.exe Buffer Overflow
+exploit/windows/scada/indusoft_webstudio_exec;2011-4051;InduSoft Web Studio Arbitrary Upload Remote Code Execution
+exploit/windows/scada/ge_proficy_cimplicity_gefebt;2014-0750;GE Proficy CIMPLICITY gefebt.exe Remote Code Execution
+exploit/windows/scada/procyon_core_server;2011-3322;Procyon Core Server HMI Coreservice.exe Stack Buffer Overflow
+exploit/windows/scada/realwin_on_fc_binfile_a;2011-1563;DATAC RealWin SCADA Server 2 On_FC_CONNECT_FCS_a_FILE Buffer Overflow
+exploit/windows/scada/citect_scada_odbc;2008-2639;CitectSCADA/CitectFacilities ODBC Buffer Overflow
+exploit/windows/scada/codesys_web_server;2011-5007;SCADA 3S CoDeSys CmpWebServer Stack Buffer Overflow
+exploit/windows/scada/igss_exec_17;2011-1566;Interactive Graphical SCADA System Remote Command Injection
+exploit/windows/scada/igss9_igssdataserver_rename;2011-1567;7-Technologies IGSS 9 IGSSdataServer .RMS Rename Buffer Overflow
+exploit/windows/scada/winlog_runtime;2011-0517;Sielco Sistemi Winlog Buffer Overflow
+exploit/windows/scada/winlog_runtime_2;2012-3815;Sielco Sistemi Winlog Buffer Overflow 2.07.14 - 2.07.16
+exploit/windows/scada/realwin_scpc_initialize_rf;2010-4142;DATAC RealWin SCADA Server SCPC_INITIALIZE_RF Buffer Overflow
+exploit/windows/scada/moxa_mdmtool;2010-4741;MOXA Device Manager Tool 2.1 Buffer Overflow
+exploit/windows/scada/yokogawa_bkfsim_vhfd;2014-3888;Yokogawa CS3000 BKFSim_vhfd.exe Buffer Overflow
+exploit/windows/scada/yokogawa_bkbcopyd_bof;2014-0784;Yokogawa CENTUM CS 3000 BKBCopyD.exe Buffer Overflow
+exploit/windows/mssql/ms09_004_sp_replwritetovarbin_sqli;2008-5416;MS09-004 Microsoft SQL Server sp_replwritetovarbin Memory Corruption via SQL Injection
+exploit/windows/mssql/ms02_056_hello;2002-1123;MS02-056 Microsoft SQL Server Hello Overflow
+exploit/windows/mssql/mssql_payload_sqli;2000-0402,2000-1209;Microsoft SQL Server Payload Execution via SQL Injection
+exploit/windows/mssql/ms09_004_sp_replwritetovarbin;2008-5416;MS09-004 Microsoft SQL Server sp_replwritetovarbin Memory Corruption
+exploit/windows/mssql/lyris_listmanager_weak_pass;2005-4145;Lyris ListManager MSDE Weak sa Password
+exploit/windows/mssql/ms02_039_slammer;2002-0649;MS02-039 Microsoft SQL Server Resolution Overflow
+exploit/windows/mssql/mssql_payload;2000-0402,2000-1209;Microsoft SQL Server Payload Execution
+exploit/windows/backdoor/energizer_duo_payload;2010-0103;Energizer DUO USB Battery Charger Arucer.dll Trojan Code Execution
+exploit/windows/smtp/njstar_smtp_bof;2011-4040;NJStar Communicator 3.00 MiniSMTP Buffer Overflow
+exploit/windows/smtp/ms03_046_exchange2000_xexch50;2003-0714;MS03-046 Exchange 2000 XEXCH50 Heap Overflow
+exploit/windows/smtp/wmailserver;2005-2287;SoftiaCom WMailserver 1.0 Buffer Overflow
+exploit/windows/smtp/mailcarrier_smtp_ehlo;2004-1638;TABS MailCarrier v2.51 SMTP EHLO Overflow
+exploit/windows/smtp/ypops_overflow1;2004-1558;YPOPS 0.6 Buffer Overflow
+exploit/windows/smtp/mercury_cram_md5;2007-4440;Mercury Mail SMTP AUTH CRAM-MD5 Buffer Overflow
+exploit/windows/firewall/blackice_pam_icq;2004-0362;ISS PAM.dll ICQ Parser Buffer Overflow
+exploit/windows/firewall/kerio_auth;2003-0220;Kerio Firewall 2.1.4 Authentication Packet Overflow
+exploit/windows/local/ms14_070_tcpip_ioctl;2014-4076;MS14-070 Windows tcpip!SetAddrOptions NULL Pointer Dereference
+exploit/windows/local/ppr_flatten_rec;2013-3660;Windows EPATHOBJ::pprFlattenRec Local Privilege Escalation
+exploit/windows/local/bthpan;2014-4971;MS14-062 Microsoft Bluetooth Personal Area Networking (BthPan.sys) Privilege Escalation
+exploit/windows/local/ms13_097_ie_registry_symlink;2013-5045;MS13-097 Registry Symlink IE Sandbox Escape
+exploit/windows/local/ntapphelpcachecontrol;2015-0002;MS15-001 Microsoft Windows NtApphelpCacheControl Improper Authorization Check
+exploit/windows/local/adobe_sandbox_adobecollabsync;2013-2730;AdobeCollabSync Buffer Overflow Adobe Reader X Sandbox Bypass
+exploit/windows/local/ms14_058_track_popup_menu;2014-4113;Windows TrackPopupMenu Win32k NULL Pointer Dereference
+exploit/windows/local/ms13_053_schlamperei;2013-1300;Windows NTUserMessageCall Win32k Kernel Pool Overflow (Schlamperei)
+exploit/windows/local/virtual_box_opengl_escape;2014-0983;VirtualBox 3D Acceleration Virtual Machine Escape
+exploit/windows/local/powershell_remoting;1999-0504;Powershell Remoting Remote Command Execution
+exploit/windows/local/ms16_032_secondary_logon_handle_privesc;2016-0099;MS16-032 Secondary Logon Handle Privilege Escalation
+exploit/windows/local/ms10_092_schelevator;2010-3338;Windows Escalate Task Scheduler XML Privilege Escalation
+exploit/windows/local/ms13_081_track_popup_menu;2013-3881;Windows TrackPopupMenuEx Win32k NULL Page
+exploit/windows/local/ms14_009_ie_dfsvc;2014-0257;MS14-009 .NET Deployment Service IE Sandbox Escape
+exploit/windows/local/current_user_psexec;1999-0504;PsExec via Current User Token
+exploit/windows/local/wmi;1999-0504;Windows Management Instrumentation (WMI) Remote Command Execution
+exploit/windows/local/mqac_write;2014-4971;MQAC.sys Arbitrary Write Privilege Escalation
+exploit/windows/local/virtual_box_guest_additions;2014-2477;VirtualBox Guest Additions VBoxGuest.sys Privilege Escalation
+exploit/windows/local/ms15_051_client_copy_image;2015-1701;Windows ClientCopyImage Win32k Exploit
+exploit/windows/local/lenovo_systemupdate;2015-2219;Lenovo System Update Privilege Escalation
+exploit/windows/local/ms11_080_afdjoinleaf;2011-2005;MS11-080 AfdJoinLeaf Privilege Escalation
+exploit/windows/local/ms16_016_webdav;2016-0051;MS16-016 mrxdav.sys WebDav Local Privilege Escalation
+exploit/windows/local/ms15_078_atmfd_bof;2015-2426,2015-2433;MS15-078 Microsoft Windows Font Driver Buffer Overflow
+exploit/windows/local/ms15_004_tswbproxy;2015-0016;MS15-004 Microsoft Remote Desktop Services Web Proxy IE Sandbox Escape
+exploit/windows/local/nvidia_nvsvc;2013-0109;Nvidia (nvsvc) Display Driver Service Local Privilege Escalation
+exploit/windows/local/ms10_015_kitrap0d;2010-0232;Windows SYSTEM Escalation via KiTrap0D
+exploit/windows/local/ms_ndproxy;2013-5065;MS14-002 Microsoft Windows ndproxy.sys Local Privilege Escalation
+exploit/windows/local/ms13_005_hwnd_broadcast;2013-0008;MS13-005 HWND_BROADCAST Low to Medium Integrity Privilege Escalation
+exploit/windows/http/hp_nnm_snmpviewer_actapp;2010-1552;HP OpenView Network Node Manager snmpviewer.exe Buffer Overflow
+exploit/windows/http/ipswitch_wug_maincfgret;2004-0798;Ipswitch WhatsUp Gold 8.03 Buffer Overflow
+exploit/windows/http/webster_http;2002-2268;Webster HTTP Server GET Buffer Overflow
+exploit/windows/http/kolibri_http;2002-2268;Kolibri HTTP Server HEAD Buffer Overflow
+exploit/windows/http/efs_easychatserver_username;2004-2466;EFS Easy Chat Server Authentication Request Handling Buffer Overflow
+exploit/windows/http/hp_nnm_snmp;2009-3849;HP OpenView Network Node Manager Snmp.exe CGI Buffer Overflow
+exploit/windows/http/hp_nnm_ovalarm_lang;2009-4179;HP OpenView Network Node Manager ovalarm.exe CGI Buffer Overflow
+exploit/windows/http/novell_mdm_lfi;2013-1081;Novell Zenworks Mobile Managment MDM.php Local File Inclusion Vulnerability
+exploit/windows/http/ektron_xslt_exec;1012-5358,2012-5357;Ektron 8.02 XSLT Transform Remote Code Execution
+exploit/windows/http/solarwinds_fsm_userlogin;2015-2284;Solarwinds Firewall Security Manager 6.6.5 Client Session Handling Vulnerability
+exploit/windows/http/bea_weblogic_jsessionid;2008-5457;BEA WebLogic JSESSIONID Cookie Value Overflow
+exploit/windows/http/landesk_thinkmanagement_upload_asp;2012-1196,2012-1195;LANDesk Lenovo ThinkManagement Console Remote Command Execution
+exploit/windows/http/netgear_nms_rce;2016-1525;NETGEAR ProSafe Network Management System 300 Arbitrary File Upload
+exploit/windows/http/osb_uname_jlist;2010-0904;Oracle Secure Backup Authentication Bypass/Command Injection Vulnerability
+exploit/windows/http/hp_nnm_toolbar_01;2008-0067;HP OpenView Network Node Manager Toolbar.exe CGI Buffer Overflow
+exploit/windows/http/hp_autopass_license_traversal;2013-6221;HP AutoPass License Server File Upload
+exploit/windows/http/lexmark_markvision_gfd_upload;2014-8741;Lexmark MarkVision Enterprise Arbitrary File Upload
+exploit/windows/http/badblue_ext_overflow;2005-0595;BadBlue 2.5 EXT.dll Buffer Overflow
+exploit/windows/http/oracle_beehive_evaluation;2010-4417;Oracle BeeHive 2 voice-servlet processEvaluation() Vulnerability
+exploit/windows/http/maxdb_webdbm_get_overflow;2005-0684;MaxDB WebDBM GET Buffer Overflow
+exploit/windows/http/savant_31_overflow;2002-1120;Savant 3.1 Web Server Overflow
+exploit/windows/http/manage_engine_opmanager_rce;2015-7765,2015-7766;ManageEngine OpManager Remote Code Execution
+exploit/windows/http/shttpd_post;2006-5216;SHTTPD URI-Encoded POST Request Overflow
+exploit/windows/http/steamcast_useragent;2008-0550;Streamcast HTTP User-Agent Buffer Overflow
+exploit/windows/http/ibm_tsm_cad_header;2007-4880;IBM Tivoli Storage Manager Express CAD Service Buffer Overflow
+exploit/windows/http/hp_power_manager_login;2009-2685;Hewlett-Packard Power Manager Administration Buffer Overflow
+exploit/windows/http/mcafee_epolicy_source;2006-5156;McAfee ePolicy Orchestrator / ProtectionPilot Overflow
+exploit/windows/http/shoutcast_format;2004-1373;SHOUTcast DNAS/win32 1.9.4 File Request Format String Overflow
+exploit/windows/http/hp_loadrunner_copyfiletoserver;2013-4837;HP LoadRunner EmulationAdmin Web Service Directory Traversal
+exploit/windows/http/manageengine_connectionid_write;2015-8249;ManageEngine Desktop Central 9 FileUploadServlet ConnectionId Vulnerability
+exploit/windows/http/mdaemon_worldclient_form2raw;2003-1200;MDaemon WorldClient form2raw.cgi Stack Buffer Overflow
+exploit/windows/http/sapdb_webtools;2007-3614;SAP DB 7.4 WebTools Buffer Overflow
+exploit/windows/http/ericom_access_now_bof;2014-3913;Ericom AccessNow Server Buffer Overflow
+exploit/windows/http/hp_imc_bims_upload;2013-4822;HP Intelligent Management Center BIMS UploadServlet Directory Traversal
+exploit/windows/http/apache_chunked;2002-0392;Apache Win32 Chunked Encoding
+exploit/windows/http/bea_weblogic_transfer_encoding;2008-4008;BEA Weblogic Transfer-Encoding Buffer Overflow
+exploit/windows/http/oracle_event_processing_upload;2014-2424;Oracle Event Processing FileUploadServlet Arbitrary File Upload
+exploit/windows/http/psoproxy91_overflow;2004-0313;PSO Proxy v0.91 Stack Buffer Overflow
+exploit/windows/http/hp_imc_mibfileupload;2012-5201;HP Intelligent Management Center Arbitrary File Upload
+exploit/windows/http/hp_nnm_webappmon_ovjavalocale;2010-2709;HP NNM CGI webappmon.exe OvJavaLocale Buffer Overflow
+exploit/windows/http/minishare_get_overflow;2004-2271;Minishare 1.4.1 Buffer Overflow
+exploit/windows/http/cogent_datahub_command;2014-3789;Cogent DataHub Command Injection
+exploit/windows/http/servu_session_cookie;2009-4006;Rhinosoft Serv-U Session Cookie Buffer Overflow
+exploit/windows/http/ultraminihttp_bof;2013-5019;Ultra Mini HTTPD Stack Buffer Overflow
+exploit/windows/http/xitami_if_mod_since;2007-5067;Xitami 2.5c2 Web Server If-Modified-Since Overflow
+exploit/windows/http/apache_mod_rewrite_ldap;2006-3747;Apache Module mod_rewrite LDAP Protocol Buffer Overflow
+exploit/windows/http/nowsms;2008-0871;Now SMS/MMS Gateway Buffer Overflow
+exploit/windows/http/hp_pcm_snac_update_domain;2013-4811;HP ProCurve Manager SNAC UpdateDomainControllerServlet File Upload
+exploit/windows/http/hp_nnm_ovwebhelp;2009-4178;HP OpenView Network Node Manager OvWebHelp.exe CGI Buffer Overflow
+exploit/windows/http/hp_nnm_ovwebsnmpsrv_ovutil;2010-1961,2010-1964;HP OpenView Network Node Manager ovwebsnmpsrv.exe ovutil Buffer Overflow
+exploit/windows/http/hp_nnm_ovwebsnmpsrv_main;2010-1961,2010-1964;HP OpenView Network Node Manager ovwebsnmpsrv.exe main Buffer Overflow
+exploit/windows/http/ca_totaldefense_regeneratereports;2011-1653;CA Total Defense Suite reGenerateReports Stored Procedure SQL Injection
+exploit/windows/http/oracle9i_xdb_pass;2003-0727;Oracle 9i XDB HTTP PASS Overflow (win32)
+exploit/windows/http/sonicwall_scrutinizer_sqli;2012-2962;Dell SonicWALL (Plixer) Scrutinizer 9 SQL Injection
+exploit/windows/http/ia_webmail;2003-1192;IA WebMail 3.x Buffer Overflow
+exploit/windows/http/privatewire_gateway;2006-3252;Private Wire Gateway Buffer Overflow
+exploit/windows/http/hp_mpa_job_acct;2011-4166;HP Managed Printing Administration jobAcct Remote Command Execution
+exploit/windows/http/httpdx_handlepeer;2009-3711;HTTPDX h_handlepeer() Function Buffer Overflow
+exploit/windows/http/jira_collector_traversal;2014-2314;JIRA Issues Collector Directory Traversal
+exploit/windows/http/desktopcentral_statusupdate_upload;2014-5005;ManageEngine Desktop Central StatusUpdate Arbitrary File Upload
+exploit/windows/http/sepm_auth_bypass_rce;2015-1489,2015-1486,2015-1487;Symantec Endpoint Protection Manager Authentication Bypass and Code Execution
+exploit/windows/http/hp_pcm_snac_update_certificates;2013-4812;HP ProCurve Manager SNAC UpdateCertificatesServlet File Upload
+exploit/windows/http/zenworks_assetmgmt_uploadservlet;2011-2653;Novell ZENworks Asset Management Remote Execution
+exploit/windows/http/hp_nnm_ovwebsnmpsrv_uro;2010-1960;HP OpenView Network Node Manager ovwebsnmpsrv.exe Unrecognized Option Buffer Overflow
+exploit/windows/http/kaseya_uploader;2015-6922;Kaseya VSA uploader.aspx Arbitrary File Upload
+exploit/windows/http/ibm_tivoli_endpoint_bof;2011-1220;IBM Tivoli Endpoint Manager POST Query Buffer Overflow
+exploit/windows/http/ca_igateway_debug;2005-3190;CA iTechnology iGateway Debug Mode Buffer Overflow
+exploit/windows/http/icecast_header;2004-1561;Icecast Header Overwrite
+exploit/windows/http/maxdb_webdbm_database;2006-4305;MaxDB WebDBM Database Parameter Overflow
+exploit/windows/http/hp_nnm_getnnmdata_maxage;2010-1553;HP OpenView Network Node Manager getnnmdata.exe (MaxAge) CGI Buffer Overflow
+exploit/windows/http/trackercam_phparg_overflow;2005-0478;TrackerCam PHP Argument Buffer Overflow
+exploit/windows/http/hp_openview_insight_backdoor;2011-0276;HP OpenView Performance Insight Server Backdoor Account Code Execution
+exploit/windows/http/trackit_file_upload;2014-4872;Numara / BMC Track-It! FileStorageService Arbitrary File Upload
+exploit/windows/http/netdecision_http_bof;2012-1465;NetDecision 4.5.1 HTTP Server Buffer Overflow
+exploit/windows/http/peercast_url;2006-1148;PeerCast URL Handling Buffer Overflow
+exploit/windows/http/rejetto_hfs_exec;2014-6287;Rejetto HttpFileServer Remote Command Execution
+exploit/windows/http/vmware_vcenter_chargeback_upload;2013-3520;VMware vCenter Chargeback Manager ImageUploadServlet Arbitrary File Upload
+exploit/windows/http/apache_modjk_overflow;2007-0774;Apache mod_jk 1.2.20 Buffer Overflow
+exploit/windows/http/fdm_auth_header;2009-0183;Free Download Manager Remote Control Server Buffer Overflow
+exploit/windows/http/hp_nnm_getnnmdata_hostname;2010-1555;HP OpenView Network Node Manager getnnmdata.exe (Hostname) CGI Buffer Overflow
+exploit/windows/http/hp_nnm_ovbuildpath_textfile;2011-3167;HP OpenView Network Node Manager ov.dll _OVBuildPath Buffer Overflow
+exploit/windows/http/hp_nnm_nnmrptconfig_nameparams;2011-0266;HP OpenView NNM nnmRptConfig nameParams Buffer Overflow
+exploit/windows/http/novell_messenger_acceptlang;2006-0992;Novell Messenger Server 2.0 Accept-Language Overflow
+exploit/windows/http/hp_nnm_getnnmdata_icount;2010-1554;HP OpenView Network Node Manager getnnmdata.exe (ICount) CGI Buffer Overflow
+exploit/windows/http/navicopa_get_overflow;2006-5112;NaviCOPA 2.0.1 URL Handling Buffer Overflow
+exploit/windows/http/hp_sitescope_runomagentcommand;2013-2367;HP SiteScope Remote Code Execution
+exploit/windows/http/hp_nnm_ovas;2008-1697;HP OpenView NNM 7.53, 7.51 OVAS.EXE Pre-Authentication Stack Buffer Overflow
+exploit/windows/http/edirectory_host;2006-5478;Novell eDirectory NDS Server Host Header Overflow
+exploit/windows/http/sybase_easerver;2005-2297;Sybase EAServer 5.2 Remote Stack Buffer Overflow
+exploit/windows/http/hp_nnm_openview5;2007-6204;HP OpenView Network Node Manager OpenView5.exe CGI Buffer Overflow
+exploit/windows/http/sysax_create_folder;2012-6530;Sysax Multi Server 5.64 Create Folder Buffer Overflow
+exploit/windows/http/ibm_tpmfosd_overflow;2007-1868;IBM TPM for OS Deployment 5.1.0.x rembo.exe Buffer Overflow
+exploit/windows/http/altn_webadmin;2003-0471;Alt-N WebAdmin USER Buffer Overflow
+exploit/windows/http/avaya_ccr_imageupload_exec;2012-3811;Avaya IP Office Customer Call Reporter ImageUpload.ashx Remote Command Execution
+exploit/windows/http/adobe_robohelper_authbypass;2009-3068;Adobe RoboHelp Server 8 Arbitrary File Upload and Execute
+exploit/windows/http/php_apache_request_headers_bof;2012-2329;PHP apache_request_headers Function Buffer Overflow
+exploit/windows/http/hp_nnm_toolbar_02;2009-0920;HP OpenView Network Node Manager Toolbar.exe CGI Cookie Handling Buffer Overflow
+exploit/windows/http/altn_securitygateway;2008-4193;Alt-N SecurityGateway username Buffer Overflow
+exploit/windows/http/coldfusion_fckeditor;2009-2265;ColdFusion 8.0.1 Arbitrary File Upload and Execute
+exploit/windows/http/sambar6_search_results;2004-2086;Sambar 6 Search Results Buffer Overflow
+exploit/windows/http/hp_power_manager_filename;2009-3999;HP Power Manager 'formExportDataLogs' Buffer Overflow
+exploit/windows/http/bea_weblogic_post_bof;2008-3257;Oracle Weblogic Apache Connector POST Request Buffer Overflow
+exploit/windows/http/trendmicro_officescan;2008-1365;Trend Micro OfficeScan Remote Stack Buffer Overflow
+exploit/windows/http/httpdx_tolog_format;2009-4769;HTTPDX tolog() Function Format String Vulnerability
+exploit/windows/http/desktopcentral_file_upload;2013-7390;ManageEngine Desktop Central AgentLogUpload Arbitrary File Upload
+exploit/windows/http/ca_arcserve_rpc_authbypass;2011-3011;CA Arcserve D2D GWT RPC Credential Information Disclosure
+exploit/windows/http/hp_nnm_webappmon_execvp;2010-2703;HP OpenView Network Node Manager execvp_nc Buffer Overflow
+exploit/windows/http/hp_nnm_nnmrptconfig_schdparams;2011-0267;HP OpenView NNM nnmRptConfig.exe schdParams Buffer Overflow
+exploit/windows/http/edirectory_imonitor;2005-2551;eDirectory 8.7.3 iMonitor Remote Stack Buffer Overflow
+exploit/windows/http/oracle_endeca_exec;2013-3763;Oracle Endeca Server Remote Command Execution
+exploit/windows/http/badblue_passthru;2007-6377;BadBlue 2.72b PassThru Buffer Overflow
+exploit/windows/http/mailenable_auth_header;2005-1348;MailEnable Authorization Header Buffer Overflow
+exploit/windows/sip/sipxezphone_cseq;2006-3524;SIPfoundry sipXezPhone 0.35a CSeq Field Overflow
+exploit/windows/sip/aim_triton_cseq;2006-3524;AIM Triton 1.0.4 CSeq Buffer Overflow
+exploit/windows/sip/sipxphone_cseq;2006-3524;SIPfoundry sipXphone 2.6.0.27 CSeq Buffer Overflow
+exploit/windows/proxy/ccproxy_telnet_ping;2004-2416;CCProxy Telnet Proxy Ping Overflow
+exploit/windows/proxy/bluecoat_winproxy_host;2005-4085;Blue Coat WinProxy Host Header Overflow
+exploit/windows/proxy/qbik_wingate_wwwproxy;2006-2926;Qbik WinGate WWW Proxy Server URL Processing Overflow
+exploit/windows/proxy/proxypro_http_get;2004-0326;Proxy-Pro Professional GateKeeper 4.7 GET Request Overflow
+exploit/windows/browser/adobe_geticon;2009-0927;Adobe Collab.getIcon() Buffer Overflow
+exploit/windows/browser/java_docbase_bof;2010-3552;Sun Java Runtime New Plugin docbase Buffer Overflow
+exploit/windows/browser/notes_handler_cmdinject;2012-2174;IBM Lotus Notes Client URL Handler Command Injection
+exploit/windows/browser/ebook_flipviewer_fviewerloading;2007-2919;FlipViewer FViewerLoading ActiveX Control Buffer Overflow
+exploit/windows/browser/ms08_041_snapshotviewer;2008-2463;Snapshot Viewer for Microsoft Access ActiveX Control Arbitrary File Download
+exploit/windows/browser/symantec_altirisdeployment_runcmd;2009-3033;Symantec Altiris Deployment Solution ActiveX Control Buffer Overflow
+exploit/windows/browser/ms13_009_ie_slayoutrun_uaf;2013-0025;MS13-009 Microsoft Internet Explorer SLayoutRun Use-After-Free
+exploit/windows/browser/adobe_media_newplayer;2009-4324;Adobe Doc.media.newPlayer Use After Free Vulnerability
+exploit/windows/browser/java_ws_double_quote;2012-1533,2012-0500;Sun Java Web Start Double Quote Injection
+exploit/windows/browser/java_basicservice_impl;2010-3563;Sun Java Web Start BasicServiceImpl Code Execution
+exploit/windows/browser/ms08_070_visual_studio_msmask;2008-3704;Microsoft Visual Studio Mdmask32.ocx ActiveX Buffer Overflow
+exploit/windows/browser/sapgui_saveviewtosessionfile;2007-4475;SAP AG SAPgui EAI WebViewer3D Buffer Overflow
+exploit/windows/browser/winzip_fileview;2006-5198;WinZip FileView (WZFILEVIEW.FileViewCtrl.61) ActiveX Buffer Overflow
+exploit/windows/browser/samsung_neti_wiewer_backuptoavi_bof;2012-4333;Samsung NET-i Viewer Multiple ActiveX BackupToAvi() Remote Overflow
+exploit/windows/browser/mozilla_firefox_xmlserializer;2013-0753;Firefox XMLSerializer Use After Free
+exploit/windows/browser/tom_sawyer_tsgetx71ex552;2011-2217;Tom Sawyer Software GET Extension Factory Remote Code Execution
+exploit/windows/browser/verypdf_pdfview;2008-5492;VeryPDF PDFView OCX ActiveX OpenPDF Heap Overflow
+exploit/windows/browser/adobe_flash_copy_pixels_to_byte_array;2014-0556;Adobe Flash Player copyPixelsToByteArray Method Integer Overflow
+exploit/windows/browser/lpviewer_url;2008-4384;iseemedia / Roxio / MGI Software LPViewer ActiveX Control Buffer Overflow
+exploit/windows/browser/mozilla_mchannel;2011-0065;Mozilla Firefox 3.6.16 mChannel Use-After-Free Vulnerability
+exploit/windows/browser/ms11_050_mshtml_cobjectelement;2011-1260;MS11-050 IE mshtml!CObjectElement Use After Free
+exploit/windows/browser/mozilla_nstreerange;2011-0073;Mozilla Firefox "nsTreeRange" Dangling Pointer Vulnerability
+exploit/windows/browser/hp_easy_printer_care_xmlsimpleaccessor;2011-2404;HP Easy Printer Care XMLSimpleAccessor Class ActiveX Control Remote Code Execution
+exploit/windows/browser/apple_quicktime_marshaled_punk;2010-1818;Apple QuickTime 7.6.7 _Marshaled_pUnk Code Execution
+exploit/windows/browser/mozilla_nssvgvalue;2011-3658;Firefox nsSVGValue Out-of-Bounds Access Vulnerability
+exploit/windows/browser/adobe_flashplayer_flash10o;2011-0611;Adobe Flash Player 10.2.153.1 SWF Memory Corruption Vulnerability
+exploit/windows/browser/logitechvideocall_start;2007-2918;Logitech VideoCall ActiveX Control Buffer Overflow
+exploit/windows/browser/mcafeevisualtrace_tracetarget;2006-6707;McAfee Visual Trace ActiveX Control Buffer Overflow
+exploit/windows/browser/crystal_reports_printcontrol;2010-2590;Crystal Reports CrystalPrintControl ActiveX ServerResourceVersion Property Overflow
+exploit/windows/browser/ms06_013_createtextrange;2006-1359;MS06-013 Microsoft Internet Explorer createTextRange() Code Execution
+exploit/windows/browser/ovftool_format_string;2012-3569;VMWare OVF Tools Format String Vulnerability
+exploit/windows/browser/hpmqc_progcolor;2007-1819;HP Mercury Quality Center ActiveX Control ProgColor Buffer Overflow
+exploit/windows/browser/baofeng_storm_onbeforevideodownload;2009-1612;BaoFeng Storm mps.dll ActiveX OnBeforeVideoDownload Buffer Overflow
+exploit/windows/browser/quickr_qp2_bof;2012-2176;IBM Lotus QuickR qp2 ActiveX Buffer Overflow
+exploit/windows/browser/adobe_toolbutton;2013-3346;Adobe Reader ToolButton Use After Free
+exploit/windows/browser/adobe_shockwave_rcsl_corruption;2010-3653;Adobe Shockwave rcsL Memory Corruption
+exploit/windows/browser/novelliprint_executerequest;2008-0935;Novell iPrint Client ActiveX Control ExecuteRequest Buffer Overflow
+exploit/windows/browser/ca_brightstor_addcolumn;2008-1472;CA BrightStor ARCserve Backup AddColumn() ActiveX Buffer Overflow
+exploit/windows/browser/apple_quicktime_rtsp;2007-0015;Apple QuickTime 7.1.3 RTSP URI Buffer Overflow
+exploit/windows/browser/ie_cgenericelement_uaf;2013-1347;MS13-038 Microsoft Internet Explorer CGenericElement Object Use-After-Free Vulnerability
+exploit/windows/browser/apple_quicktime_smil_debug;2010-1799;Apple QuickTime 7.6.6 Invalid SMIL URI Buffer Overflow
+exploit/windows/browser/ms11_003_ie_css_import;2010-3971;MS11-003 Microsoft Internet Explorer CSS Recursive Import Use After Free
+exploit/windows/browser/softartisans_getdrivename;2007-1682;SoftArtisans XFile FileManager ActiveX Control Buffer Overflow
+exploit/windows/browser/trendmicro_extsetowner;2010-3189;Trend Micro Internet Security Pro 2010 ActiveX extSetOwner() Remote Code Execution
+exploit/windows/browser/cisco_playerpt_setsource_surl;2012-0284;Cisco Linksys PlayerPT ActiveX Control SetSource sURL Argument Buffer Overflow
+exploit/windows/browser/winamp_ultravox;2008-0065;Winamp Ultravox Streaming Metadata (in_mp3.dll) Buffer Overflow
+exploit/windows/browser/xmplay_asx;2006-6063;XMPlay 3.3.0.4 (ASX Filename) Buffer Overflow
+exploit/windows/browser/barcode_ax49;2007-3435;RKD Software BarCodeAx.dll v4.9 ActiveX Remote Stack Buffer Overflow
+exploit/windows/browser/vlc_amv;2010-3275;VLC AMV Dangling Pointer Vulnerability
+exploit/windows/browser/awingsoft_winds3d_sceneurl;2009-4850;AwingSoft Winds3D Player 3.5 SceneURL Download and Execute
+exploit/windows/browser/inotes_dwa85w_bof;2012-2175;IBM Lotus iNotes dwa85W ActiveX Buffer Overflow
+exploit/windows/browser/apple_quicktime_texml_font_table;2012-3752;Apple QuickTime 7.7.2 TeXML Style Element font-table Field Stack Buffer Overflow
+exploit/windows/browser/mozilla_firefox_onreadystatechange;2013-1690;Firefox onreadystatechange Event DocumentViewerImpl Use After Free
+exploit/windows/browser/ms10_002_ie_object;2010-0248;MS10-002 Microsoft Internet Explorer Object Memory Use-After-Free
+exploit/windows/browser/ms10_018_ie_behaviors;2010-0806;MS10-018 Microsoft Internet Explorer DHTML Behaviors Use After Free
+exploit/windows/browser/ms12_037_ie_colspan;2012-1876;MS12-037 Microsoft Internet Explorer Fixed Table Col Span Heap Overflow
+exploit/windows/browser/aol_icq_downloadagent;2006-5650;America Online ICQ ActiveX Control Arbitrary File Download and Execute
+exploit/windows/browser/msvidctl_mpeg2;2008-0015;Microsoft DirectShow (msvidctl.dll) MPEG-2 Memory Corruption
+exploit/windows/browser/yahoomessenger_server;2007-3147;Yahoo! Messenger 8.1.0.249 ActiveX Control Buffer Overflow
+exploit/windows/browser/honeywell_hscremotedeploy_exec;2013-0108;Honeywell HSC Remote Deployer ActiveX Remote Code Execution
+exploit/windows/browser/asus_net4switch_ipswcom;2012-4924;ASUS Net4Switch ipswcom.dll ActiveX Stack Buffer Overflow
+exploit/windows/browser/ms06_001_wmf_setabortproc;2005-4560;Windows XP/2003/Vista Metafile Escape() SetAbortProc Code Execution
+exploit/windows/browser/ms13_090_cardspacesigninhelper;2013-3918;MS13-090 CardSpaceClaimCollection ActiveX Integer Underflow
+exploit/windows/browser/blackice_downloadimagefileurl;2008-2683;Black Ice Cover Page ActiveX Control Arbitrary File Download
+exploit/windows/browser/cisco_anyconnect_exec;2011-2039;Cisco AnyConnect VPN Client ActiveX URL Property Download and Execute
+exploit/windows/browser/realplayer_console;2008-1309;RealPlayer rmoc3260.dll ActiveX Control Heap Corruption
+exploit/windows/browser/msxml_get_definition_code_exec;2012-1889;MS12-043 Microsoft XML Core Services MSXML Uninitialized Memory Corruption
+exploit/windows/browser/ask_shortformat;2007-5107;Ask.com Toolbar askBar.dll ActiveX Control Buffer Overflow
+exploit/windows/browser/ibmlotusdomino_dwa_uploadmodule;2007-4474;IBM Lotus Domino Web Access Upload Module Buffer Overflow
+exploit/windows/browser/malwarebytes_update_exec;2014-4936;Malwarebytes Anti-Malware and Anti-Exploit Update Remote Code Execution
+exploit/windows/browser/ms10_042_helpctr_xss_cmd_exec;2010-1885;Microsoft Help Center XSS and Command Execution
+exploit/windows/browser/hp_easy_printer_care_xmlcachemgr;2011-4786;HP Easy Printer Care XMLCacheMgr Class ActiveX Control Remote Code Execution
+exploit/windows/browser/adobe_flash_sps;2011-2140;Adobe Flash Player MP4 SequenceParameterSetNALUnit Buffer Overflow
+exploit/windows/browser/ibm_tivoli_pme_activex_bof;2012-0198;IBM Tivoli Provisioning Manager Express for Software Distribution Isig.isigCtl.1 ActiveX RunAndUploadFile() Method Overflow
+exploit/windows/browser/novell_groupwise_gwcls1_actvx;2012-0439;Novell GroupWise Client gwcls1.dll ActiveX Remote Code Execution
+exploit/windows/browser/java_codebase_trust;2010-4452;Sun Java Applet2ClassLoader Remote Code Execution
+exploit/windows/browser/novelliprint_datetime;2009-1569;Novell iPrint Client ActiveX Control Date/Time Buffer Overflow
+exploit/windows/browser/tumbleweed_filetransfer;2008-1724;Tumbleweed FileTransfer vcst_eu.dll ActiveX Control Buffer Overflow
+exploit/windows/browser/adobe_flash_regex_value;2013-0634;Adobe Flash Player Regular Expression Heap Overflow
+exploit/windows/browser/realplayer_smil;2005-0455;RealNetworks RealPlayer SMIL Buffer Overflow
+exploit/windows/browser/facebook_extractiptc;2008-5711;Facebook Photo Uploader 4 ActiveX Control Buffer Overflow
+exploit/windows/browser/wmi_admintools;2010-3973;Microsoft WMI Administration Tools ActiveX Buffer Overflow
+exploit/windows/browser/adobe_flashplayer_avm;2011-0609;Adobe Flash Player AVM Bytecode Verification Vulnerability
+exploit/windows/browser/adobe_flash_avm2;2014-0497;Adobe Flash Player Integer Underflow Remote Code Execution
+exploit/windows/browser/sonicwall_addrouteentry;2007-5603;SonicWall SSL-VPN NetExtender ActiveX Control Buffer Overflow
+exploit/windows/browser/adobe_jbig2decode;2009-0658;Adobe JBIG2Decode Heap Corruption
+exploit/windows/browser/ms13_059_cflatmarkuppointer;2013-3184;MS13-059 Microsoft Internet Explorer CFlatMarkupPointer Use-After-Free
+exploit/windows/browser/ubisoft_uplay_cmd_exec;2012-4177;Ubisoft uplay 2.0.3 ActiveX Control Arbitrary Code Execution
+exploit/windows/browser/ms05_054_onload;2005-1790;MS05-054 Microsoft Internet Explorer JavaScript OnLoad Handler Remote Code Execution
+exploit/windows/browser/ms14_012_cmarkup_uaf;2014-0322;MS14-012 Microsoft Internet Explorer CMarkup Use-After-Free
+exploit/windows/browser/zenturiprogramchecker_unsafe;2007-2987;Zenturi ProgramChecker ActiveX Control Arbitrary File Download
+exploit/windows/browser/realplayer_cdda_uri;2010-3747;RealNetworks RealPlayer CDDA URI Initialization Vulnerability
+exploit/windows/browser/ultramjcam_openfiledig_bof;2012-4876;TRENDnet SecurView Internet Camera UltraMJCam OpenFileDlg Buffer Overflow
+exploit/windows/browser/amaya_bdo;2009-0323;Amaya Browser v11.0 'bdo' Tag Overflow
+exploit/windows/browser/novelliprint_getdriversettings_2;2010-4321;Novell iPrint Client ActiveX Control Buffer Overflow
+exploit/windows/browser/adobe_flash_otf_font;2012-1535;Adobe Flash Player 11.3 Kern Table Parsing Integer Overflow
+exploit/windows/browser/mcafee_mvt_exec;2012-4598;McAfee Virtual Technician MVTControl 6.3.0.1911 GetObject Vulnerability
+exploit/windows/browser/ntr_activex_stopmodule;2012-0267;NTR ActiveX Control StopModule() Remote Code Execution
+exploit/windows/browser/oracle_webcenter_checkoutandopen;2013-1559;Oracle WebCenter Content CheckOutAndOpen.dll ActiveX Remote Code Execution
+exploit/windows/browser/adobe_flash_mp4_cprt;2012-0754;Adobe Flash Player MP4 'cprt' Overflow
+exploit/windows/browser/novelliprint_target_frame;2009-1568;Novell iPrint Client ActiveX Control target-frame Buffer Overflow
+exploit/windows/browser/ms10_026_avi_nsamplespersec;2010-0480;MS10-026 Microsoft MPEG Layer-3 Audio Stack Based Overflow
+exploit/windows/browser/systemrequirementslab_unsafe;2008-4385;Husdawg, LLC. System Requirements Lab ActiveX Unsafe Method
+exploit/windows/browser/winamp_playlist_unc;2006-0476;Winamp Playlist UNC Path Computer Name Overflow
+exploit/windows/browser/ms11_093_ole32;2011-3400;MS11-093 Microsoft Windows OLE Object File Handling Remote Code Execution
+exploit/windows/browser/ms13_080_cdisplaypointer;2013-3893,2013-3897;MS13-080 Microsoft Internet Explorer CDisplayPointer Use-After-Free
+exploit/windows/browser/hp_loadrunner_addfolder;2007-6530;HP LoadRunner 9.0 ActiveX AddFolder Buffer Overflow
+exploit/windows/browser/realplayer_qcp;2011-2950;RealNetworks Realplayer QCP Parsing Heap Overflow
+exploit/windows/browser/awingsoft_web3d_bof;2009-4588;AwingSoft Winds3D Player SceneURL Buffer Overflow
+exploit/windows/browser/ms16_051_vbscript;2016-0189;Internet Explorer 11 VBScript Engine Memory Corruption
+exploit/windows/browser/ms09_043_owc_msdso;2009-1136;Microsoft OWC Spreadsheet msDataSourceObject Memory Corruption
+exploit/windows/browser/wellintech_kingscada_kxclientdownload;2013-2827;KingScada kxClientDownload.ocx ActiveX Remote Code Execution
+exploit/windows/browser/ultraoffice_httpupload;2008-3878;Ultra Shareware Office Control ActiveX HttpUpload Buffer Overflow
+exploit/windows/browser/adobe_flash_worker_byte_array_uaf;2015-0313;Adobe Flash Player ByteArray With Workers Use After Free
+exploit/windows/browser/mozilla_interleaved_write;2010-3765;Mozilla Firefox Interleaved document.write/appendChild Memory Corruption
+exploit/windows/browser/enjoysapgui_comp_download;2008-4830;EnjoySAP SAP GUI ActiveX Control Arbitrary File Download
+exploit/windows/browser/symantec_appstream_unsafe;2008-4388;Symantec AppStream LaunchObj ActiveX Control Arbitrary File Download and Execute
+exploit/windows/browser/creative_software_cachefolder;2008-0955;Creative Software AutoUpdate Engine ActiveX Control Buffer Overflow
+exploit/windows/browser/ms10_022_ie_vbscript_winhlp32;2010-0483;MS10-022 Microsoft Internet Explorer Winhlp32.exe MsgBox Code Execution
+exploit/windows/browser/juniper_sslvpn_ive_setupdll;2006-2086;Juniper SSL-VPN IVE JuniperSetupDLL.dll ActiveX Control Buffer Overflow
+exploit/windows/browser/dxstudio_player_exec;2009-2011;Worldweaver DX Studio Player shell.execute() Command Execution
+exploit/windows/browser/adobe_flash_domain_memory_uaf;2015-0359;Adobe Flash Player domainMemory ByteArray Use After Free
+exploit/windows/browser/nis2004_antispam;2004-0363;Norton AntiSpam 2004 SymSpamHelper ActiveX Control Buffer Overflow
+exploit/windows/browser/apple_itunes_playlist;2005-0043;Apple ITunes 4.7 Playlist Buffer Overflow
+exploit/windows/browser/java_mixer_sequencer;2010-0842;Java MixerSequencer Object GM_Song Structure Handling Vulnerability
+exploit/windows/browser/pcvue_func;2011-4044;PcVue 10.0 SV.UIGrdCtrl.1 'LoadObject()/SaveObject()' Trusted DWORD Vulnerability
+exploit/windows/browser/kazaa_altnet_heap;2007-5217;Kazaa Altnet Download Manager ActiveX Control Buffer Overflow
+exploit/windows/browser/adobe_flash_casi32_int_overflow;2014-0569;Adobe Flash Player casi32 Integer Overflow
+exploit/windows/browser/c6_messenger_downloaderactivex;2008-2551;Icona SpA C6 Messenger DownloaderActiveX Control Arbitrary File Download and Execute
+exploit/windows/browser/oracle_dc_submittoexpress;2007-4607;Oracle Document Capture 10g ActiveX Control Buffer Overflow
+exploit/windows/browser/aim_goaway;2004-0636;AOL Instant Messenger goaway Overflow
+exploit/windows/browser/ms06_067_keyframe;2006-4777;MS06-067 Microsoft Internet Explorer Daxctle.OCX KeyFrame Method Heap Buffer Overflow Vulnerability
+exploit/windows/browser/zenworks_helplauncher_exec;2011-2657;AdminStudio LaunchHelp.dll ActiveX Arbitrary Code Execution
+exploit/windows/browser/ms06_057_webview_setslice;2006-3730;MS06-057 Microsoft Internet Explorer WebViewFolderIcon setSlice() Overflow
+exploit/windows/browser/ms11_081_option;2011-1996;MS11-081 Microsoft Internet Explorer Option Element Use-After-Free
+exploit/windows/browser/clear_quest_cqole;2012-0708;IBM Rational ClearQuest CQOle Remote Code Execution
+exploit/windows/browser/firefox_smil_uaf;2016-9079;Firefox nsSMILTimeContainer::NotifyTimeChange() RCE
+exploit/windows/browser/novelliprint_callbackurl;2010-1527;Novell iPrint Client ActiveX Control call-back-url Buffer Overflow
+exploit/windows/browser/yahoomessenger_fvcom;2007-4515;Yahoo! Messenger YVerInfo.dll ActiveX Control Buffer Overflow
+exploit/windows/browser/ms07_017_ani_loadimage_chunksize;2007-0038;Windows ANI LoadAniIcon() Chunk Size Stack Buffer Overflow (HTTP)
+exploit/windows/browser/novelliprint_executerequest_dbg;2010-3106;Novell iPrint Client ActiveX Control ExecuteRequest debug Buffer Overflow
+exploit/windows/browser/hyleos_chemviewx_activex;2010-0679;Hyleos ChemView ActiveX Control Stack Buffer Overflow
+exploit/windows/browser/enjoysapgui_preparetoposthtml;2007-3605;EnjoySAP SAP GUI ActiveX Control Buffer Overflow
+exploit/windows/browser/apple_quicktime_mime_type;2012-3753;Apple QuickTime 7.7.2 MIME Type Buffer Overflow
+exploit/windows/browser/adobe_flash_pcre;2015-0318;Adobe Flash Player PCRE Regex Vulnerability
+exploit/windows/browser/mswhale_checkforupdates;2007-2238;Microsoft Whale Intelligent Application Gateway ActiveX Control Buffer Overflow
+exploit/windows/browser/roxio_cineplayer;2007-1559;Roxio CinePlayer ActiveX Control Buffer Overflow
+exploit/windows/browser/adobe_cooltype_sing;2010-2883;Adobe CoolType SING Table "uniqueName" Stack Buffer Overflow
+exploit/windows/browser/cisco_webex_ext;2017-3823;Cisco WebEx Chrome Extension RCE (CVE-2017-3823)
+exploit/windows/browser/oracle_autovue_setmarkupmode;2012-0549;Oracle AutoVue ActiveX Control SetMarkupMode Buffer Overflow
+exploit/windows/browser/mozilla_reduceright;2011-2371;Mozilla Firefox Array.reduceRight() Integer Overflow
+exploit/windows/browser/ms14_012_textrange;2014-0307;MS14-012 Microsoft Internet Explorer TextRange Use-After-Free
+exploit/windows/browser/adobe_utilprintf;2008-2992;Adobe util.printf() Buffer Overflow
+exploit/windows/browser/citrix_gateway_actx;2011-2882;Citrix Gateway ActiveX Control Stack Based Buffer Overflow Vulnerability
+exploit/windows/browser/nctaudiofile2_setformatlikesample;2007-0018;NCTAudioFile2 v2.x ActiveX Control SetFormatLikeSample() Buffer Overflow
+exploit/windows/browser/ms12_037_same_id;2012-1875;MS12-037 Microsoft Internet Explorer Same ID Property Deleted Object Handling Memory Corruption
+exploit/windows/browser/ms10_002_aurora;2010-0249;MS10-002 Microsoft Internet Explorer "Aurora" Memory Corruption
+exploit/windows/browser/intrust_annotatex_add;2012-5896;Quest InTrust Annotation Objects Uninitialized Pointer
+exploit/windows/browser/java_ws_arginject_altjvm;2010-0886,2010-1423;Sun Java Web Start Plugin Command Line Argument Injection
+exploit/windows/browser/ie_createobject;2006-4704,2006-0003;MS06-014 Microsoft Internet Explorer COM CreateObject Code Execution
+exploit/windows/browser/ms12_004_midi;2012-0003;MS12-004 midiOutPlayNextPolyEvent Heap Overflow
+exploit/windows/browser/ms10_018_ie_tabular_activex;2010-0805;MS10-018 Microsoft Internet Explorer Tabular Data Control ActiveX Memory Corruption
+exploit/windows/browser/novelliprint_getdriversettings;2008-2908;Novell iPrint Client ActiveX Control Buffer Overflow
+exploit/windows/browser/ms13_055_canchor;2013-3163;MS13-055 Microsoft Internet Explorer CAnchorElement Use-After-Free
+exploit/windows/browser/advantech_webaccess_dvs_getcolor;2014-2364;Advantech WebAccess dvs.ocx GetColor Buffer Overflow
+exploit/windows/browser/ms10_046_shortcut_icon_dllloader;2010-2568;Microsoft Windows Shell LNK Code Execution
+exploit/windows/browser/realplayer_import;2007-5601;RealPlayer ierpplug.dll ActiveX Control Playlist Name Buffer Overflow
+exploit/windows/browser/getgodm_http_response_bof;2014-2206;GetGo Download Manager HTTP Response Buffer Overflow
+exploit/windows/browser/ea_checkrequirements;2007-4466;Electronic Arts SnoopyCtrl ActiveX Control Buffer Overflow
+exploit/windows/browser/ntr_activex_check_bof;2012-0266;NTR ActiveX Control Check() Method Buffer Overflow
+exploit/windows/browser/persits_xupload_traversal;2009-3693;Persits XUpload ActiveX MakeHttpRequest Directory Traversal
+exploit/windows/browser/macrovision_unsafe;2007-5660;Macrovision InstallShield Update Service ActiveX Unsafe Method
+exploit/windows/browser/ie_iscomponentinstalled;2006-1016;Microsoft Internet Explorer isComponentInstalled Overflow
+exploit/windows/browser/orbit_connecting;2009-0187;Orbit Downloader Connecting Log Creation Buffer Overflow
+exploit/windows/browser/nis2004_get;2007-1689;Symantec Norton Internet Security 2004 ActiveX Control Buffer Overflow
+exploit/windows/browser/ms10_090_ie_css_clip;2010-3962;MS10-090 Microsoft Internet Explorer CSS SetUserClip Memory Corruption
+exploit/windows/browser/adobe_flash_uncompress_zlib_uninitialized;2014-8440;Adobe Flash Player UncompressViaZlibVariant Uninitialized Memory
+exploit/windows/browser/ibm_spss_c1sizer;2012-5946;IBM SPSS SamplePower C1Tab ActiveX Heap Overflow
+exploit/windows/browser/indusoft_issymbol_internationalseparator;2011-0340;InduSoft Web Studio ISSymbol.ocx InternationalSeparator() Heap Overflow
+exploit/windows/browser/macrovision_downloadandexecute;2007-5660;Macrovision InstallShield Update Service Buffer Overflow
+exploit/windows/browser/ms09_072_style_object;2009-3672;MS09-072 Microsoft Internet Explorer Style getElementsByTagName Memory Corruption
+exploit/windows/browser/ie_execcommand_uaf;2012-4969;MS12-063 Microsoft Internet Explorer execCommand Use-After-Free Vulnerability 
+exploit/windows/browser/ms09_002_memory_corruption;2009-0075;MS09-002 Microsoft Internet Explorer 7 CFunctionPointer Uninitialized Memory Corruption
+exploit/windows/browser/windvd7_applicationtype;2007-0348;WinDVD7 IASystemInfo.DLL ActiveX Control Buffer Overflow
+exploit/windows/browser/ie_setmousecapture_uaf;2013-3893;MS13-080 Microsoft Internet Explorer SetMouseCapture Use-After-Free
+exploit/windows/browser/symantec_consoleutilities_browseandsavefile;2009-3031;Symantec ConsoleUtilities ActiveX Control Buffer Overflow
+exploit/windows/browser/adobe_flatedecode_predictor02;2009-3459;Adobe FlateDecode Stream Predictor 02 Integer Overflow
+exploit/windows/browser/safari_xslt_output;2011-1774;Apple Safari Webkit libxslt Arbitrary File Creation
+exploit/windows/browser/ms06_071_xml_core;2006-5745;MS06-071 Microsoft Internet Explorer XML Core Services HTTP Request Handling
+exploit/windows/browser/ibmegath_getxmlvalue;2009-0215;IBM Access Support ActiveX Control Buffer Overflow
+exploit/windows/browser/apple_quicktime_rdrf;2013-1017;Apple Quicktime 7 Invalid Atom Length Buffer Overflow
+exploit/windows/browser/gom_openurl;2007-5779;GOM Player ActiveX Control Buffer Overflow
+exploit/windows/browser/webex_ucf_newobject;2008-3558;WebEx UCF atucfobj.dll ActiveX NewObject Method Buffer Overflow
+exploit/windows/browser/ms03_020_ie_objecttype;2003-0344;MS03-020 Microsoft Internet Explorer Object Type
+exploit/windows/browser/hp_loadrunner_writefilebinary;2013-2370;HP LoadRunner lrFileIOService ActiveX Remote Code Execution
+exploit/windows/browser/ms13_022_silverlight_script_object;2013-0074,2013-3896;MS13-022 Microsoft Silverlight ScriptObject Unsafe Memory Access
+exploit/windows/browser/hp_loadrunner_writefilestring;2013-4798;HP LoadRunner lrFileIOService ActiveX WriteFileString Remote Code Execution
+exploit/windows/browser/mcafee_mcsubmgr_vsprintf;2006-3961;McAfee Subscription Manager Stack Buffer Overflow
+exploit/windows/browser/ms13_069_caret;2013-3205;MS13-069 Microsoft Internet Explorer CCaret Use-After-Free
+exploit/windows/browser/ms13_037_svg_dashstyle;2013-2551;MS13-037 Microsoft Internet Explorer COALineDashStyleArray Integer Overflow
+exploit/windows/browser/vlc_mms_bof;2012-1775;VLC MMS Stream Handling Buffer Overflow
+exploit/windows/browser/ms08_078_xml_corruption;2008-4844;MS08-078 Microsoft Internet Explorer Data Binding Memory Corruption
+exploit/windows/browser/ms08_053_mediaencoder;2008-3008;Windows Media Encoder 9 wmex.dll ActiveX Buffer Overflow
+exploit/windows/browser/symantec_backupexec_pvcalendar;2007-6016;Symantec BackupExec Calendar Control Buffer Overflow
+exploit/windows/browser/keyhelp_launchtripane_exec;2012-2516;KeyHelp ActiveX LaunchTriPane Remote Code Execution Vulnerability
+exploit/windows/browser/viscom_movieplayer_drawtext;2010-0356;Viscom Software Movie Player Pro SDK ActiveX 6.8
+exploit/windows/browser/adobe_flashplayer_arrayindexing;2011-2110;Adobe Flash Player AVM Verification Logic Array Indexing Code Execution
+exploit/windows/browser/java_cmm;2013-1493;Java CMM Remote Code Execution
+exploit/windows/browser/ms06_055_vml_method;2006-4868;MS06-055 Microsoft Internet Explorer VML Fill Method Code Execution
+exploit/windows/browser/trendmicro_officescan;2007-0325;Trend Micro OfficeScan Client ActiveX Control Buffer Overflow
+exploit/windows/browser/mozilla_attribchildremoved;2011-3659;Firefox 8/9 AttributeChildRemoved() Use-After-Free
+exploit/windows/browser/ms14_064_ole_code_execution;2014-6332;MS14-064 Microsoft Internet Explorer Windows OLE Automation Array Remote Code Execution
+exploit/windows/browser/java_ws_vmargs;2012-0500;Sun Java Web Start Plugin Command Line Argument Injection
+exploit/windows/browser/symantec_altirisdeployment_downloadandinstall;2009-3028;Symantec Altiris Deployment Solution ActiveX Control Arbitrary File Download and Execute
+exploit/windows/browser/adobe_flash_filters_type_confusion;2013-5331;Adobe Flash Player Type Confusion Remote Code Execution
+exploit/windows/browser/chilkat_crypt_writefile;2008-5002;Chilkat Crypt ActiveX WriteFile Unsafe Method
+exploit/windows/browser/ie_cbutton_uaf;2012-4792;MS13-008 Microsoft Internet Explorer CButton Object Use-After-Free Vulnerability
+exploit/windows/browser/adobe_flashplayer_newfunction;2010-1297;Adobe Flash Player "newfunction" Invalid Pointer Use
+exploit/windows/browser/hp_loadrunner_addfile;2008-0492;Persits XUpload ActiveX AddFile Buffer Overflow
+exploit/windows/browser/adobe_flash_rtmp;2012-0779;Adobe Flash Player Object Type Confusion
+exploit/windows/browser/ms09_043_owc_htmlurl;2009-1534;Microsoft OWC Spreadsheet HTMLURL Buffer Overflow
+exploit/windows/browser/mirc_irc_url;2003-1336;mIRC IRC URL Buffer Overflow
+exploit/windows/vnc/ultravnc_client;2006-1652;UltraVNC 1.0.1 Client Buffer Overflow
+exploit/windows/vnc/ultravnc_viewer_bof;2008-0610;UltraVNC 1.0.2 Client (vncviewer.exe) Buffer Overflow
+exploit/windows/vnc/realvnc_client;2001-0167;RealVNC 3.3.7 Client Buffer Overflow
+exploit/windows/vnc/winvnc_http_get;2001-0168;WinVNC Web Server GET Overflow
+exploit/windows/telnet/gamsoft_telsrv_username;2000-0665;GAMSoft TelSrv 1.5 Username Buffer Overflow
+exploit/windows/telnet/goodtech_telnet;2005-0768;GoodTech Telnet Server Buffer Overflow
+exploit/windows/email/ms10_045_outlook_ref_resolve;2010-0266;Outlook ATTACH_BY_REF_RESOLVE File Execution
+exploit/windows/email/ms07_017_ani_loadimage_chunksize;2007-1765,2007-0038;Windows ANI LoadAniIcon() Chunk Size Stack Buffer Overflow (SMTP)
+exploit/windows/email/ms10_045_outlook_ref_only;2010-0266;Outlook ATTACH_BY_REF_ONLY File Execution
+exploit/windows/dcerpc/ms03_026_dcom;2003-0352;MS03-026 Microsoft RPC DCOM Interface Overflow
+exploit/windows/dcerpc/ms07_029_msdns_zonename;2007-1748;MS07-029 Microsoft DNS RPC Service extractQuotedChar() Overflow (TCP)
+exploit/windows/dcerpc/ms05_017_msmq;2005-0059;MS05-017 Microsoft Message Queueing Service Path Overflow
+exploit/windows/dcerpc/ms07_065_msmq;2007-3039;MS07-065 Microsoft Message Queueing Service DNS Name Path Overflow
+exploit/windows/mmsp/ms10_025_wmss_connect_funnel;2010-0478;Windows Media Services ConnectFunnel Stack Buffer Overflow
+exploit/windows/wins/ms04_045_wins;2004-1080;MS04-045 Microsoft WINS Service Memory Overwrite
+exploit/windows/vpn/safenet_ike_11;2009-1943;SafeNet SoftRemote IKE Service Buffer Overflow
+exploit/windows/ldap/imail_thc;2004-0297;IMail LDAP Service Buffer Overflow
+exploit/windows/ldap/pgp_keyserver7;2001-1320;Network Associates PGP KeyServer 7 LDAP Buffer Overflow
+exploit/windows/lotus/lotusnotes_lzh;2011-1213;Lotus Notes 8.0.x - 8.5.2 FP2 - Autonomy Keyview (.lzh Attachment)
+exploit/windows/lotus/domino_sametime_stmux;2008-2499;IBM Lotus Domino Sametime STMux.exe Stack Buffer Overflow
+exploit/windows/lotus/domino_icalendar_organizer;2010-3407;IBM Lotus Domino iCalendar MAILTO Buffer Overflow
+exploit/windows/lotus/domino_http_accept_language;2008-2240;IBM Lotus Domino Web Server Accept-Language Stack Buffer Overflow
+exploit/windows/mysql/mysql_start_up;2012-5613;Oracle MySQL for Microsoft Windows FILE Privilege Abuse
+exploit/windows/mysql/mysql_yassl_hello;2008-0226;MySQL yaSSL SSL Hello Message Buffer Overflow
+exploit/windows/mysql/mysql_mof;2012-5613;Oracle MySQL for Microsoft Windows MOF Execution
+exploit/windows/mysql/scrutinizer_upload_exec;2012-3951;Plixer Scrutinizer NetFlow and sFlow Analyzer 9 Default MySQL Credential
+exploit/windows/tftp/dlink_long_filename;2007-1435;D-Link TFTP 1.0 Long Filename Buffer Overflow
+exploit/windows/tftp/tftpserver_wrq_bof;2008-1611;TFTP Server for Windows 1.4 ST WRQ Buffer Overflow
+exploit/windows/tftp/opentftp_error_code;2008-2161;OpenTFTP SP 1.4 Error Packet Overflow
+exploit/windows/tftp/netdecision_tftp_traversal;2009-1730;NetDecision 4.2 TFTP Writable Directory Traversal Execution
+exploit/windows/tftp/attftp_long_filename;2006-6184;Allied Telesyn TFTP Server 1.9 Long Filename Overflow
+exploit/windows/tftp/tftpdwin_long_filename;2006-4948;TFTPDWIN v0.4.2 Long Filename Buffer Overflow
+exploit/windows/tftp/distinct_tftp_traversal;2012-6664;Distinct TFTP 3.10 Writable Directory Traversal Execution
+exploit/windows/tftp/futuresoft_transfermode;2005-1812;FutureSoft TFTP Server 2000 Transfer-Mode Overflow
+exploit/windows/tftp/quick_tftp_pro_mode;2008-1610;Quick FTP Pro 2.1 Transfer-Mode Overflow
+exploit/windows/tftp/threectftpsvc_long_mode;2006-6183;3CTftpSvc TFTP Long Mode Buffer Overflow
+exploit/windows/tftp/tftpd32_long_filename;2002-2226;TFTPD32 Long Filename Buffer Overflow
+exploit/windows/nfs/xlink_nfsd;2006-5780;Omni-NFS Server Buffer Overflow
+exploit/windows/misc/enterasys_netsight_syslog_bof;2011-5227;Enterasys NetSight nssyslogd.exe Buffer Overflow
+exploit/windows/misc/apple_quicktime_rtsp_response;2007-6166;Apple QuickTime 7.3 RTSP Response Header Buffer Overflow
+exploit/windows/misc/ms10_104_sharepoint;2010-3964;MS10-104 Microsoft Office SharePoint Server 2007 Remote Code Execution
+exploit/windows/misc/hp_dataprotector_dtbclslogin;2010-3007;HP Data Protector DtbClsLogin Buffer Overflow
+exploit/windows/misc/hp_dataprotector_install_service;2011-0922;HP Data Protector 6.10/6.11/6.20 Install Service
+exploit/windows/misc/tiny_identd_overflow;2007-2711;TinyIdentD 2.2 Stack Buffer Overflow
+exploit/windows/misc/hp_omniinet_1;2007-2280;HP OmniInet.exe MSG_PROTOCOL Buffer Overflow
+exploit/windows/misc/hp_dataprotector_encrypted_comms;2016-2004;HP Data Protector Encrypted Communication Remote Command Execution
+exploit/windows/misc/doubletake;2008-1661;DoubleTake/HP StorageWorks Storage Mirroring Service Authentication Overflow
+exploit/windows/misc/hp_omniinet_2;2009-3844;HP OmniInet.exe MSG_PROTOCOL Buffer Overflow
+exploit/windows/misc/landesk_aolnsrvr;2007-1674;LANDesk Management Suite 8.7 Alert Service Buffer Overflow
+exploit/windows/misc/borland_starteam;2008-0311;Borland CaliberRM StarTeam Multicast Service Buffer Overflow
+exploit/windows/misc/wireshark_packet_dect;2011-1591;Wireshark packet-dect.c Stack Buffer Overflow
+exploit/windows/misc/eiqnetworks_esa;2006-3838;eIQNetworks ESA License Manager LICMGR_ADDLICENSE Overflow
+exploit/windows/misc/mini_stream;2009-5109;Mini-Stream 3.0.1.1 Buffer Overflow
+exploit/windows/misc/bigant_server_dupf_upload;2012-6274;BigAnt Server DUPF Command Arbitrary File Upload
+exploit/windows/misc/gimp_script_fu;2012-2763;GIMP script-fu Server Buffer Overflow
+exploit/windows/misc/windows_rsh;2007-4006;Windows RSH Daemon Buffer Overflow
+exploit/windows/misc/ibm_cognos_tm1admsd_bof;2012-0202;IBM Cognos tm1admsd.exe Overflow
+exploit/windows/misc/ib_isc_attach_database;2007-5243;Borland InterBase isc_attach_database() Buffer Overflow
+exploit/windows/misc/avidphoneticindexer;2011-5003;Avid Media Composer 5.5 - Avid Phonetic Indexer Buffer Overflow
+exploit/windows/misc/hp_omniinet_4;2011-1865;HP OmniInet.exe Opcode 20 Buffer Overflow
+exploit/windows/misc/hp_dataprotector_exec_bar;2013-2347;HP Data Protector Backup Client Service Remote Code Execution
+exploit/windows/misc/ibm_tsm_rca_dicugetidentify;2008-4828;IBM Tivoli Storage Manager Express RCA Service Buffer Overflow
+exploit/windows/misc/hp_dataprotector_crs;2013-2333;HP Data Protector Cell Request Service Buffer Overflow
+exploit/windows/misc/vmhgfs_webdav_dll_sideload;2016-5330;DLL Side Loading Vulnerability in VMware Host Guest Client Redirector
+exploit/windows/misc/borland_interbase;2007-3566;Borland Interbase Create-Request Buffer Overflow
+exploit/windows/misc/bigant_server_250;2008-1914;BigAnt Server 2.50 SP1 Buffer Overflow
+exploit/windows/misc/ms07_064_sami;2007-3901;MS07-064 Microsoft DirectX DirectShow SAMI Buffer Overflow
+exploit/windows/misc/mercury_phonebook;2005-4411;Mercury/32 PH Server Module Buffer Overflow
+exploit/windows/misc/ib_isc_create_database;2007-5243;Borland InterBase isc_create_database() Buffer Overflow
+exploit/windows/misc/fb_cnct_group;2013-2492;Firebird Relational Database CNCT Group Number Buffer Overflow
+exploit/windows/misc/bomberclone_overflow;2006-0460;Bomberclone 0.11.6 Buffer Overflow
+exploit/windows/misc/hp_operations_agent_coda_34;2012-2019;HP Operations Agent Opcode coda.exe 0x34 Buffer Overflow
+exploit/windows/misc/altiris_ds_sqli;2008-2286;Symantec Altiris DS SQL Injection
+exploit/windows/misc/hp_magentservice;2011-4789;HP Diagnostics Server magentservice.exe Overflow
+exploit/windows/misc/fb_svc_attach;2007-5243;Firebird Relational Database SVC_attach() Buffer Overflow
+exploit/windows/misc/agentxpp_receive_agentx;2010-1318;AgentX++ Master AgentX::receive_agentx Stack Buffer Overflow
+exploit/windows/misc/eiqnetworks_esa_topology;2006-3838;eIQNetworks ESA Topology DELETEDEVICE Overflow
+exploit/windows/misc/trendmicro_cmdprocessor_addtask;2011-5001;TrendMicro Control Manger CmdProcessor.exe Stack Buffer Overflow
+exploit/windows/misc/hp_loadrunner_magentproc;2013-4800;HP LoadRunner magentproc.exe Overflow
+exploit/windows/misc/hp_operations_agent_coda_8c;2012-2020;HP Operations Agent Opcode coda.exe 0x8c Buffer Overflow
+exploit/windows/misc/bopup_comm;2009-2227;Bopup Communications Server Buffer Overflow
+exploit/windows/misc/hp_dataprotector_traversal;2013-6194;HP Data Protector Backup Client Service Directory Traversal
+exploit/windows/misc/wireshark_lua;2011-3360;Wireshark console.lua Pre-Loading Script Execution
+exploit/windows/misc/mirc_privmsg_server;2008-4449;mIRC PRIVMSG Handling Stack Buffer Overflow
+exploit/windows/misc/hp_imc_uam;2012-3274;HP Intelligent Management Center UAM Buffer Overflow
+exploit/windows/misc/poppeeper_date;2009-1029;POP Peeper v3.4 DATE Buffer Overflow
+exploit/windows/misc/ib_svc_attach;2007-5243;Borland InterBase SVC_attach() Buffer Overflow
+exploit/windows/misc/sap_netweaver_dispatcher;2012-2611;SAP NetWeaver Dispatcher DiagTraceR3Info Buffer Overflow
+exploit/windows/misc/fb_isc_create_database;2007-5243;Firebird Relational Database isc_create_database() Buffer Overflow
+exploit/windows/misc/bakbone_netvault_heap;2005-1009;BakBone NetVault Remote Heap Overflow
+exploit/windows/misc/netcat110_nt;2004-1317;Netcat v1.10 NT Stack Buffer Overflow
+exploit/windows/misc/sap_2005_license;2009-4988;SAP Business One License Manager 2005 Buffer Overflow
+exploit/windows/misc/bigant_server;2008-1914;BigAnt Server 2.2 Buffer Overflow
+exploit/windows/misc/hp_omniinet_3;2011-1865;HP OmniInet.exe Opcode 27 Buffer Overflow
+exploit/windows/misc/manageengine_eventlog_analyzer_rce;2015-7387;ManageEngine EventLog Analyzer Remote Code Execution
+exploit/windows/misc/eureka_mail_err;2009-3837;Eureka Email 2.2q ERR Remote Buffer Overflow
+exploit/windows/misc/hp_dataprotector_cmd_exec;2014-2623;HP Data Protector 8.10 Remote Command Execution
+exploit/windows/misc/poppeeper_uidl;2009-1029;POP Peeper v3.4 UIDL Buffer Overflow
+exploit/windows/misc/fb_isc_attach_database;2007-5243;Firebird Relational Database isc_attach_database() Buffer Overflow
+exploit/windows/misc/lianja_db_net;2013-3563;Lianja SQL 1.0.0RC5.1 db_netserver Stack Buffer Overflow
+exploit/windows/misc/ibm_director_cim_dllinject;2009-0880;IBM System Director Agent DLL Injection
+exploit/windows/misc/realtek_playlist;2008-5664;Realtek Media Player Playlist Buffer Overflow
+exploit/windows/misc/bigant_server_sch_dupf_bof;2012-6275;BigAnt Server 2 SCH And DUPF Buffer Overflow
+exploit/windows/misc/bcaaa_bof;2011-5124;Blue Coat Authentication and Authorization Agent (BCAAA) 5 Buffer Overflow
+exploit/windows/misc/hp_ovtrace;2007-3872;HP OpenView Operations OVTrace Buffer Overflow
+exploit/windows/misc/asus_dpcproxy_overflow;2008-1491;Asus Dpcproxy Buffer Overflow
+exploit/windows/misc/hp_dataprotector_new_folder;2012-0124;HP Data Protector Create New Folder Buffer Overflow
+exploit/windows/misc/stream_down_bof;2011-5052;CoCSoft StreamDown 6.8.0 Buffer Overflow
+exploit/windows/misc/shixxnote_font;2004-1595;ShixxNOTE 6.net Font Field Overflow
+exploit/windows/misc/ibm_tsm_cad_ping;2009-3853;IBM Tivoli Storage Manager Express CAD Service Buffer Overflow
+exploit/windows/unicenter/cam_log_security;2005-2668;CA CAM log_security() Stack Buffer Overflow (Win32)
+exploit/windows/motorola/timbuktu_fileupload;2008-1117;Timbuktu Pro Directory Traversal/File Upload
+exploit/windows/novell/groupwisemessenger_client;2008-2703;Novell GroupWise Messenger Client Buffer Overflow
+exploit/windows/novell/zenworks_desktop_agent;2005-1543;Novell ZENworks 6.5 Desktop/Server Management Overflow
+exploit/windows/novell/zenworks_preboot_op4c_bof;2011-3176;Novell ZENworks Configuration Management Preboot Service 0x4c Buffer Overflow
+exploit/windows/novell/nmap_stor;2006-6424;Novell NetMail NMAP STOR Buffer Overflow
+exploit/windows/novell/zenworks_preboot_op6c_bof;2011-3175;Novell ZENworks Configuration Management Preboot Service 0x6c Buffer Overflow
+exploit/windows/novell/file_reporter_fsfui_upload;2012-4959;NFR Agent FSFUI Record File Upload RCE
+exploit/windows/nntp/ms05_030_nntp;2005-1213;MS05-030 Microsoft Outlook Express NNTP Response Parsing Buffer Overflow
+exploit/windows/arkeia/type77;2005-0491;Arkeia Backup Client Type 77 Overflow (Win32)
+exploit/windows/license/calicserv_getconfig;2005-0581;Computer Associates License Server GETCONFIG Overflow
+exploit/windows/license/sentinel_lm7_udp;2005-0353;SentinelLM UDP Buffer Overflow
+exploit/windows/license/calicclnt_getconfig;2005-0581;Computer Associates License Client GETCONFIG Overflow
+exploit/windows/isapi/ms03_022_nsiislog_post;2003-0349;MS03-022 Microsoft IIS ISAPI nsiislog.dll ISAPI POST Overflow
+exploit/windows/isapi/w3who_query;2004-1134;Microsoft IIS ISAPI w3who.dll Query String Overflow
+exploit/windows/isapi/ms03_051_fp30reg_chunked;2003-0822;MS03-051 Microsoft IIS ISAPI FrontPage fp30reg.dll Chunked Overflow
+exploit/windows/isapi/ms00_094_pbserver;2000-1089;MS00-094 Microsoft IIS Phone Book Service Overflow
+exploit/windows/isapi/rsa_webagent_redirect;2005-4734;Microsoft IIS ISAPI RSA WebAgent Redirect Overflow
+exploit/windows/antivirus/trendmicro_serverprotect_earthagent;2007-2508;Trend Micro ServerProtect 5.58 EarthAgent.EXE Buffer Overflow
+exploit/windows/antivirus/symantec_workspace_streaming_exec;2014-1649;Symantec Workspace Streaming ManagementAgentServer.putFile XMLRPC Request Arbitrary File Upload
+exploit/windows/antivirus/trendmicro_serverprotect_createbinding;2007-2508;Trend Micro ServerProtect 5.58 CreateBinding() Buffer Overflow
+exploit/windows/antivirus/symantec_endpoint_manager_rce;2013-5015,2013-5014;Symantec Endpoint Protection Manager /servlet/ConsoleServlet Remote Command Execution
+exploit/windows/antivirus/ams_xfr;2009-1429;Symantec System Center Alert Management System (xfr.exe) Arbitrary Command Execution
+exploit/windows/antivirus/symantec_rtvscan;2006-2630;Symantec Remote Management Buffer Overflow
+exploit/windows/antivirus/trendmicro_serverprotect;2007-1070;Trend Micro ServerProtect 5.58 Buffer Overflow
+exploit/windows/antivirus/symantec_iao;2009-1430;Symantec Alert Management System Intel Alert Originator Service Buffer Overflow
+exploit/windows/emc/networker_format_string;2012-2288;EMC Networker Format String
+exploit/windows/emc/replication_manager_exec;2011-0647;EMC Replication Manager Command Execution
+exploit/windows/emc/alphastor_device_manager_exec;2013-0928;EMC AlphaStor Device Manager Opcode 0x75 Command Injection
+exploit/windows/emc/alphastor_agent;2008-2158;EMC AlphaStor Agent Buffer Overflow
+exploit/windows/brightstor/lgserver_multi;2007-3216;CA BrightStor ARCserve for Laptops and Desktops LGServer Multiple Commands Buffer Overflow
+exploit/windows/brightstor/lgserver_rxrlogin;2007-5003;CA BrightStor ARCserve for Laptops and Desktops LGServer Buffer Overflow
+exploit/windows/brightstor/universal_agent;2005-1018;CA BrightStor Universal Agent Overflow
+exploit/windows/brightstor/lgserver_rxsuselicenseini;2007-3216;CA BrightStor ARCserve for Laptops and Desktops LGServer Buffer Overflow
+exploit/windows/brightstor/ca_arcserve_342;2008-4397;Computer Associates ARCserve REPORTREMOTEEXECUTECML Buffer Overflow
+exploit/windows/brightstor/discovery_udp;2005-0260;CA BrightStor Discovery Service Stack Buffer Overflow
+exploit/windows/brightstor/license_gcr;2005-0581;CA BrightStor ARCserve License Service GCR NETWORK Buffer Overflow
+exploit/windows/brightstor/message_engine_heap;2006-5143;CA BrightStor ARCserve Message Engine Heap Overflow
+exploit/windows/brightstor/discovery_tcp;2005-2535;CA BrightStor Discovery Service TCP Overflow
+exploit/windows/brightstor/tape_engine;2006-6076;CA BrightStor ARCserve Tape Engine Buffer Overflow
+exploit/windows/brightstor/message_engine;2007-0169;CA BrightStor ARCserve Message Engine Buffer Overflow
+exploit/windows/brightstor/lgserver;2007-0449;CA BrightStor ARCserve for Laptops and Desktops LGServer Buffer Overflow
+exploit/windows/brightstor/etrust_itm_alert;2007-4620;Computer Associates Alert Notification Buffer Overflow
+exploit/windows/brightstor/lgserver_rxssetdatagrowthscheduleandfilter;2007-3216;CA BrightStor ARCserve for Laptops and Desktops LGServer rxsSetDataGrowthScheduleAndFilter Buffer Overflow
+exploit/windows/brightstor/mediasrv_sunrpc;2007-2139;CA BrightStor ArcServe Media Service Stack Buffer Overflow
+exploit/windows/brightstor/sql_agent;2005-1272;CA BrightStor Agent for Microsoft SQL Overflow
+exploit/windows/brightstor/hsmserver;2007-5082;CA BrightStor HSM Buffer Overflow
+exploit/windows/imap/eudora_list;2005-4267;Qualcomm WorldMail 3.0 IMAPD LIST Buffer Overflow
+exploit/windows/imap/ipswitch_search;2007-3925;Ipswitch IMail IMAP SEARCH Buffer Overflow
+exploit/windows/imap/mdaemon_fetch;2008-1358;MDaemon 9.6.4 IMAPD FETCH Buffer Overflow
+exploit/windows/imap/mercury_rename;2004-1211;Mercury/32 v4.01a IMAP RENAME Buffer Overflow
+exploit/windows/imap/imail_delete;2004-1520;IMail IMAP4D Delete Overflow
+exploit/windows/imap/novell_netmail_append;2006-6425;Novell NetMail IMAP APPEND Buffer Overflow
+exploit/windows/imap/mdaemon_cram_md5;2004-1520;Mdaemon 8.0.3 IMAPD CRAM-MD5 Authentication Overflow
+exploit/windows/imap/mailenable_w3c_select;2005-3155;MailEnable IMAPD W3C Logging Buffer Overflow
+exploit/windows/imap/mailenable_status;2005-2278;MailEnable IMAPD (1.54) STATUS Request Buffer Overflow
+exploit/windows/imap/mailenable_login;2006-6423;MailEnable IMAPD (2.34/2.35) Login Request Buffer Overflow
+exploit/windows/imap/mercur_login;2006-1255;Mercur Messaging 2005 IMAP Login Buffer Overflow
+exploit/windows/imap/novell_netmail_status;2005-3314;Novell NetMail IMAP STATUS Buffer Overflow
+exploit/windows/imap/mercury_login;2007-1373;Mercury/32 LOGIN Buffer Overflow
+exploit/windows/imap/novell_netmail_subscribe;2006-6761;Novell NetMail IMAP SUBSCRIBE Buffer Overflow
+exploit/windows/imap/mercur_imap_select_overflow;2006-1255;Mercur v5.0 IMAP SP3 SELECT Buffer Overflow
+exploit/windows/backupexec/name_service;2004-1172;Veritas Backup Exec Name Service Overflow
+exploit/windows/backupexec/remote_agent;2005-0773;Veritas Backup Exec Windows Remote Agent Overflow
+exploit/windows/games/mohaa_getinfo;2004-0735;Medal of Honor Allied Assault getinfo Stack Buffer Overflow
+exploit/windows/games/ut2004_secure;2004-0608;Unreal Tournament 2004 "secure" Overflow (Win32)
+exploit/windows/games/racer_503beta5;2007-4370;Racer v0.5.3 Beta 5 Buffer Overflow
+exploit/windows/ftp/netterm_netftpd_user;2005-1323;NetTerm NetFTPD USER Buffer Overflow
+exploit/windows/ftp/scriptftp_list;2011-3976;ScriptFTP LIST Remote Buffer Overflow
+exploit/windows/ftp/open_ftpd_wbem;2010-2620;Open-FTPD 1.2 Arbitrary File Upload
+exploit/windows/ftp/absolute_ftp_list_bof;2011-5164;AbsoluteFTP 1.9.6 - 2.2.10 LIST Command Remote Buffer Overflow
+exploit/windows/ftp/servu_mdtm;2004-0330;Serv-U FTPD MDTM Overflow
+exploit/windows/ftp/slimftpd_list_concat;2005-2373;SlimFTPd LIST Concatenation Overflow
+exploit/windows/ftp/trellian_client_pasv;2010-1465;Trellian FTP Client 3.01 PASV Remote Buffer Overflow
+exploit/windows/ftp/filecopa_list_overflow;2006-3726;FileCopa FTP Server Pre 18 Jul Version
+exploit/windows/ftp/3cdaemon_ftp_user;2005-0277;3Com 3CDaemon 2.0 FTP Username Overflow
+exploit/windows/ftp/leapftp_pasv_reply;2003-0558;LeapWare LeapFTP v2.7.3.600 PASV Reply Client Overflow
+exploit/windows/ftp/xlink_client;2006-5792;Xlink FTP Client Buffer Overflow
+exploit/windows/ftp/freeftpd_user;2005-3683;freeFTPd 1.0 Username Overflow
+exploit/windows/ftp/ricoh_dl_bof;2012-5002;Ricoh DC DL-10 SR10 FTP USER Command Buffer Overflow
+exploit/windows/ftp/oracle9i_xdb_ftp_unlock;2003-0727;Oracle 9i XDB FTP UNLOCK Overflow (win32)
+exploit/windows/ftp/ability_server_stor;2004-1626;Ability Server 2.34 STOR Command Stack Buffer Overflow
+exploit/windows/ftp/sami_ftpd_user;2006-2212,2006-0441;KarjaSoft Sami FTP Server v2.02 USER Overflow
+exploit/windows/ftp/warftpd_165_user;1999-0256;War-FTPD 1.65 Username Overflow
+exploit/windows/ftp/bison_ftp_bof;1999-1510;BisonWare BisonFTP Server Buffer Overflow
+exploit/windows/ftp/easyfilesharing_pass;2006-3952;Easy File Sharing FTP Server 2.0 PASS Overflow
+exploit/windows/ftp/xlink_server;2006-5792;Xlink FTP Server Buffer Overflow
+exploit/windows/ftp/servu_chmod;2004-2111;Serv-U FTP Server Buffer Overflow
+exploit/windows/ftp/warftpd_165_pass;1999-0256;War-FTPD 1.65 Password Overflow
+exploit/windows/ftp/wsftp_server_505_xmd5;2006-4847;Ipswitch WS_FTP Server 5.05 XMD5 Overflow
+exploit/windows/ftp/cesarftp_mkd;2006-2961;Cesar FTP 0.99g MKD Command Buffer Overflow
+exploit/windows/ftp/oracle9i_xdb_ftp_pass;2003-0727;Oracle 9i XDB FTP PASS Overflow (win32)
+exploit/windows/ftp/ms09_053_ftpd_nlst;2009-3023;MS09-053 Microsoft IIS FTP Server NLST Response Overflow
+exploit/windows/ftp/goldenftp_pass_bof;2006-6576;GoldenFTP PASS Stack Buffer Overflow
+exploit/windows/ftp/wftpd_size;2006-4318;Texas Imperial Software WFTPD 3.23 SIZE Overflow
+exploit/windows/ftp/dreamftp_format;2004-2074;BolinTech Dream FTP Server 1.02 Format String
+exploit/windows/ftp/globalscapeftp_input;2005-1415;GlobalSCAPE Secure FTP Server Input Overflow
+exploit/windows/ftp/proftp_banner;2009-3976;ProFTP 2.9 Banner Remote Buffer Overflow
+exploit/windows/ftp/httpdx_tolog_format;2009-4769;HTTPDX tolog() Function Format String Vulnerability
+exploit/windows/ftp/wsftp_server_503_mkd;2004-1135;WS-FTP Server 5.03 MKD Overflow
+exploit/unix/fileformat/imagemagick_delegate;2016-3714,2016-7976;ImageMagick Delegate Arbitrary Command Execution
+exploit/unix/ssh/tectia_passwd_changereq;2012-5975;Tectia SSH USERAUTH Change Request Password Reset Vulnerability
+exploit/unix/smtp/exim4_string_format;2010-4344,2010-4345;Exim4 string_format Function Heap Buffer Overflow
+exploit/unix/smtp/clamav_milter_blackhole;2007-4560;ClamAV Milter Blackhole-Mode Remote Code Execution
+exploit/unix/local/exim_perl_startup;2016-1531;Exim "perl_startup" Privilege Escalation
+exploit/unix/local/netbsd_mail_local;2016-6253;NetBSD mail.local Privilege Escalation
+exploit/unix/local/chkrootkit;2014-0476;Chkrootkit Local Privilege Escalation
+exploit/unix/http/lifesize_room;2011-2763;LifeSize Room Command Injection
+exploit/unix/http/ctek_skyrouter;2011-5010;CTEK SkyRouter 4200 and 4300 Command Execution
+exploit/unix/http/freepbx_callmenum;2012-4869;FreePBX 2.10.0 / 2.9.0 callmenum Remote Code Execution
+exploit/unix/http/twiki_debug_plugins;2014-7236;TWiki Debugenableplugins Remote Code Execution
+exploit/unix/http/vmturbo_vmtadmin_exec_noauth;2014-5073;VMTurbo Operations Manager vmtadmin.cgi Remote Command Execution
+exploit/unix/dhcp/bash_environment;2014-6271;Dhclient Bash Environment Variable Injection (Shellshock)
+exploit/unix/misc/spamassassin_exec;2006-2447;SpamAssassin spamd Remote Command Execution
+exploit/unix/misc/distcc_exec;2004-2687;DistCC Daemon Command Execution
+exploit/unix/misc/zabbix_agent_exec;2009-4502;Zabbix Agent net.tcp.listen Command Injection
+exploit/unix/webapp/seportal_sqli_exec;2008-5191;SePortal SQLi Remote Code Execution
+exploit/unix/webapp/twiki_search;2004-1037;TWiki Search Function Arbitrary Command Execution
+exploit/unix/webapp/foswiki_maketext;2012-6330,2012-6329;Foswiki MAKETEXT Remote Command Execution
+exploit/unix/webapp/joomla_media_upload_exec;2013-5576;Joomla Media Manager File Upload Vulnerability
+exploit/unix/webapp/skybluecanvas_exec;2014-1683;SkyBlueCanvas CMS Remote Code Execution
+exploit/unix/webapp/zimbra_lfi;2013-7091;Zimbra Collaboration Server LFI
+exploit/unix/webapp/qtss_parse_xml_exec;2003-0050;QuickTime Streaming Server parse_xml.cgi Remote Execution
+exploit/unix/webapp/base_qry_common;2006-2685;BASE base_qry_common Remote File Include
+exploit/unix/webapp/vicidial_manager_send_cmd_exec;2013-4467,2013-4468;VICIdial Manager Send OS Command Injection
+exploit/unix/webapp/trixbox_langchoice;2008-6825;Trixbox langChoice PHP Local File Inclusion
+exploit/unix/webapp/wp_ninja_forms_unauthenticated_file_upload;2016-1209;WordPress Ninja Forms Unauthenticated File Upload
+exploit/unix/webapp/maarch_letterbox_file_upload;2015-1587;Maarch LetterBox Unrestricted File Upload
+exploit/unix/webapp/twiki_history;2005-2877;TWiki History TWikiUsers rev Parameter Command Execution
+exploit/unix/webapp/cakephp_cache_corruption;2010-4335;CakePHP Cache Corruption Code Execution
+exploit/unix/webapp/awstats_configdir_exec;2005-0116;AWStats configdir Remote Command Execution
+exploit/unix/webapp/google_proxystylesheet_exec;2005-3757;Google Appliance ProxyStyleSheet Command Execution
+exploit/unix/webapp/webmin_show_cgi_exec;2012-2982;Webmin /file/show.cgi Remote Command Execution
+exploit/unix/webapp/phpmyadmin_config;2009-1151;PhpMyAdmin Config File Code Injection
+exploit/unix/webapp/wp_lastpost_exec;2005-2612;WordPress cache_lastpostdate Arbitrary Code Execution
+exploit/unix/webapp/squirrelmail_pgp_plugin;2003-0990;SquirrelMail PGP Plugin Command Execution (SMTP)
+exploit/unix/webapp/coppermine_piceditor;2008-0506;Coppermine Photo Gallery picEditor.php Command Execution
+exploit/unix/webapp/sphpblog_file_upload;2005-2733;Simple PHP Blog Remote Command Execution
+exploit/unix/webapp/tuleap_unserialize_exec;2014-8791;Tuleap PHP Unserialize Code Execution
+exploit/unix/webapp/php_xmlrpc_eval;2005-1921;PHP XML-RPC Arbitrary Code Execution
+exploit/unix/webapp/horde_unserialize_exec;2014-1691;Horde Framework Unserialize PHP Code Execution
+exploit/unix/webapp/joomla_tinybrowser;2011-4908;Joomla 1.5.12 TinyBrowser File Upload Code Execution
+exploit/unix/webapp/open_flash_chart_upload_exec;2009-4140;Open Flash Chart v2 Arbitrary File Upload
+exploit/unix/webapp/wp_slideshowgallery_upload;2014-5460;Wordpress SlideShow Gallery Authenticated File Upload
+exploit/unix/webapp/invision_pboard_unserialize_exec;2012-5692;Invision IP.Board unserialize() PHP Code Execution
+exploit/unix/webapp/php_vbulletin_template;2005-0511;vBulletin misc.php Template Name Arbitrary Code Execution
+exploit/unix/webapp/guestbook_ssi_exec;1999-1053;Matt Wright guestbook.pl Arbitrary Command Execution
+exploit/unix/webapp/pajax_remote_exec;2006-1551;PAJAX Remote Command Execution
+exploit/unix/webapp/graphite_pickle_exec;2013-5093;Graphite Web Unsafe Pickle Handling
+exploit/unix/webapp/opensis_modname_exec;2013-1349;OpenSIS 'modname' PHP Code Execution
+exploit/unix/webapp/awstats_migrate_exec;2006-2237;AWStats migrate Remote Command Execution
+exploit/unix/webapp/tikiwiki_jhot_exec;2006-4602;TikiWiki jhot Remote Command Execution
+exploit/unix/webapp/wp_photo_gallery_unrestricted_file_upload;2014-9312;WordPress Photo Gallery Unrestricted File Upload
+exploit/unix/webapp/twiki_maketext;2012-6329;TWiki MAKETEXT Remote Command Execution
+exploit/unix/webapp/datalife_preview_exec;2013-1412;DataLife Engine preview.php PHP Code Injection
+exploit/unix/webapp/squash_yaml_exec;2013-5036;Squash YAML Code Execution
+exploit/unix/webapp/openview_connectednodes_exec;2005-2773;HP Openview connectedNodes.ovpl Remote Command Execution
+exploit/unix/webapp/mambo_cache_lite;2008-2905;Mambo Cache_Lite Class mosConfig_absolute_path Remote File Include
+exploit/unix/webapp/wp_google_document_embedder_exec;2012-4915;WordPress Plugin Google Document Embedder Arbitrary File Disclosure
+exploit/unix/webapp/moinmoin_twikidraw;2012-6081;MoinMoin twikidraw Action Traversal File Upload
+exploit/unix/webapp/barracuda_img_exec;2005-2847;Barracuda IMG.PL Remote Command Execution
+exploit/unix/webapp/freepbx_config_exec;2014-1903;FreePBX config.php Remote Code Execution
+exploit/unix/webapp/oracle_vm_agent_utl;2010-3585;Oracle VM Server Virtual Server Agent Command Injection
+exploit/unix/webapp/openx_banner_edit;2009-4098;OpenX banner-edit.php File Upload PHP Code Execution
+exploit/unix/webapp/vbulletin_vote_sqli_exec;2013-3522;vBulletin index.php/ajax/api/reputation/vote nodeid Parameter SQL Injection
+exploit/unix/webapp/hastymail_exec;2011-4542;Hastymail 2.1.1 RC1 Command Injection
+exploit/unix/webapp/joomla_contenthistory_sqli_rce;2015-7858,2015-7297,2015-7857;Joomla Content History SQLi Remote Code Execution
+exploit/unix/webapp/sixapart_movabletype_storable_exec;2015-1592;SixApart MovableType Storable Perl Code Execution
+exploit/unix/webapp/awstatstotals_multisort;2008-3922;AWStats Totals multisort Remote Command Execution
+exploit/unix/webapp/redmine_scm_exec;2011-4929;Redmine SCM Repository Arbitrary Command Execution
+exploit/unix/webapp/nagios3_statuswml_ping;2009-2288;Nagios3 statuswml.cgi Ping Command Execution
+exploit/unix/webapp/citrix_access_gateway_exec;2010-4566;Citrix Access Gateway Command Execution
+exploit/unix/webapp/tikiwiki_unserialize_exec;2012-0911;Tiki Wiki unserialize() PHP Code Execution
+exploit/unix/webapp/phpbb_highlight;2004-1315,2005-2086;phpBB viewtopic.php Arbitrary Code Execution
+exploit/unix/webapp/nagios3_history_cgi;2012-6096;Nagios3 history.cgi Host Command Execution
+exploit/unix/webapp/zoneminder_packagecontrol_exec;2013-0232;ZoneMinder Video Server packageControl Command Execution
+exploit/unix/webapp/joomla_akeeba_unserialize;2014-7228;Joomla Akeeba Kickstart Unserialize Remote Code Execution
+exploit/unix/webapp/wp_total_cache_exec;2013-2010;WordPress W3 Total Cache PHP Code Execution
+exploit/unix/webapp/wp_holding_pattern_file_upload;2015-1172;WordPress Holding Pattern Theme Arbitrary File Upload
+exploit/unix/webapp/wp_infusionsoft_upload;2014-6446;Wordpress InfusionSoft Upload Vulnerability
+exploit/unix/webapp/sugarcrm_unserialize_exec;2012-0694;SugarCRM unserialize() PHP Code Execution
+exploit/unix/webapp/tikiwiki_graph_formula_exec;2007-5423;TikiWiki tiki-graph_formula Remote PHP Code Execution
+exploit/unix/irc/unreal_ircd_3281_backdoor;2010-2075;UnrealIRCD 3.2.8.1 Backdoor Command Execution
+exploit/unix/ftp/proftpd_modcopy_exec;2015-3306;ProFTPD 1.3.5 Mod_Copy Command Execution
+exploit/aix/rpc_cmsd_opcode21;2009-3699;AIX Calendar Manager Service Daemon (rpc.cmsd) Opcode 21 Buffer Overflow
+exploit/aix/local/ibstat_path;2013-4011;ibstat $PATH Privilege Escalation
+exploit/aix/rpc_ttdbserverd_realpath;2009-2727;ToolTalk rpc.ttdbserverd _tt_internal_realpath Buffer Overflow (AIX)
+exploit/netware/smb/lsass_cifs;2005-2852;Novell NetWare LSASS CIFS.NLM Driver Stack Buffer Overflow
+exploit/android/fileformat/adobe_reader_pdf_js_interface;2014-0514;Adobe Reader for Android addJavascriptInterface Exploit
+exploit/android/local/futex_requeue;2014-3153;Android 'Towelroot' Futex Requeue Kernel Exploit
+exploit/android/local/put_user_vroot;2013-6282;Android get_user/put_user Exploit
+exploit/android/browser/webview_addjavascriptinterface;2012-6636,2013-4710;Android Browser and WebView addJavascriptInterface Code Execution
+exploit/android/browser/stagefright_mp4_tx3g_64bit;2015-3864;Android Stagefright MP4 tx3g Integer Overflow

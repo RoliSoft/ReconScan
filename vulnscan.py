@@ -270,10 +270,35 @@ def parse_nvd_dbs():
 	else:
 		info('Using {bblue}SecurityFocus{rst} links from CVE references.')
 
+	metasploit_names = None
+	metasploit_map = None
+
+	if os.path.exists('nvd/metasploit.lst'):
+		info('Using curated {bblue}Metasploit{rst} references.')
+
+		metasploit_names = {}
+		metasploit_map = {}
+
+		with open('nvd/metasploit.lst') as file:
+			for line in file:
+				if line.startswith('#'):
+					continue
+
+				fields = line.strip().split(';')
+				cves = fields[1].split(',')
+
+				metasploit_names[fields[0]] = fields[2] if len(fields) > 2 else None
+
+				for cve in cves:
+					if cve not in metasploit_map:
+						metasploit_map[cve] = []
+
+					metasploit_map[cve].append(fields[0])
+
 	l337day_names = None
 	l337day_map = None
 
-	if os.path.exists('nvd/exploitdb.lst'):
+	if os.path.exists('nvd/1337day.lst'):
 		info('Using curated {bblue}1337day{rst} references.')
 
 		l337day_names = {}
@@ -304,7 +329,7 @@ def parse_nvd_dbs():
 		root = tree.getroot()
 
 		for entry in root.findall('{http://scap.nist.gov/schema/feed/vulnerability/2.0}entry'):
-			vuln = {'id': None, 'date': None, 'description': None, 'availability': None, 'affected': [], 'vendor': [], '_exploitdb': [], '_securityfocus': [], '_l337day': []}
+			vuln = {'id': None, 'date': None, 'description': None, 'availability': None, 'affected': [], 'vendor': [], '_exploitdb': [], '_securityfocus': [], '_metasploit': [], '_l337day': []}
 
 			id = entry.find('{http://scap.nist.gov/schema/vulnerability/0.4}cve-id')
 			if id is not None:
@@ -391,6 +416,18 @@ def parse_nvd_dbs():
 					vuln['securityfocus'].append({'id': exploit, 'title': None})
 				vuln['_securityfocus'] = None
 
+			if metasploit_map is not None and vuln['id'] in metasploit_map:
+				for expid in metasploit_map[vuln['id']]:
+					vuln['_metasploit'].append(expid)
+
+				vuln['_metasploit'] = set(vuln['_metasploit'])
+
+				vuln['metasploit'] = []
+				for exploit in vuln['_metasploit']:
+					vuln['metasploit'].append({'id': exploit, 'title': metasploit_names[exploit] if exploit in metasploit_names else None})
+
+				vuln['_metasploit'] = None
+
 			if l337day_map is not None and vuln['id'] in l337day_map:
 				for expid in l337day_map[vuln['id']]:
 					vuln['_l337day'].append(expid)
@@ -443,6 +480,10 @@ def create_vulndb(names, aliases, vulns):
 		if 'securityfocus' in vuln:
 			for exploit in vuln['securityfocus']:
 				c.execute('insert into exploits (site, sid, cve, title) values (?, ?, ?, ?)', [2, exploit['id'], vuln['id'], exploit['title']])
+
+		if 'metasploit' in vuln:
+			for exploit in vuln['metasploit']:
+				c.execute('insert into exploits (site, sid, cve, title) values (?, ?, ?, ?)', [5, exploit['id'], vuln['id'], exploit['title']])
 
 		if 'l337day' in vuln:
 			for exploit in vuln['l337day']:
@@ -632,6 +673,8 @@ def get_vulns_cli(cpe):
 				descr += 'https://www.exploit-db.com/exploits/' + exploit[1]
 			elif exploit[0] == 2:
 				descr += 'http://www.securityfocus.com/bid/' + exploit[1] + '/exploit'
+			elif exploit[0] == 5:
+				descr += 'metasploit ' + exploit[1]
 			elif exploit[0] == 10:
 				descr += 'http://0day.today/exploit/' + exploit[1]
 			else:

@@ -93,7 +93,14 @@ Vulnerabilites are listed and color-coded based on availability:
 
 In order to take it one step further, the ExploitDB and SecurityFocus references are extracted from the CVE entries, which allows the script to provide direct links to the exploits. In order to provide perfect ExploitDB and SecurityFocus results for the vulnerabilities, curated lists will have to be used during database updates. If these lists are missing, ExploitDB and SecurityFocus links will still be displayed, but with issues: the SecurityFocus IDs are listed, but information is not available in the CVE entries themselves on whether the SecurityFocus exploit page has any content or not; similarly, the ExploitDB references seem to be missing quite a few entries.
 
-The curated list for ExploitDB should be placed under `nvd/exploitdb.lst`, which will act as a supplemental EDB-CVE map to the ones found in the CVE references. The SecurityFocus list should be placed under `nvd/securityfocus.lst`, which is a list of SecurityFocus IDs with exploit entries, and this list will be used to determine whether a SecurityFocus CVE reference will be imported or not. Similarly, a 1337day ID map is also read if available under `nvd/1337day.lst`.
+The curated list for ExploitDB will act as a supplemental EDB-CVE map to the ones found in the CVE references. The SecurityFocus list is a list of SecurityFocus IDs with exploit entries, and this list will be used to determine whether a SecurityFocus CVE reference will be imported or not.
+
+The following exploit databases are currently supported, with provided curated lists:
+
+* **ExploitDB** at `nvd/exploitdb.lst`
+* **SecurityFocus** at `nvd/securityfocus.lst`
+* **Metasploit** at `nvd/metasploit.lst`
+* **1337day** at `nvd/1337day.lst`
 
 ### Origin
 
@@ -209,6 +216,8 @@ The C++ version has a slightly different feature set compared to this Python ver
 		  https://www.exploit-db.com/exploits/17969
 		- Apache HTTP Server 'mod_proxy' Reverse Proxy Information Disclosure
 		  http://www.securityfocus.com/bid/49957/exploit
+		- Apache Reverse Proxy Bypass Vulnerability Scanner
+		  metasploit auxiliary/scanner/http/rewrite_proxy_bypass
 	>>> CVE-2011-3348
 		- Apache HTTP Server CVE-2011-3348 Denial Of Service
 		  http://www.securityfocus.com/bid/49616/exploit
@@ -219,6 +228,8 @@ The C++ version has a slightly different feature set compared to this Python ver
 		  https://www.exploit-db.com/exploits/18221
 		- Apache HTTP Server CVE-2011-3192 Denial Of Service
 		  http://www.securityfocus.com/bid/49303/exploit
+		- Apache Range Header DoS (Apache Killer)
+		  metasploit auxiliary/dos/http/apache_range_dos
 	>>> CVE-2011-0419
 		- Apache 1.4/2.2.x - APR 'apr_fnmatch()' Denial of Service
 		  https://www.exploit-db.com/exploits/35738
@@ -232,6 +243,8 @@ The C++ version has a slightly different feature set compared to this Python ver
 		  https://www.exploit-db.com/exploits/14288
 		- Apache 'mod_isapi' Memory Corruption
 		  http://www.securityfocus.com/bid/38494/exploit
+		- Apache mod_isapi Dangling Pointer
+		  metasploit auxiliary/dos/http/apache_mod_isapi
 	>>> CVE-2009-3555
 		- TLS - Renegotiation (PoC)
 		  https://www.exploit-db.com/exploits/10579
