@@ -272,7 +272,7 @@ def enum_http(address, port, service, basedir):
 
 	run_cmds([
 		(
-			e('nmap -vv -sV -T5 -Pn -p {port} --script=http-vhosts,http-userdir-enum,http-apache-negotiation,http-backup-finder,http-config-backup,http-default-accounts,http-methods,http-method-tamper,http-passwd,http-robots.txt,http-devframework,http-enum,http-frontpage-login,http-git,http-iis-webdav-vuln,http-php-version,http-robots.txt,http-shellshock,http-vuln-* -oN "{basedir}/{port}_http_nmap.txt" -oX "{basedir}/{port}_http_nmap.xml" {address}'),
+			e('nmap -vv -sV -T5 -Pn -p {port} --script=\'(http* or ssl*) and not (broadcast or dos or external or http-slowloris* or fuzzer)\' -oN "{basedir}/{port}_http_nmap.txt" -oX "{basedir}/{port}_http_nmap.xml" {address}'),
 			e('nmap-{port}')
 		),
 		(
@@ -289,11 +289,11 @@ def enum_http(address, port, service, basedir):
 
 	run_cmds([
 		(
-			e('dirb {scheme}://{address}:{port} -o "{basedir}/{port}_http_dirb.txt" -r'),
+			e('dirb {scheme}://{address}:{port} -o "{basedir}/{port}_http_dirb.txt" -r -w'),
 			e('dirb-{port}')
 		),
 		(
-			e('nikto -h {scheme}://{address}:{port} -o "{basedir}/{port}_http_nikto.txt"'),
+			e('nikto -h {scheme}://{address} -p {port} -C all -o "{basedir}/{port}_http_nikto.txt"'),
 			e('nikto-{port}')
 		)
 	])
@@ -307,7 +307,7 @@ def enum_http(address, port, service, basedir):
 def enum_smtp(address, port, service, basedir):
 	run_cmds([
 		(
-			e('nmap -vv -sV -T5 -Pn -p {port} --script=smtp-commands,smtp-enum-users,smtp-vuln-* -oN "{basedir}/{port}_smtp_nmap.txt" -oX "{basedir}/{port}_smtp_nmap.xml" {address}'),
+			e('nmap -vv -sV -T5 -Pn -p {port} --script=smtp-* -oN "{basedir}/{port}_smtp_nmap.txt" -oX "{basedir}/{port}_smtp_nmap.xml" {address}'),
 			e('nmap-{port}')
 		)
 	])
@@ -321,7 +321,7 @@ def enum_smtp(address, port, service, basedir):
 def enum_ftp(address, port, service, basedir):
 	cmds = [
 		(
-			e('nmap -vv -sV -T5 -Pn -p {port} --script=ftp-anon,ftp-bounce,ftp-libopie,ftp-proftpd-backdoor,ftp-vsftpd-backdoor,ftp-vuln-* -oN "{basedir}/{port}_ftp_nmap.txt" -oX "{basedir}/{port}_ftp_nmap.xml" {address}'),
+			e('nmap -vv -sV -T5 -Pn -p {port} --script=ftp-* -oN "{basedir}/{port}_ftp_nmap.txt" -oX "{basedir}/{port}_ftp_nmap.xml" {address}'),
 			e('nmap-{port}')
 		)
 	]
@@ -345,32 +345,70 @@ def enum_ftp(address, port, service, basedir):
 def enum_smb(address, port, service, basedir):
 	run_cmds([
 		(
-			e('nmap -vv -sV -T5 -Pn -p {port} --script=smb-enum-shares.nse,smb-ls.nse,smb-enum-users.nse,smb-mbenum.nse,smb-os-discovery.nse,smb-security-mode.nse,smbv2-enabled.nse,smb-vuln-*,smbv2-enabled.nse -oN "{basedir}/{port}_smb_nmap.txt" -oX "{basedir}/{port}_smb_nmap.xml" {address}'),
+			e('nmap -vv -sV -T5 -Pn -p {port} --script=\'(smb*) and not (brute or broadcast or dos or external or fuzzer)\' --script-args=unsafe=1 -oN "{basedir}/{port}_smb_nmap.txt" -oX "{basedir}/{port}_smb_nmap.xml" {address}'),
 			e('nmap-{port}')
 		),
 		(
-			e('enum4linux -a {address} | tee "{basedir}/{port}_smb_enum4linux.txt"'),
+			e('enum4linux -a -M -l -d {address} | tee "{basedir}/{port}_smb_enum4linux.txt"'),
 			e('enum4linux-{port}')
 		),
 		(
 			e('python2 /usr/share/doc/python-impacket/examples/samrdump.py {address} {port}/SMB | tee "{basedir}/{port}_smb_samrdump.txt"'),
 			e('samrdump-{port}')
+		),
+		(
+			e('nbtscan -rvh {address} | tee "{basedir}/{port}_smb_nbtscan.txt"'),
+			e('nbtscan-{port}')
 		)
 	])
 
 
 #
 #  MSSQL
-#  nmap
+#  nmap, [hydra]
 #
 
 def enum_mssql(address, port, service, basedir):
-	run_cmds([
+	cmds = [
 		(
-			e('nmap -vv -sV -T5 -Pn -p {port} --script=ms-sql-info,ms-sql-config,ms-sql-dump-hashes --script-args=mssql.instance-port=1433,smsql.username-sa,mssql.password-sa -oN "{basedir}/{port}_mssql_nmap.txt" -oX "{basedir}/{port}_mssql_nmap.xml" {address}'),
+			e('nmap -vv -sV -T5 -Pn -p {port} --script=ms-sql-* --script-args=mssql.instance-port={port},smsql.username-sa,mssql.password-sa -oN "{basedir}/{port}_mssql_nmap.txt" -oX "{basedir}/{port}_mssql_nmap.xml" {address}'),
 			e('nmap-{port}')
 		)
-	])
+	]
+
+	if bruteforce:
+		cmds.append(
+			(
+				e('hydra -v -L /usr/share/nmap/nselib/data/usernames.lst -P /usr/share/nmap/nselib/data/passwords.lst -t 8 -f -o "{basedir}/{port}_mssql_hydra.txt" -u {address} -s {port} mssql'),
+				e('hydra-{port}')
+			)
+		)
+
+	run_cmds(cmds)
+
+
+#
+#  MySQL
+#  nmap, [hydra]
+#
+
+def enum_mysql(address, port, service, basedir):
+	cmds = [
+		(
+			e('nmap -vv -sV -T5 -Pn -p {port} --script=mysql-* -oN "{basedir}/{port}_mysql_nmap.txt" -oX "{basedir}/{port}_mysql_nmap.xml" {address}'),
+			e('nmap-{port}')
+		)
+	]
+
+	if bruteforce:
+		cmds.append(
+			(
+				e('hydra -v -L /usr/share/nmap/nselib/data/usernames.lst -P /usr/share/nmap/nselib/data/passwords.lst -t 8 -f -o "{basedir}/{port}_mysql_hydra.txt" -u {address} -s {port} mysql'),
+				e('hydra-{port}')
+			)
+		)
+
+	run_cmds(cmds)
 
 
 #
@@ -390,11 +428,15 @@ def enum_ssh(address, port, service, basedir):
 
 #
 #  SNMP
-#  onesixtyone, snmpwalk
+#  nmap, onesixtyone, snmpwalk
 #
 
 def enum_snmp(address, port, service, basedir):
 	run_cmds([
+		(
+			e('nmap -vv -sV -T5 -Pn -p {port} --script=snmp-* -oN "{basedir}/{port}_snmp_nmap.txt" -oX "{basedir}/{port}_snmp_nmap.xml" {address}'),
+			e('nmap-{port}')
+		),
 		(
 			e('onesixtyone -dd -o "{basedir}/{port}_snmp_onesixtyone.txt" {address}'),
 			e('onesixtyone-{port}')
@@ -423,10 +465,58 @@ def enum_dns(address, port, service, basedir):
 
 	run_cmds([
 		(
-			e('dig @' + host + '.thinc.local thinc.local axfr > "{basedir}/{port}_dns_dig.txt"'),
+			e('dig @{host}.thinc.local thinc.local axfr > "{basedir}/{port}_dns_dig.txt"'),
 			e('dig-{port}')
 		)
 	])
+
+
+#
+#  RDP
+#  nmap, [hydra]
+#
+
+def enum_rdp(address, port, service, basedir):
+	cmds = [
+		(
+			e('nmap -vv -sV -T5 -Pn -p {port} --script=rdp-* -oN "{basedir}/{port}_rdp_nmap.txt" -oX "{basedir}/{port}_rdp_nmap.xml" {address}'),
+			e('nmap-{port}')
+		)
+	]
+
+	if bruteforce:
+		cmds.append(
+			(
+				e('hydra -v -L /usr/share/nmap/nselib/data/usernames.lst -P /usr/share/nmap/nselib/data/passwords.lst -t 8 -f -o "{basedir}/{port}_rdp_hydra.txt" -u {address} -s {port} rdp'),
+				e('hydra-{port}')
+			)
+		)
+
+	run_cmds(cmds)
+
+
+#
+#  VNC
+#  nmap, [hydra]
+#
+
+def enum_vnc(address, port, service, basedir):
+	cmds = [
+		(
+			e('nmap -vv -sV -T5 -Pn -p {port} --script=vnc-*,realvnc-* -oN "{basedir}/{port}_vnc_nmap.txt" -oX "{basedir}/{port}_vnc_nmap.xml" {address}'),
+			e('nmap-{port}')
+		)
+	]
+
+	if bruteforce:
+		cmds.append(
+			(
+				e('hydra -v -L /usr/share/nmap/nselib/data/usernames.lst -P /usr/share/nmap/nselib/data/passwords.lst -t 8 -f -o "{basedir}/{port}_vnc_hydra.txt" -u {address} -s {port} vnc'),
+				e('hydra-{port}')
+			)
+		)
+
+	run_cmds(cmds)
 
 
 # endregion
@@ -448,16 +538,22 @@ def scan_service(address, port, service):
 		enum_smtp(address, port, service, basedir)
 	elif 'ftp' in service:
 		enum_ftp(address, port, service, basedir)
-	elif 'microsoft-ds' in service or 'netbios-ssn' in service:
+	elif 'microsoft-ds' in service or 'netbios' in service:
 		enum_smb(address, port, service, basedir)
-	elif 'ms-sql' in service:
+	elif 'ms-sql' in service or 'msSql' in service:
 		enum_mssql(address, port, service, basedir)
+	elif 'mysql' in service:
+		enum_mysql(address, port, service, basedir)
 	elif 'ssh' in service:
 		enum_ssh(address, port, service, basedir)
 	elif 'snmp' in service:
 		enum_snmp(address, port, service, basedir)
 	elif 'domain' in service or 'dns' in service:
 		enum_dns(address, port, service, basedir)
+	elif 'rdp' in service or 'ms-wbt-server' in service or 'ms-term-serv' in service:
+		enum_rdp(address, port, service, basedir)
+	elif 'vnc' in service:
+		enum_vnc(address, port, service, basedir)
 	else:
 		warn('Service {byellow}{service}{rst} has no scanner support.')
 
