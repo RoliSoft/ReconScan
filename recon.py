@@ -268,6 +268,9 @@ def run_amap(services, only_unidentified=True):
 #
 
 def enum_http(address, port, service, basedir):
+	if bruteforce:
+		return
+
 	scheme = 'https' if 'https' in service or 'ssl' in service else 'http'
 
 	run_cmds([
@@ -305,6 +308,9 @@ def enum_http(address, port, service, basedir):
 #
 
 def enum_smtp(address, port, service, basedir):
+	if bruteforce:
+		return
+
 	run_cmds([
 		(
 			e('nmap -vv -sV -T5 -Pn -p {port} --script=smtp-* -oN "{basedir}/{port}_smtp_nmap.txt" -oX "{basedir}/{port}_smtp_nmap.xml" {address}'),
@@ -319,22 +325,21 @@ def enum_smtp(address, port, service, basedir):
 #
 
 def enum_ftp(address, port, service, basedir):
-	cmds = [
-		(
-			e('nmap -vv -sV -T5 -Pn -p {port} --script=ftp-* -oN "{basedir}/{port}_ftp_nmap.txt" -oX "{basedir}/{port}_ftp_nmap.xml" {address}'),
-			e('nmap-{port}')
-		)
-	]
+	if not bruteforce:
+		run_cmds([
+			(
+				e('nmap -vv -sV -T5 -Pn -p {port} --script=ftp-* -oN "{basedir}/{port}_ftp_nmap.txt" -oX "{basedir}/{port}_ftp_nmap.xml" {address}'),
+				e('nmap-{port}')
+			)
+		])
 
-	if bruteforce:
-		cmds.append(
+	else:
+		run_cmds([
 			(
 				e('hydra -v -L /usr/share/nmap/nselib/data/usernames.lst -P /usr/share/nmap/nselib/data/passwords.lst -t 8 -f -o "{basedir}/{port}_ftp_hydra.txt" -u {address} -s {port} ftp'),
 				e('hydra-{port}')
 			)
-		)
-
-	run_cmds(cmds)
+		])
 
 
 #
@@ -343,6 +348,9 @@ def enum_ftp(address, port, service, basedir):
 #
 
 def enum_smb(address, port, service, basedir):
+	if bruteforce:
+		return
+
 	run_cmds([
 		(
 			e('nmap -vv -sV -T5 -Pn -p {port} --script=\'(smb*) and not (brute or broadcast or dos or external or fuzzer)\' --script-args=unsafe=1 -oN "{basedir}/{port}_smb_nmap.txt" -oX "{basedir}/{port}_smb_nmap.xml" {address}'),
@@ -369,22 +377,21 @@ def enum_smb(address, port, service, basedir):
 #
 
 def enum_mssql(address, port, service, basedir):
-	cmds = [
-		(
-			e('nmap -vv -sV -T5 -Pn -p {port} --script=ms-sql-* --script-args=mssql.instance-port={port},smsql.username-sa,mssql.password-sa -oN "{basedir}/{port}_mssql_nmap.txt" -oX "{basedir}/{port}_mssql_nmap.xml" {address}'),
-			e('nmap-{port}')
-		)
-	]
+	if not bruteforce:
+		run_cmds([
+			(
+				e('nmap -vv -sV -T5 -Pn -p {port} --script=ms-sql-* --script-args=mssql.instance-port={port},smsql.username-sa,mssql.password-sa -oN "{basedir}/{port}_mssql_nmap.txt" -oX "{basedir}/{port}_mssql_nmap.xml" {address}'),
+				e('nmap-{port}')
+			)
+		])
 
-	if bruteforce:
-		cmds.append(
+	else:
+		run_cmds([
 			(
 				e('hydra -v -L /usr/share/nmap/nselib/data/usernames.lst -P /usr/share/nmap/nselib/data/passwords.lst -t 8 -f -o "{basedir}/{port}_mssql_hydra.txt" -u {address} -s {port} mssql'),
 				e('hydra-{port}')
 			)
-		)
-
-	run_cmds(cmds)
+		])
 
 
 #
@@ -393,22 +400,21 @@ def enum_mssql(address, port, service, basedir):
 #
 
 def enum_mysql(address, port, service, basedir):
-	cmds = [
-		(
-			e('nmap -vv -sV -T5 -Pn -p {port} --script=mysql-* -oN "{basedir}/{port}_mysql_nmap.txt" -oX "{basedir}/{port}_mysql_nmap.xml" {address}'),
-			e('nmap-{port}')
-		)
-	]
+	if not bruteforce:
+		run_cmds([
+			(
+				e('nmap -vv -sV -T5 -Pn -p {port} --script=mysql-* -oN "{basedir}/{port}_mysql_nmap.txt" -oX "{basedir}/{port}_mysql_nmap.xml" {address}'),
+				e('nmap-{port}')
+			)
+		])
 
-	if bruteforce:
-		cmds.append(
+	else:
+		run_cmds([
 			(
 				e('hydra -v -L /usr/share/nmap/nselib/data/usernames.lst -P /usr/share/nmap/nselib/data/passwords.lst -t 8 -f -o "{basedir}/{port}_mysql_hydra.txt" -u {address} -s {port} mysql'),
 				e('hydra-{port}')
 			)
-		)
-
-	run_cmds(cmds)
+		])
 
 
 #
@@ -432,6 +438,9 @@ def enum_ssh(address, port, service, basedir):
 #
 
 def enum_snmp(address, port, service, basedir):
+	if bruteforce:
+		return
+
 	run_cmds([
 		(
 			e('nmap -vv -sV -T5 -Pn -p {port} --script=snmp-* -oN "{basedir}/{port}_snmp_nmap.txt" -oX "{basedir}/{port}_snmp_nmap.xml" {address}'),
@@ -454,6 +463,9 @@ def enum_snmp(address, port, service, basedir):
 #
 
 def enum_dns(address, port, service, basedir):
+	if bruteforce:
+		return
+
 	nmblookup = e("nmblookup -A {address} | grep '<00>' | grep -v '<GROUP>' | cut -d' ' -f1")
 
 	info('Running task {bgreen}nmblookup-{port}{rst}' + (' with {bblue}' + nmblookup + '{rst}' if verbose >= 1 else '...'))
@@ -477,22 +489,21 @@ def enum_dns(address, port, service, basedir):
 #
 
 def enum_rdp(address, port, service, basedir):
-	cmds = [
-		(
-			e('nmap -vv -sV -T5 -Pn -p {port} --script=rdp-* -oN "{basedir}/{port}_rdp_nmap.txt" -oX "{basedir}/{port}_rdp_nmap.xml" {address}'),
-			e('nmap-{port}')
-		)
-	]
+	if not bruteforce:
+		run_cmds([
+			(
+				e('nmap -vv -sV -T5 -Pn -p {port} --script=rdp-* -oN "{basedir}/{port}_rdp_nmap.txt" -oX "{basedir}/{port}_rdp_nmap.xml" {address}'),
+				e('nmap-{port}')
+			)
+		])
 
-	if bruteforce:
-		cmds.append(
+	else:
+		run_cmds([
 			(
 				e('hydra -v -L /usr/share/nmap/nselib/data/usernames.lst -P /usr/share/nmap/nselib/data/passwords.lst -t 8 -f -o "{basedir}/{port}_rdp_hydra.txt" -u {address} -s {port} rdp'),
 				e('hydra-{port}')
 			)
-		)
-
-	run_cmds(cmds)
+		])
 
 
 #
@@ -501,22 +512,21 @@ def enum_rdp(address, port, service, basedir):
 #
 
 def enum_vnc(address, port, service, basedir):
-	cmds = [
-		(
-			e('nmap -vv -sV -T5 -Pn -p {port} --script=vnc-*,realvnc-* -oN "{basedir}/{port}_vnc_nmap.txt" -oX "{basedir}/{port}_vnc_nmap.xml" {address}'),
-			e('nmap-{port}')
-		)
-	]
+	if not bruteforce:
+		run_cmds([
+			(
+				e('nmap -vv -sV -T5 -Pn -p {port} --script=vnc-*,realvnc-* -oN "{basedir}/{port}_vnc_nmap.txt" -oX "{basedir}/{port}_vnc_nmap.xml" {address}'),
+				e('nmap-{port}')
+			)
+		])
 
-	if bruteforce:
-		cmds.append(
+	else:
+		run_cmds([
 			(
 				e('hydra -v -L /usr/share/nmap/nselib/data/usernames.lst -P /usr/share/nmap/nselib/data/passwords.lst -t 8 -f -o "{basedir}/{port}_vnc_hydra.txt" -u {address} -s {port} vnc'),
 				e('hydra-{port}')
 			)
-		)
-
-	run_cmds(cmds)
+		])
 
 
 # endregion
@@ -589,7 +599,7 @@ if __name__ == '__main__':
 	parser.add_argument('address', action='store', help='address of the host.')
 	parser.add_argument('port', action='store', type=int, help='port of the service, if scanning only one port', nargs='?')
 	parser.add_argument('service', action='store', help='type of the service, when port is specified', nargs='?')
-	parser.add_argument('-b', '--bruteforce', action='store_true', help='bruteforce credentials with hydra')
+	parser.add_argument('-b', '--bruteforce', action='store_true', help='only bruteforce credentials with hydra')
 	parser.add_argument('-n', '--dry-run', action='store_true', help='does not invoke commands')
 	parser.add_argument('-v', '--verbose', action='count', help='enable verbose output, repeat for more verbosity')
 	parser.add_argument('-o', '--output', action='store', default='results', help='output directory for the results')
