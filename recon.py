@@ -270,9 +270,6 @@ def run_amap(services, only_unidentified=True):
 #
 
 def enum_http(address, port, service, basedir):
-	if bruteforce:
-		return
-
 	scheme = 'https' if 'https' in service or 'ssl' in service else 'http'
 
 	run_cmds([
@@ -311,9 +308,6 @@ def enum_http(address, port, service, basedir):
 #
 
 def enum_smtp(address, port, service, basedir):
-	if bruteforce:
-		return
-
 	run_cmds([
 		(
 			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=smtp-* -oN "{basedir}/{port}_smtp_nmap.txt" -oX "{basedir}/{port}_smtp_nmap.xml" {address}'),
@@ -328,9 +322,6 @@ def enum_smtp(address, port, service, basedir):
 #
 
 def enum_pop3(address, port, service, basedir):
-	if bruteforce:
-		return
-
 	run_cmds([
 		(
 			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=pop3-* -oN "{basedir}/{port}_pop3_nmap.txt" -oX "{basedir}/{port}_pop3_nmap.xml" {address}'),
@@ -345,9 +336,6 @@ def enum_pop3(address, port, service, basedir):
 #
 
 def enum_imap(address, port, service, basedir):
-	if bruteforce:
-		return
-
 	run_cmds([
 		(
 			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=imap-* -oN "{basedir}/{port}_imap_nmap.txt" -oX "{basedir}/{port}_imap_nmap.xml" {address}'),
@@ -362,21 +350,12 @@ def enum_imap(address, port, service, basedir):
 #
 
 def enum_ftp(address, port, service, basedir):
-	if not bruteforce:
-		run_cmds([
-			(
-				e('nmap -vv --reason -sV {nmapparams} -p {port} --script=ftp-* -oN "{basedir}/{port}_ftp_nmap.txt" -oX "{basedir}/{port}_ftp_nmap.xml" {address}'),
-				e('nmap-{port}')
-			)
-		])
-
-	else:
-		run_cmds([
-			(
-				e('hydra -v {hydraparams} -o "{basedir}/{port}_ftp_hydra.txt" -u {address} -s {port} ftp'),
-				e('hydra-{port}')
-			)
-		])
+	run_cmds([
+		(
+			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=ftp-* -oN "{basedir}/{port}_ftp_nmap.txt" -oX "{basedir}/{port}_ftp_nmap.xml" {address}'),
+			e('nmap-{port}')
+		)
+	])
 
 
 #
@@ -385,9 +364,6 @@ def enum_ftp(address, port, service, basedir):
 #
 
 def enum_smb(address, port, service, basedir):
-	if bruteforce:
-		return
-
 	run_cmds([
 		(
 			# to restrict further: "and not (brute or broadcast or dos or external or fuzzer)"
@@ -415,21 +391,12 @@ def enum_smb(address, port, service, basedir):
 #
 
 def enum_mssql(address, port, service, basedir):
-	if not bruteforce:
-		run_cmds([
-			(
-				e('nmap -vv --reason -sV {nmapparams} -p {port} --script=ms-sql-* --script-args=mssql.instance-port={port},smsql.username-sa,mssql.password-sa -oN "{basedir}/{port}_mssql_nmap.txt" -oX "{basedir}/{port}_mssql_nmap.xml" {address}'),
-				e('nmap-{port}')
-			)
-		])
-
-	else:
-		run_cmds([
-			(
-				e('hydra -v {hydraparams} -o "{basedir}/{port}_mssql_hydra.txt" -u {address} -s {port} mssql'),
-				e('hydra-{port}')
-			)
-		])
+	run_cmds([
+		(
+			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=ms-sql-* --script-args=mssql.instance-port={port},smsql.username-sa,mssql.password-sa -oN "{basedir}/{port}_mssql_nmap.txt" -oX "{basedir}/{port}_mssql_nmap.xml" {address}'),
+			e('nmap-{port}')
+		)
+	])
 
 
 #
@@ -438,21 +405,12 @@ def enum_mssql(address, port, service, basedir):
 #
 
 def enum_mysql(address, port, service, basedir):
-	if not bruteforce:
-		run_cmds([
-			(
-				e('nmap -vv --reason -sV {nmapparams} -p {port} --script=mysql-* -oN "{basedir}/{port}_mysql_nmap.txt" -oX "{basedir}/{port}_mysql_nmap.xml" {address}'),
-				e('nmap-{port}')
-			)
-		])
-
-	else:
-		run_cmds([
-			(
-				e('hydra -v {hydraparams} -o "{basedir}/{port}_mysql_hydra.txt" -u {address} -s {port} mysql'),
-				e('hydra-{port}')
-			)
-		])
+	run_cmds([
+		(
+			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=mysql-* -oN "{basedir}/{port}_mysql_nmap.txt" -oX "{basedir}/{port}_mysql_nmap.xml" {address}'),
+			e('nmap-{port}')
+		)
+	])
 
 
 #
@@ -461,28 +419,12 @@ def enum_mysql(address, port, service, basedir):
 #
 
 def enum_oracle(address, port, service, basedir):
-	if not bruteforce:
-		run_cmds([
-			(
-				e('nmap -vv --reason -sV {nmapparams} -p {port} --script=oracle-* -oN "{basedir}/{port}_oracle_nmap.txt" -oX "{basedir}/{port}_oracle_nmap.xml" {address}'),
-				e('nmap-{port}')
-			)
-		])
-
-
-#
-#  SSH
-#  [hydra]
-#
-
-def enum_ssh(address, port, service, basedir):
-	if bruteforce:
-		run_cmds([
-			(
-				e('hydra -v {hydraparams} -o "{basedir}/{port}_ssh_hydra.txt" -u {address} -s {port} ssh'),
-				e('hydra-{port}')
-			)
-		])
+	run_cmds([
+		(
+			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=oracle-* -oN "{basedir}/{port}_oracle_nmap.txt" -oX "{basedir}/{port}_oracle_nmap.xml" {address}'),
+			e('nmap-{port}')
+		)
+	])
 
 
 #
@@ -491,13 +433,12 @@ def enum_ssh(address, port, service, basedir):
 #
 
 def enum_nfs(address, port, service, basedir):
-	if not bruteforce:
-		run_cmds([
-			(
-				e('nmap -vv --reason -sV {nmapparams} -p {port} --script=rpcinfo,nfs-* -oN "{basedir}/{port}_nfs_nmap.txt" -oX "{basedir}/{port}_nfs_nmap.xml" {address}'),
-				e('nmap-{port}')
-			)
-		])
+	run_cmds([
+		(
+			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=rpcinfo,nfs-* -oN "{basedir}/{port}_nfs_nmap.txt" -oX "{basedir}/{port}_nfs_nmap.xml" {address}'),
+			e('nmap-{port}')
+		)
+	])
 
 
 #
@@ -506,9 +447,6 @@ def enum_nfs(address, port, service, basedir):
 #
 
 def enum_snmp(address, port, service, basedir):
-	if bruteforce:
-		return
-
 	run_cmds([
 		(
 			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=snmp-* -oN "{basedir}/{port}_snmp_nmap.txt" -oX "{basedir}/{port}_snmp_nmap.xml" {address}'),
@@ -531,9 +469,6 @@ def enum_snmp(address, port, service, basedir):
 #
 
 def enum_dns(address, port, service, basedir):
-	if bruteforce:
-		return
-
 	nmblookup = e("nmblookup -A {address} | grep '<00>' | grep -v '<GROUP>' | cut -d' ' -f1")
 
 	info('Running task {bgreen}nmblookup-{port}{rst}' + (' with {bblue}' + nmblookup + '{rst}' if verbose >= 1 else '...'))
@@ -557,21 +492,12 @@ def enum_dns(address, port, service, basedir):
 #
 
 def enum_rdp(address, port, service, basedir):
-	if not bruteforce:
-		run_cmds([
-			(
-				e('nmap -vv --reason -sV {nmapparams} -p {port} --script=rdp-* -oN "{basedir}/{port}_rdp_nmap.txt" -oX "{basedir}/{port}_rdp_nmap.xml" {address}'),
-				e('nmap-{port}')
-			)
-		])
-
-	else:
-		run_cmds([
-			(
-				e('hydra -v {hydraparams} -o "{basedir}/{port}_rdp_hydra.txt" -u {address} -s {port} rdp'),
-				e('hydra-{port}')
-			)
-		])
+	run_cmds([
+		(
+			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=rdp-* -oN "{basedir}/{port}_rdp_nmap.txt" -oX "{basedir}/{port}_rdp_nmap.xml" {address}'),
+			e('nmap-{port}')
+		)
+	])
 
 
 #
@@ -580,21 +506,12 @@ def enum_rdp(address, port, service, basedir):
 #
 
 def enum_vnc(address, port, service, basedir):
-	if not bruteforce:
-		run_cmds([
-			(
-				e('nmap -vv --reason -sV {nmapparams} -p {port} --script=vnc-*,realvnc-* --script-args=unsafe=1 -oN "{basedir}/{port}_vnc_nmap.txt" -oX "{basedir}/{port}_vnc_nmap.xml" {address}'),
-				e('nmap-{port}')
-			)
-		])
-
-	else:
-		run_cmds([
-			(
-				e('hydra -v {hydraparams} -o "{basedir}/{port}_vnc_hydra.txt" -u {address} -s {port} vnc'),
-				e('hydra-{port}')
-			)
-		])
+	run_cmds([
+		(
+			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=vnc-*,realvnc-* --script-args=unsafe=1 -oN "{basedir}/{port}_vnc_nmap.txt" -oX "{basedir}/{port}_vnc_nmap.xml" {address}'),
+			e('nmap-{port}')
+		)
+	])
 
 
 # endregion
@@ -609,6 +526,10 @@ def scan_service(address, port, service):
 	info('Scanning service {bgreen}{service}{rst} on port {bgreen}{port}{rst}/{bgreen}{proto}{rst}...', proto='udp' if is_udp else 'tcp')
 	basedir = os.path.join(outdir, address)
 	os.makedirs(basedir, exist_ok=True)
+
+	if bruteforce:
+		error('Bruteforce-only mode is currently not available.')
+		return
 
 	if 'http' in service:
 		enum_http(address, port, service, basedir)
@@ -628,8 +549,6 @@ def scan_service(address, port, service):
 		enum_mysql(address, port, service, basedir)
 	elif 'oracle' in service:
 		enum_oracle(address, port, service, basedir)
-	elif 'ssh' in service:
-		enum_ssh(address, port, service, basedir)
 	elif 'nfs' in service or 'rpcbind' in service:
 		enum_nfs(address, port, service, basedir)
 	elif 'snmp' in service:
