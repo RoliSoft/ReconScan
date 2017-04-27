@@ -346,7 +346,7 @@ def enum_imap(address, port, service, basedir):
 
 #
 #  FTP
-#  nmap, [hydra]
+#  nmap
 #
 
 def enum_ftp(address, port, service, basedir):
@@ -387,7 +387,7 @@ def enum_smb(address, port, service, basedir):
 
 #
 #  MSSQL
-#  nmap, [hydra]
+#  nmap
 #
 
 def enum_mssql(address, port, service, basedir):
@@ -401,7 +401,7 @@ def enum_mssql(address, port, service, basedir):
 
 #
 #  MySQL
-#  nmap, [hydra]
+#  nmap
 #
 
 def enum_mysql(address, port, service, basedir):
@@ -488,7 +488,7 @@ def enum_dns(address, port, service, basedir):
 
 #
 #  RDP
-#  nmap, [hydra]
+#  nmap
 #
 
 def enum_rdp(address, port, service, basedir):
@@ -502,13 +502,35 @@ def enum_rdp(address, port, service, basedir):
 
 #
 #  VNC
-#  nmap, [hydra]
+#  nmap
 #
 
 def enum_vnc(address, port, service, basedir):
 	run_cmds([
 		(
 			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=vnc-*,realvnc-* --script-args=unsafe=1 -oN "{basedir}/{port}_vnc_nmap.txt" -oX "{basedir}/{port}_vnc_nmap.xml" {address}'),
+			e('nmap-{port}')
+		)
+	])
+
+
+#
+#  Unidentified service
+#  nmap
+#
+
+def enum_generic_tcp(address, port, service, basedir):
+	run_cmds([
+		(
+			e('nmap -vv --reason -sV -sC {nmapparams} -p {port} --script-args=unsafe=1 -oN "{basedir}/{port}_generic_tcp_nmap.txt" -oX "{basedir}/{port}_generic_tcp_nmap.xml" {address}'),
+			e('nmap-{port}')
+		)
+	])
+
+def enum_generic_udp(address, port, service, basedir):
+	run_cmds([
+		(
+			e('nmap -vv --reason -sV -sC {nmapparams} -sU -p {port} --script-args=unsafe=1 -oN "{basedir}/{port}_generic_udp_nmap.txt" -oX "{basedir}/{port}_generic_udp_nmap.xml" {address}'),
 			e('nmap-{port}')
 		)
 	])
@@ -533,37 +555,62 @@ def scan_service(address, port, service):
 
 	if 'http' in service:
 		enum_http(address, port, service, basedir)
+
 	elif 'smtp' in service:
 		enum_smtp(address, port, service, basedir)
+
 	elif 'pop3' in service:
 		enum_pop3(address, port, service, basedir)
+
 	elif 'imap' in service:
 		enum_imap(address, port, service, basedir)
+
 	elif 'ftp' in service:
 		enum_ftp(address, port, service, basedir)
+
 	elif 'microsoft-ds' in service or 'netbios' in service:
 		enum_smb(address, port, service, basedir)
+
 	elif 'ms-sql' in service or 'msSql' in service:
 		enum_mssql(address, port, service, basedir)
+
 	elif 'mysql' in service:
 		enum_mysql(address, port, service, basedir)
+
 	elif 'oracle' in service:
 		enum_oracle(address, port, service, basedir)
+
 	elif 'nfs' in service or 'rpcbind' in service:
 		enum_nfs(address, port, service, basedir)
+
 	elif 'snmp' in service:
 		enum_snmp(address, port, service, basedir)
+
 	elif 'domain' in service or 'dns' in service:
 		enum_dns(address, port, service, basedir)
+
 	elif 'rdp' in service or 'ms-wbt-server' in service or 'ms-term-serv' in service:
 		enum_rdp(address, port, service, basedir)
+
 	elif 'vnc' in service:
 		enum_vnc(address, port, service, basedir)
-	else:
-		warn('Service {byellow}{service}{rst} has no scanner support.')
 
-		with open(os.path.join(basedir, '0_untouched.txt'), 'a') as file:
-			file.writelines(str(port) + '\t' + ('udp' if is_udp else 'tcp') + '\t' + service + '\n')
+	elif not is_udp:
+		warn('Service {byellow}{service}{rst} will be scanned generically.')
+
+		enum_generic_tcp(address, port, service, basedir)
+
+	else:
+		if port <= 1024:
+			warn('Service {byellow}{service}{rst} will be scanned generically.')
+			
+			enum_generic_udp(address, port, service, basedir)
+
+		else:
+			warn('Service {byellow}{service}{rst} will not be scanned generically.')
+
+			with open(os.path.join(basedir, '0_untouched.txt'), 'a') as file:
+				file.writelines(str(port) + '\t' + ('udp' if is_udp else 'tcp') + '\t' + service + '\n')
 
 
 def scan_host(address):
@@ -598,7 +645,7 @@ if __name__ == '__main__':
 	parser.add_argument('-n', '--dry-run', action='store_true', help='does not invoke commands')
 	parser.add_argument('-v', '--verbose', action='count', help='enable verbose output, repeat for more verbosity')
 	parser.add_argument('-o', '--output', action='store', default='results', help='output directory for the results')
-	parser.add_argument('--nmap', action='store', default='-Pn -T5', help='additional nmap arguments')
+	parser.add_argument('--nmap', action='store', default='-Pn -T5 --append-output', help='additional nmap arguments')
 	parser.add_argument('--hydra', action='store', default='-L data/users -P data/passwords -t 16 -f', help='additional hydra arguments')
 	parser.error = lambda s: fail(s[0].upper() + s[1:])
 	args = parser.parse_args()
