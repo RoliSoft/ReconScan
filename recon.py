@@ -447,7 +447,7 @@ def enum_snmp(address, port, service, basedir):
 			e('nmap-{port}')
 		),
 		(
-			e('onesixtyone -dd -o "{basedir}/{port}_snmp_onesixtyone.txt" {address}'),
+			e('onesixtyone -c community -dd -o "{basedir}/{port}_snmp_onesixtyone.txt" {address}'),
 			e('onesixtyone-{port}')
 		),
 		(
@@ -515,7 +515,7 @@ def enum_vnc(address, port, service, basedir):
 	if not bruteforce:
 		run_cmds([
 			(
-				e('nmap -vv -sV -T5 -Pn -p {port} --script=vnc-*,realvnc-* -oN "{basedir}/{port}_vnc_nmap.txt" -oX "{basedir}/{port}_vnc_nmap.xml" {address}'),
+				e('nmap -vv -sV -T5 -Pn -p {port} --script=vnc-*,realvnc-* --script-args=unsafe=1 -oN "{basedir}/{port}_vnc_nmap.txt" -oX "{basedir}/{port}_vnc_nmap.xml" {address}'),
 				e('nmap-{port}')
 			)
 		])
