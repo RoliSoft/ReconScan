@@ -449,7 +449,7 @@ def enum_snmp(address, port, service, basedir):
 			e('nmap-{port}')
 		),
 		(
-			e('onesixtyone -c community -dd -o "{basedir}/{port}_snmp_onesixtyone.txt" {address}'),
+			e('onesixtyone -c data/community -dd -o "{basedir}/{port}_snmp_onesixtyone.txt" {address}'),
 			e('onesixtyone-{port}')
 		),
 		(
@@ -606,7 +606,7 @@ if __name__ == '__main__':
 	parser.add_argument('-v', '--verbose', action='count', help='enable verbose output, repeat for more verbosity')
 	parser.add_argument('-o', '--output', action='store', default='results', help='output directory for the results')
 	parser.add_argument('--nmap', action='store', default='-Pn -T5', help='additional nmap arguments')
-	parser.add_argument('--hydra', action='store', default='-L users -P passwords -t 16 -f', help='additional hydra arguments')
+	parser.add_argument('--hydra', action='store', default='-L data/users -P data/passwords -t 16 -f', help='additional hydra arguments')
 	parser.error = lambda s: fail(s[0].upper() + s[1:])
 	args = parser.parse_args()
 
