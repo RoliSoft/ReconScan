@@ -167,11 +167,11 @@ def run_nmap(address):
 	out = os.path.join(outdir, address)
 	run_cmds([
 		(
-			e('nmap -vv -sV -sC {nmapparams} -p- -oN "{out}/0_tcp_nmap.txt" -oX "{out}/0_tcp_nmap.xml" {address}'),
+			e('nmap -vv --reason -sV -sC {nmapparams} -p- -oN "{out}/0_tcp_nmap.txt" -oX "{out}/0_tcp_nmap.xml" {address}'),
 			'nmap-tcp'
 		),
 		(
-			e('nmap -vv -sV --version-intensity 0 -sC -sU {nmapparams} -oN "{out}/0_udp_nmap.txt" -oX "{out}/0_udp_nmap.xml" {address}'),
+			e('nmap -vv --reason -sV --version-intensity 0 -sC -sU {nmapparams} -oN "{out}/0_udp_nmap.txt" -oX "{out}/0_udp_nmap.xml" {address}'),
 			'nmap-udp'
 		)
 	])
@@ -277,7 +277,8 @@ def enum_http(address, port, service, basedir):
 
 	run_cmds([
 		(
-			e('nmap -vv -sV {nmapparams} -p {port} --script=\'(http* or ssl*) and not (broadcast or dos or external or http-slowloris* or fuzzer)\' -oN "{basedir}/{port}_http_nmap.txt" -oX "{basedir}/{port}_http_nmap.xml" {address}'),
+			# to restrict further: "and not (broadcast or dos or external or http-slowloris* or fuzzer)"
+			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=http*,ssl* -oN "{basedir}/{port}_http_nmap.txt" -oX "{basedir}/{port}_http_nmap.xml" {address}'),
 			e('nmap-{port}')
 		),
 		(
@@ -315,7 +316,41 @@ def enum_smtp(address, port, service, basedir):
 
 	run_cmds([
 		(
-			e('nmap -vv -sV {nmapparams} -p {port} --script=smtp-* -oN "{basedir}/{port}_smtp_nmap.txt" -oX "{basedir}/{port}_smtp_nmap.xml" {address}'),
+			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=smtp-* -oN "{basedir}/{port}_smtp_nmap.txt" -oX "{basedir}/{port}_smtp_nmap.xml" {address}'),
+			e('nmap-{port}')
+		)
+	])
+
+
+#
+#  POP3
+#  nmap
+#
+
+def enum_pop3(address, port, service, basedir):
+	if bruteforce:
+		return
+
+	run_cmds([
+		(
+			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=pop3-* -oN "{basedir}/{port}_pop3_nmap.txt" -oX "{basedir}/{port}_pop3_nmap.xml" {address}'),
+			e('nmap-{port}')
+		)
+	])
+
+
+#
+#  IMAP
+#  nmap
+#
+
+def enum_imap(address, port, service, basedir):
+	if bruteforce:
+		return
+
+	run_cmds([
+		(
+			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=imap-* -oN "{basedir}/{port}_imap_nmap.txt" -oX "{basedir}/{port}_imap_nmap.xml" {address}'),
 			e('nmap-{port}')
 		)
 	])
@@ -330,7 +365,7 @@ def enum_ftp(address, port, service, basedir):
 	if not bruteforce:
 		run_cmds([
 			(
-				e('nmap -vv -sV {nmapparams} -p {port} --script=ftp-* -oN "{basedir}/{port}_ftp_nmap.txt" -oX "{basedir}/{port}_ftp_nmap.xml" {address}'),
+				e('nmap -vv --reason -sV {nmapparams} -p {port} --script=ftp-* -oN "{basedir}/{port}_ftp_nmap.txt" -oX "{basedir}/{port}_ftp_nmap.xml" {address}'),
 				e('nmap-{port}')
 			)
 		])
@@ -355,7 +390,8 @@ def enum_smb(address, port, service, basedir):
 
 	run_cmds([
 		(
-			e('nmap -vv -sV {nmapparams} -p {port} --script=\'(smb*) and not (brute or broadcast or dos or external or fuzzer)\' --script-args=unsafe=1 -oN "{basedir}/{port}_smb_nmap.txt" -oX "{basedir}/{port}_smb_nmap.xml" {address}'),
+			# to restrict further: "and not (brute or broadcast or dos or external or fuzzer)"
+			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=nbstat,smb* --script-args=unsafe=1 -oN "{basedir}/{port}_smb_nmap.txt" -oX "{basedir}/{port}_smb_nmap.xml" {address}'),
 			e('nmap-{port}')
 		),
 		(
@@ -382,7 +418,7 @@ def enum_mssql(address, port, service, basedir):
 	if not bruteforce:
 		run_cmds([
 			(
-				e('nmap -vv -sV {nmapparams} -p {port} --script=ms-sql-* --script-args=mssql.instance-port={port},smsql.username-sa,mssql.password-sa -oN "{basedir}/{port}_mssql_nmap.txt" -oX "{basedir}/{port}_mssql_nmap.xml" {address}'),
+				e('nmap -vv --reason -sV {nmapparams} -p {port} --script=ms-sql-* --script-args=mssql.instance-port={port},smsql.username-sa,mssql.password-sa -oN "{basedir}/{port}_mssql_nmap.txt" -oX "{basedir}/{port}_mssql_nmap.xml" {address}'),
 				e('nmap-{port}')
 			)
 		])
@@ -405,7 +441,7 @@ def enum_mysql(address, port, service, basedir):
 	if not bruteforce:
 		run_cmds([
 			(
-				e('nmap -vv -sV {nmapparams} -p {port} --script=mysql-* -oN "{basedir}/{port}_mysql_nmap.txt" -oX "{basedir}/{port}_mysql_nmap.xml" {address}'),
+				e('nmap -vv --reason -sV {nmapparams} -p {port} --script=mysql-* -oN "{basedir}/{port}_mysql_nmap.txt" -oX "{basedir}/{port}_mysql_nmap.xml" {address}'),
 				e('nmap-{port}')
 			)
 		])
@@ -415,6 +451,21 @@ def enum_mysql(address, port, service, basedir):
 			(
 				e('hydra -v {hydraparams} -o "{basedir}/{port}_mysql_hydra.txt" -u {address} -s {port} mysql'),
 				e('hydra-{port}')
+			)
+		])
+
+
+#
+#  Oracle
+#  nmap
+#
+
+def enum_oracle(address, port, service, basedir):
+	if not bruteforce:
+		run_cmds([
+			(
+				e('nmap -vv --reason -sV {nmapparams} -p {port} --script=oracle-* -oN "{basedir}/{port}_oracle_nmap.txt" -oX "{basedir}/{port}_oracle_nmap.xml" {address}'),
+				e('nmap-{port}')
 			)
 		])
 
@@ -435,6 +486,21 @@ def enum_ssh(address, port, service, basedir):
 
 
 #
+#  NFS
+#  nmap
+#
+
+def enum_nfs(address, port, service, basedir):
+	if not bruteforce:
+		run_cmds([
+			(
+				e('nmap -vv --reason -sV {nmapparams} -p {port} --script=rpcinfo,nfs-* -oN "{basedir}/{port}_nfs_nmap.txt" -oX "{basedir}/{port}_nfs_nmap.xml" {address}'),
+				e('nmap-{port}')
+			)
+		])
+
+
+#
 #  SNMP
 #  nmap, onesixtyone, snmpwalk
 #
@@ -445,7 +511,7 @@ def enum_snmp(address, port, service, basedir):
 
 	run_cmds([
 		(
-			e('nmap -vv -sV {nmapparams} -p {port} --script=snmp-* -oN "{basedir}/{port}_snmp_nmap.txt" -oX "{basedir}/{port}_snmp_nmap.xml" {address}'),
+			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=snmp-* -oN "{basedir}/{port}_snmp_nmap.txt" -oX "{basedir}/{port}_snmp_nmap.xml" {address}'),
 			e('nmap-{port}')
 		),
 		(
@@ -494,7 +560,7 @@ def enum_rdp(address, port, service, basedir):
 	if not bruteforce:
 		run_cmds([
 			(
-				e('nmap -vv -sV {nmapparams} -p {port} --script=rdp-* -oN "{basedir}/{port}_rdp_nmap.txt" -oX "{basedir}/{port}_rdp_nmap.xml" {address}'),
+				e('nmap -vv --reason -sV {nmapparams} -p {port} --script=rdp-* -oN "{basedir}/{port}_rdp_nmap.txt" -oX "{basedir}/{port}_rdp_nmap.xml" {address}'),
 				e('nmap-{port}')
 			)
 		])
@@ -517,7 +583,7 @@ def enum_vnc(address, port, service, basedir):
 	if not bruteforce:
 		run_cmds([
 			(
-				e('nmap -vv -sV {nmapparams} -p {port} --script=vnc-*,realvnc-* --script-args=unsafe=1 -oN "{basedir}/{port}_vnc_nmap.txt" -oX "{basedir}/{port}_vnc_nmap.xml" {address}'),
+				e('nmap -vv --reason -sV {nmapparams} -p {port} --script=vnc-*,realvnc-* --script-args=unsafe=1 -oN "{basedir}/{port}_vnc_nmap.txt" -oX "{basedir}/{port}_vnc_nmap.xml" {address}'),
 				e('nmap-{port}')
 			)
 		])
@@ -548,6 +614,10 @@ def scan_service(address, port, service):
 		enum_http(address, port, service, basedir)
 	elif 'smtp' in service:
 		enum_smtp(address, port, service, basedir)
+	elif 'pop3' in service:
+		enum_pop3(address, port, service, basedir)
+	elif 'imap' in service:
+		enum_imap(address, port, service, basedir)
 	elif 'ftp' in service:
 		enum_ftp(address, port, service, basedir)
 	elif 'microsoft-ds' in service or 'netbios' in service:
@@ -556,8 +626,12 @@ def scan_service(address, port, service):
 		enum_mssql(address, port, service, basedir)
 	elif 'mysql' in service:
 		enum_mysql(address, port, service, basedir)
+	elif 'oracle' in service:
+		enum_oracle(address, port, service, basedir)
 	elif 'ssh' in service:
 		enum_ssh(address, port, service, basedir)
+	elif 'nfs' in service or 'rpcbind' in service:
+		enum_nfs(address, port, service, basedir)
 	elif 'snmp' in service:
 		enum_snmp(address, port, service, basedir)
 	elif 'domain' in service or 'dns' in service:
