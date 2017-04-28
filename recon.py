@@ -29,6 +29,7 @@ bruteforce  = True
 outdir      = ''
 nmapparams  = ''
 hydraparams = ''
+parallel    = False
 
 # region Colors
 
@@ -153,9 +154,14 @@ def run_cmds(cmds):
 		procs.append(proc)
 		proc.start()
 
-	for proc in procs:
-		if proc.is_alive():
-			proc.join()
+		if not parallel:
+			if proc.is_alive():
+				proc.join()
+
+	if parallel:
+		for proc in procs:
+			if proc.is_alive():
+				proc.join()
 
 
 # endregion
@@ -643,9 +649,10 @@ if __name__ == '__main__':
 	parser.add_argument('service', action='store', help='type of the service, when port is specified', nargs='?')
 	parser.add_argument('-b', '--bruteforce', action='store_true', help='only bruteforce credentials with hydra')
 	parser.add_argument('-n', '--dry-run', action='store_true', help='does not invoke commands')
+	parser.add_argument('-p', '--parallel', action='store_true', help='runs multiple commands in parallel, if set')
 	parser.add_argument('-v', '--verbose', action='count', help='enable verbose output, repeat for more verbosity')
 	parser.add_argument('-o', '--output', action='store', default='results', help='output directory for the results')
-	parser.add_argument('--nmap', action='store', default='-Pn -T5 --append-output', help='additional nmap arguments')
+	parser.add_argument('--nmap', action='store', default='-Pn --min-rate=400 -T4', help='additional nmap arguments')
 	parser.add_argument('--hydra', action='store', default='-L data/users -P data/passwords -t 16 -f', help='additional hydra arguments')
 	parser.error = lambda s: fail(s[0].upper() + s[1:])
 	args = parser.parse_args()
