@@ -280,8 +280,7 @@ def enum_http(address, port, service, basedir):
 
 	run_cmds([
 		(
-			# to restrict further: "and not (broadcast or dos or external or http-slowloris* or fuzzer)"
-			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=http*,ssl* -oN "{basedir}/{port}_http_nmap.txt" -oX "{basedir}/{port}_http_nmap.xml" {address}'),
+			e('nmap -vv --reason -sV {nmapparams} -p {port} --script="(http* or ssl*) and not (broadcast or dos or external or http-slowloris* or fuzzer)" -oN "{basedir}/{port}_http_nmap.txt" -oX "{basedir}/{port}_http_nmap.xml" {address}'),
 			e('nmap-{port}')
 		),
 		(
@@ -372,8 +371,7 @@ def enum_ftp(address, port, service, basedir):
 def enum_smb(address, port, service, basedir):
 	run_cmds([
 		(
-			# to restrict further: "and not (brute or broadcast or dos or external or fuzzer)"
-			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=nbstat,smb* --script-args=unsafe=1 -oN "{basedir}/{port}_smb_nmap.txt" -oX "{basedir}/{port}_smb_nmap.xml" {address}'),
+			e('nmap -vv --reason -sV {nmapparams} -p {port} --script="(nbstat or smb*) and not (brute or broadcast or dos or external or fuzzer)" --script-args=unsafe=1 -oN "{basedir}/{port}_smb_nmap.txt" -oX "{basedir}/{port}_smb_nmap.xml" {address}'),
 			e('nmap-{port}')
 		),
 		(
@@ -652,7 +650,7 @@ if __name__ == '__main__':
 	parser.add_argument('-p', '--parallel', action='store_true', help='runs multiple commands in parallel, if set')
 	parser.add_argument('-v', '--verbose', action='count', help='enable verbose output, repeat for more verbosity')
 	parser.add_argument('-o', '--output', action='store', default='results', help='output directory for the results')
-	parser.add_argument('--nmap', action='store', default='-Pn --min-rate=400 -T4', help='additional nmap arguments')
+	parser.add_argument('--nmap', action='store', default='-Pn --min-rate=400 -T4 --script-timeout 10m', help='additional nmap arguments')
 	parser.add_argument('--hydra', action='store', default='-L data/users -P data/passwords -t 16 -f', help='additional hydra arguments')
 	parser.error = lambda s: fail(s[0].upper() + s[1:])
 	args = parser.parse_args()

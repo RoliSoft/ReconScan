@@ -16,14 +16,14 @@ The flow followed by the script is as follows:
 	- If there are unidentified services, try amap.
 	- For identified software, run vulnerability analysis with `vulnscan.py`
 	- For identified services, run further analysis:
-		- HTTP(S): nmap with all http scripts, nikto, dirb
-		- SMTP: nmap with all smtp scripts
-		- FTP: nmap with all ftp scripts, hydra if requested
-		- SMB: nmap with all smb scripts, enum4linux, samrdump
-		- MSSQL: nmap with all mssql scripts
+		- HTTP(S): nikto, dirb
+		- FTP: hydra if requested
+		- SMB: enum4linux, samrdump, nbtscan
 		- SSH: hydra if requested
 		- SNMP: onesixtyone, snmpwalk
 		- DNS: attempt zone transfer (axfr) with dig
+	- Additionally, all nmap scripts are run for the following services:
+	  - HTTP(S), SMTP, POP3, IMAP, FTP, SMB, MSSQL, MySQL, Oracle, SNMP, RDP, VNC
 
 Results will be dumped into the `results/$ip_address` directory, with the `$port_$service_$tool` file naming scheme. The tools are mostly run simultaneously (unless one depends on the result of another) and the CLI output will be aggregated and tagged by the script, so you will see the progress and dirt found by each running script in real-time.
 
@@ -33,20 +33,27 @@ This script is inspired by [Mike Czumak's Recon Scan](http://www.securitysift.co
 
 ### Usage
 
-	usage: recon.py [-h] [-b] [-n] [-v] [-o OUTPUT] address [port] [service]
-	
+	usage: recon.py [-h] [-b] [-n] [-p] [-v] [-o OUTPUT] [--nmap NMAP] [--hydra HYDRA]
+									address [port] [service]
+
+	Network reconnaissance tool for enumerating the everliving fuck out of a host.
+
 	positional arguments:
-	  address               address of the host.
-	  port                  port of the service, if scanning only one port
-	  service               type of the service, when port is specified
-	
+		address               address of the host.
+		port                  port of the service, if scanning only one port
+		service               type of the service, when port is specified
+
 	optional arguments:
-	  -h, --help            show this help message and exit
-	  -b, --bruteforce      bruteforce credentials with hydra
-	  -n, --dry-run         does not invoke commands
-	  -v, --verbose         enable verbose output, repeat for more verbosity
-	  -o OUTPUT, --output OUTPUT
-							output directory for the results
+		-h, --help            show this help message and exit
+		-b, --bruteforce      only bruteforce credentials with hydra
+		-n, --dry-run         does not invoke commands
+		-p, --parallel        runs multiple commands in parallel, if set
+		-v, --verbose         enable verbose output, repeat for more verbosity
+		-o OUTPUT, --output OUTPUT
+													output directory for the results
+		--nmap NMAP           additional nmap arguments
+		--hydra HYDRA         additional hydra arguments
+
 
 #### Example run
 
