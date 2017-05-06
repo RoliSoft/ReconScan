@@ -30,6 +30,7 @@ outdir      = ''
 nmapparams  = ''
 hydraparams = ''
 parallel    = False
+hadsmb      = False
 
 # region Colors
 
@@ -272,11 +273,12 @@ def run_amap(services, only_unidentified=True):
 
 #
 #  HTTP(S)
-#  nmap, nikto, dirb
+#  nmap, nikto, gobuster
 #
 
 def enum_http(address, port, service, basedir):
 	scheme = 'https' if 'https' in service or 'ssl' in service else 'http'
+	nikto_ssl = ' -ssl' if 'https' in service or 'ssl' in service else '' 
 
 	run_cmds([
 		(
@@ -284,11 +286,11 @@ def enum_http(address, port, service, basedir):
 			e('nmap-{port}')
 		),
 		(
-			e('curl -i {scheme}://{address}:{port}/ -o "{basedir}/{port}_http_index.html"'),
+			e('curl -i {scheme}://{address}:{port}/ -m 10 -o "{basedir}/{port}_http_index.html"'),
 			e('curl-1-{port}')
 		),
 		(
-			e('curl -i {scheme}://{address}:{port}/robots.txt -o "{basedir}/{port}_http_robots.txt"'),
+			e('curl -i {scheme}://{address}:{port}/robots.txt -m 10 -o "{basedir}/{port}_http_robots.txt"'),
 			e('curl-2-{port}')
 		)
 	])
@@ -297,11 +299,12 @@ def enum_http(address, port, service, basedir):
 
 	run_cmds([
 		(
-			e('dirb {scheme}://{address}:{port} -o "{basedir}/{port}_http_dirb.txt" -r -w'),
-			e('dirb-{port}')
+			e('gobuster -w /usr/share/seclists/Discovery/Web_Content/common.txt -t 10 -u {scheme}://{address}:{port} -e -s "200,204,301,302,307,403,500" | tee "{basedir}/{port}_http_dirb.txt"'),
+			e('gobuster-{port}')
 		),
 		(
-			e('nikto -h {scheme}://{address} -p {port} -C all -o "{basedir}/{port}_http_nikto.txt"'),
+			# -C all potentially slowing it down?
+			e('nikto -h {scheme}://{address}:{port}{nikto_ssl} -o "{basedir}/{port}_http_nikto.txt"'),
 			e('nikto-{port}')
 		)
 	])
@@ -315,7 +318,7 @@ def enum_http(address, port, service, basedir):
 def enum_smtp(address, port, service, basedir):
 	run_cmds([
 		(
-			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=smtp-* -oN "{basedir}/{port}_smtp_nmap.txt" -oX "{basedir}/{port}_smtp_nmap.xml" {address}'),
+			e('nmap -vv --reason -sV {nmapparams} -p {port} --script="(smtp*) and not (brute or broadcast or dos or external or fuzzer)" -oN "{basedir}/{port}_smtp_nmap.txt" -oX "{basedir}/{port}_smtp_nmap.xml" {address}'),
 			e('nmap-{port}')
 		)
 	])
@@ -329,7 +332,7 @@ def enum_smtp(address, port, service, basedir):
 def enum_pop3(address, port, service, basedir):
 	run_cmds([
 		(
-			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=pop3-* -oN "{basedir}/{port}_pop3_nmap.txt" -oX "{basedir}/{port}_pop3_nmap.xml" {address}'),
+			e('nmap -vv --reason -sV {nmapparams} -p {port} --script="(pop3*) and not (brute or broadcast or dos or external or fuzzer)" -oN "{basedir}/{port}_pop3_nmap.txt" -oX "{basedir}/{port}_pop3_nmap.xml" {address}'),
 			e('nmap-{port}')
 		)
 	])
@@ -343,7 +346,7 @@ def enum_pop3(address, port, service, basedir):
 def enum_imap(address, port, service, basedir):
 	run_cmds([
 		(
-			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=imap-* -oN "{basedir}/{port}_imap_nmap.txt" -oX "{basedir}/{port}_imap_nmap.xml" {address}'),
+			e('nmap -vv --reason -sV {nmapparams} -p {port} --script="(imap*) and not (brute or broadcast or dos or external or fuzzer)" -oN "{basedir}/{port}_imap_nmap.txt" -oX "{basedir}/{port}_imap_nmap.xml" {address}'),
 			e('nmap-{port}')
 		)
 	])
@@ -357,7 +360,7 @@ def enum_imap(address, port, service, basedir):
 def enum_ftp(address, port, service, basedir):
 	run_cmds([
 		(
-			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=ftp-* -oN "{basedir}/{port}_ftp_nmap.txt" -oX "{basedir}/{port}_ftp_nmap.xml" {address}'),
+			e('nmap -vv --reason -sV {nmapparams} -p {port} --script="(ftp*) and not (brute or broadcast or dos or external or fuzzer)" -oN "{basedir}/{port}_ftp_nmap.txt" -oX "{basedir}/{port}_ftp_nmap.xml" {address}'),
 			e('nmap-{port}')
 		)
 	])
@@ -369,9 +372,18 @@ def enum_ftp(address, port, service, basedir):
 #
 
 def enum_smb(address, port, service, basedir):
+	global hadsmb
+	
+	if hadsmb:
+		return
+
+	nmap_port = port
+	if port == 139 or port == 445:
+		nmap_port = '139,445'
+
 	run_cmds([
 		(
-			e('nmap -vv --reason -sV {nmapparams} -p {port} --script="(nbstat or smb*) and not (brute or broadcast or dos or external or fuzzer)" --script-args=unsafe=1 -oN "{basedir}/{port}_smb_nmap.txt" -oX "{basedir}/{port}_smb_nmap.xml" {address}'),
+			e('nmap -vv --reason -sV {nmapparams} -p {nmap_port} --script="(nbstat or smb*) and not (brute or broadcast or dos or external or fuzzer)" --script-args=unsafe=1 -oN "{basedir}/{port}_smb_nmap.txt" -oX "{basedir}/{port}_smb_nmap.xml" {address}'),
 			e('nmap-{port}')
 		),
 		(
@@ -388,6 +400,8 @@ def enum_smb(address, port, service, basedir):
 		)
 	])
 
+	hadsmb = True
+
 
 #
 #  MSSQL
@@ -397,7 +411,7 @@ def enum_smb(address, port, service, basedir):
 def enum_mssql(address, port, service, basedir):
 	run_cmds([
 		(
-			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=ms-sql-* --script-args=mssql.instance-port={port},smsql.username-sa,mssql.password-sa -oN "{basedir}/{port}_mssql_nmap.txt" -oX "{basedir}/{port}_mssql_nmap.xml" {address}'),
+			e('nmap -vv --reason -sV {nmapparams} -p {port} --script="(ms-sql*) and not (brute or broadcast or dos or external or fuzzer)" --script-args=mssql.instance-port={port},smsql.username-sa,mssql.password-sa -oN "{basedir}/{port}_mssql_nmap.txt" -oX "{basedir}/{port}_mssql_nmap.xml" {address}'),
 			e('nmap-{port}')
 		)
 	])
@@ -411,7 +425,7 @@ def enum_mssql(address, port, service, basedir):
 def enum_mysql(address, port, service, basedir):
 	run_cmds([
 		(
-			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=mysql-* -oN "{basedir}/{port}_mysql_nmap.txt" -oX "{basedir}/{port}_mysql_nmap.xml" {address}'),
+			e('nmap -vv --reason -sV {nmapparams} -p {port} --script="(mysql*) and not (brute or broadcast or dos or external or fuzzer)" -oN "{basedir}/{port}_mysql_nmap.txt" -oX "{basedir}/{port}_mysql_nmap.xml" {address}'),
 			e('nmap-{port}')
 		)
 	])
@@ -425,7 +439,7 @@ def enum_mysql(address, port, service, basedir):
 def enum_oracle(address, port, service, basedir):
 	run_cmds([
 		(
-			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=oracle-* -oN "{basedir}/{port}_oracle_nmap.txt" -oX "{basedir}/{port}_oracle_nmap.xml" {address}'),
+			e('nmap -vv --reason -sV {nmapparams} -p {port} --script="(oracle*) and not (brute or broadcast or dos or external or fuzzer)" -oN "{basedir}/{port}_oracle_nmap.txt" -oX "{basedir}/{port}_oracle_nmap.xml" {address}'),
 			e('nmap-{port}')
 		)
 	])
@@ -439,7 +453,7 @@ def enum_oracle(address, port, service, basedir):
 def enum_nfs(address, port, service, basedir):
 	run_cmds([
 		(
-			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=rpcinfo,nfs-* -oN "{basedir}/{port}_nfs_nmap.txt" -oX "{basedir}/{port}_nfs_nmap.xml" {address}'),
+			e('nmap -vv --reason -sV {nmapparams} -p {port} --script="(rpcinfo or nfs*) and not (brute or broadcast or dos or external or fuzzer)" -oN "{basedir}/{port}_nfs_nmap.txt" -oX "{basedir}/{port}_nfs_nmap.xml" {address}'),
 			e('nmap-{port}')
 		)
 	])
@@ -453,7 +467,7 @@ def enum_nfs(address, port, service, basedir):
 def enum_snmp(address, port, service, basedir):
 	run_cmds([
 		(
-			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=snmp-* -oN "{basedir}/{port}_snmp_nmap.txt" -oX "{basedir}/{port}_snmp_nmap.xml" {address}'),
+			e('nmap -vv --reason -sV {nmapparams} -p {port} --script="(snmp*) and not (brute or broadcast or dos or external or fuzzer)" -oN "{basedir}/{port}_snmp_nmap.txt" -oX "{basedir}/{port}_snmp_nmap.xml" {address}'),
 			e('nmap-{port}')
 		),
 		(
@@ -484,7 +498,7 @@ def enum_dns(address, port, service, basedir):
 
 	run_cmds([
 		(
-			e('dig @{host}.thinc.local thinc.local axfr > "{basedir}/{port}_dns_dig.txt"'),
+			e('dig -p{port} @{host}.thinc.local thinc.local axfr > "{basedir}/{port}_dns_dig.txt"'),
 			e('dig-{port}')
 		)
 	])
@@ -498,7 +512,7 @@ def enum_dns(address, port, service, basedir):
 def enum_rdp(address, port, service, basedir):
 	run_cmds([
 		(
-			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=rdp-* -oN "{basedir}/{port}_rdp_nmap.txt" -oX "{basedir}/{port}_rdp_nmap.xml" {address}'),
+			e('nmap -vv --reason -sV {nmapparams} -p {port} --script="(rdp*) and not (brute or broadcast or dos or external or fuzzer)" -oN "{basedir}/{port}_rdp_nmap.txt" -oX "{basedir}/{port}_rdp_nmap.xml" {address}'),
 			e('nmap-{port}')
 		)
 	])
@@ -512,7 +526,7 @@ def enum_rdp(address, port, service, basedir):
 def enum_vnc(address, port, service, basedir):
 	run_cmds([
 		(
-			e('nmap -vv --reason -sV {nmapparams} -p {port} --script=vnc-*,realvnc-* --script-args=unsafe=1 -oN "{basedir}/{port}_vnc_nmap.txt" -oX "{basedir}/{port}_vnc_nmap.xml" {address}'),
+			e('nmap -vv --reason -sV {nmapparams} -p {port} --script="(vnc* or realvnc*) and not (brute or broadcast or dos or external or fuzzer)" --script-args=unsafe=1 -oN "{basedir}/{port}_vnc_nmap.txt" -oX "{basedir}/{port}_vnc_nmap.xml" {address}'),
 			e('nmap-{port}')
 		)
 	])
