@@ -76,7 +76,16 @@ def cprint(*args, color=Fore.RESET, char='*', sep=' ', end='\n', frame_index=1, 
 		unfmt += color + '[' + Style.BRIGHT + char + Style.NORMAL + ']' + Fore.RESET + sep
 	unfmt += sep.join(args)
 
-	fmted = string.Formatter().vformat(unfmt, args, vals)
+	fmted = unfmt
+
+	for attempt in range(10):
+		try:
+			fmted = string.Formatter().vformat(unfmt, args, vals)
+			break
+		except KeyError as err:
+			key = err.args[0]
+			unfmt = unfmt.replace('{' + key + '}', '{{' + key + '}}')
+
 	print(fmted, sep=sep, end=end, file=file)
 
 
