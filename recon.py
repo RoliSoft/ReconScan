@@ -31,6 +31,7 @@ nmapparams  = ''
 hydraparams = ''
 parallel    = False
 hadsmb      = False
+srvname     = ''
 
 # region Colors
 
@@ -121,7 +122,7 @@ def dump_pipe(stream, stop_event=None, tag='?', color=Fore.BLUE):
 		line = stream.readline().decode('utf-8').rstrip()
 
 		if len(line) != 0:
-			debug(color + '[' + Style.BRIGHT + tag + Style.NORMAL + '] ' + Fore.RESET + line, color=color)
+			debug(color + '[' + Style.BRIGHT + tag + Style.NORMAL + '] ' + Fore.RESET + '{line}', color=color)
 
 
 def run_cmd(cmd, tag='?', redirect=None):
@@ -180,7 +181,7 @@ def run_cmds(cmds):
 
 
 def run_nmap(address):
-	out = os.path.join(outdir, address)
+	out = os.path.join(outdir, address + srvname)
 	run_cmds([
 		(
 			e('nmap -vv --reason -sV -sC {nmapparams} -p- -oN "{out}/0_tcp_nmap.txt" -oX "{out}/0_tcp_nmap.xml" {address}'),
@@ -216,7 +217,7 @@ def run_nmap(address):
 
 
 def run_amap(services, only_unidentified=True):
-	out = os.path.join(outdir, services[0][0])
+	out = os.path.join(outdir, services[0][0] + srvname)
 
 	ports_tcp = ''
 	ports_udp = ''
@@ -317,6 +318,11 @@ def enum_http(address, port, service, basedir):
 			e('nikto-{port}')
 		)
 	])
+	#try:
+	#	with open(os.path.join('.', e('nikto_{address}.sh')), 'a') as file:
+	#		file.writelines(e('nikto -h {scheme}://{address}:{port}{nikto_ssl} -o "{basedir}/{port}_http_nikto.txt"') + '\n') 
+	#except:
+	#	pass
 
 
 #
@@ -573,7 +579,7 @@ def scan_service(address, port, service):
 		is_udp = False
 
 	info('Scanning service {bgreen}{service}{rst} on port {bgreen}{port}{rst}/{bgreen}{proto}{rst}...', proto='udp' if is_udp else 'tcp')
-	basedir = os.path.join(outdir, address)
+	basedir = os.path.join(outdir, address + srvname)
 	os.makedirs(basedir, exist_ok=True)
 
 	if bruteforce:
@@ -642,7 +648,7 @@ def scan_service(address, port, service):
 
 def scan_host(address):
 	info('Scanning host {byellow}{address}{rst}...')
-	basedir = os.path.join(outdir, address)
+	basedir = os.path.join(outdir, address + srvname)
 	os.makedirs(basedir, exist_ok=True)
 
 	services = run_nmap(address)
@@ -669,9 +675,10 @@ if __name__ == '__main__':
 	parser.add_argument('port', action='store', type=int, help='port of the service, if scanning only one port', nargs='?')
 	parser.add_argument('service', action='store', help='type of the service, when port is specified', nargs='?')
 	parser.add_argument('-b', '--bruteforce', action='store_true', help='only bruteforce credentials with hydra')
-	parser.add_argument('-n', '--dry-run', action='store_true', help='does not invoke commands')
+	parser.add_argument('-d', '--dry-run', action='store_true', help='does not invoke commands')
 	parser.add_argument('-p', '--parallel', action='store_true', help='runs multiple commands in parallel, if set')
 	parser.add_argument('-v', '--verbose', action='count', help='enable verbose output, repeat for more verbosity')
+	parser.add_argument('-n', '--name', action='store', help='name of the machine to append to the output name')
 	parser.add_argument('-o', '--output', action='store', default='results', help='output directory for the results')
 	parser.add_argument('--nmap', action='store', default='-Pn --min-rate=400 -T4 --script-timeout 10m', help='additional nmap arguments')
 	parser.add_argument('--hydra', action='store', default='-L data/users -P data/passwords -t 16 -f', help='additional hydra arguments')
@@ -684,6 +691,7 @@ if __name__ == '__main__':
 	bruteforce  = args.bruteforce
 	nmapparams  = args.nmap
 	hydraparams = args.hydra
+	srvname     = '_' + args.name if args.name else ''
 
 	atexit.register(lambda: os.system('stty sane'))
 
