@@ -156,26 +156,26 @@ def download_nvd_dbs():
 
 	if not os.path.exists('nvd/cpe-aliases.lst'):
 		info('Downloading CPE aliases...')
-		download_archives('https://anonscm.debian.org/viewvc/secure-testing/data/CPE/aliases?view=co', 'nvd/cpe-aliases.lst', False)
+		download_archives('https://salsa.debian.org/dlange/debian_security_security-tracker_split_files_v2/-/raw/master/data/CPE/aliases ', 'nvd/cpe-aliases.lst', False)
 	else:
 		debug('Not downloading CPE aliases: file is less than 24 hours old.')
 
 	currentyear = datetime.datetime.now().year
 
 	for year in range(2002, currentyear):
-		if os.path.exists('nvd/cve-items-' + str(year) + '.xml'):
+		if os.path.exists('nvd/cve-items-' + str(year) + '.json'):
 			debug('Not downloading CVE entries for year {year}: file already exists.')
 			continue
 
 		info('Downloading CVE entries for year {year}...')
-		download_archives('https://static.nvd.nist.gov/feeds/xml/cve/nvdcve-2.0-' + str(year) + '.xml.gz', 'nvd/cve-items-' + str(year) + '.xml.gz')
+		download_archives('https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-' + str(year) + '.json.gz', 'nvd/cve-items-' + str(year) + '.json.gz')
 
-	if os.path.exists('nvd/cve-items-' + str(currentyear) + '.xml') and (datetime.datetime.today() - datetime.datetime.fromtimestamp(os.path.getmtime('nvd/cve-items-' + str(currentyear) + '.xml'))).days > 1:
-		os.unlink('nvd/cve-items-' + str(currentyear) + '.xml')
+	if os.path.exists('nvd/cve-items-' + str(currentyear) + '.json') and (datetime.datetime.today() - datetime.datetime.fromtimestamp(os.path.getmtime('nvd/cve-items-' + str(currentyear) + '.json'))).days > 1:
+		os.unlink('nvd/cve-items-' + str(currentyear) + '.json')
 
-	if not os.path.exists('nvd/cve-items-' + str(currentyear) + '.xml'):
+	if not os.path.exists('nvd/cve-items-' + str(currentyear) + '.json'):
 		info('Downloading CVE entries for year {currentyear}...')
-		download_archives('https://static.nvd.nist.gov/feeds/xml/cve/nvdcve-2.0-' + str(currentyear) + '.xml.gz', 'nvd/cve-items-' + str(currentyear) + '.xml.gz')
+		download_archives('https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-' + str(currentyear) + '.json.gz', 'nvd/cve-items-' + str(currentyear) + '.json.gz')
 	else:
 		debug('Not downloading CVE entries for year {currentyear}: file is less than 24 hours old.')
 
