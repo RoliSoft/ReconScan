@@ -25,6 +25,7 @@ init()
 
 verbose     = 0
 dryrun      = False
+deepscan    = False
 bruteforce  = True
 outdir      = ''
 nmapparams  = ''
@@ -656,14 +657,15 @@ def scan_host(address):
 	if any('unknown' in s for s in services):
 		services = run_amap(services)
 
-	if len(services) != 0:
-		info('Starting scan of services...')
+	if deepscan:
+		if len(services) != 0:
+			info('Starting scan of services...')
 
-	if os.path.exists(os.path.join(basedir, '0_untouched.txt')):
-		os.unlink(os.path.join(basedir, '0_untouched.txt'))
+		if os.path.exists(os.path.join(basedir, '0_untouched.txt')):
+			os.unlink(os.path.join(basedir, '0_untouched.txt'))
 
-	for service in services:
-		scan_service(*service)
+		for service in services:
+			scan_service(*service)
 
 
 if __name__ == '__main__':
@@ -677,6 +679,7 @@ if __name__ == '__main__':
 	parser.add_argument('-b', '--bruteforce', action='store_true', help='only bruteforce credentials with hydra')
 	parser.add_argument('-d', '--dry-run', action='store_true', help='does not invoke commands')
 	parser.add_argument('-p', '--parallel', action='store_true', help='runs multiple commands in parallel, if set')
+	parser.add_argument('-s', '--deep-scan', action='store_true', help='re-scans each service separately with broader settings')
 	parser.add_argument('-v', '--verbose', action='count', help='enable verbose output, repeat for more verbosity')
 	parser.add_argument('-n', '--name', action='store', help='name of the machine to append to the output name')
 	parser.add_argument('-o', '--output', action='store', default='results', help='output directory for the results')
@@ -689,6 +692,7 @@ if __name__ == '__main__':
 	verbose     = args.verbose if args.verbose is not None else 0
 	dryrun      = args.dry_run
 	bruteforce  = args.bruteforce
+	deepscan    = args.deep_scan
 	nmapparams  = args.nmap
 	hydraparams = args.hydra
 	srvname     = '_' + args.name if args.name else ''
