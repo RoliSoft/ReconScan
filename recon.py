@@ -686,14 +686,15 @@ if __name__ == '__main__':
 	parser.error = lambda s: s.fail(s[0].upper() + s[1:])
 	args = parser.parse_args()
 
-	s.outdir      = args.output
-	s.verbose     = args.verbose if args.verbose is not None else 0
-	s.dryrun      = args.dry_run
 	s.bruteforce  = args.bruteforce
+	s.dryrun      = args.dry_run
+	s.parallel    = args.parallel
 	s.deepscan    = args.deep_scan
+	s.verbose     = args.verbose if args.verbose is not None else 0
+	s.srvname     = '_' + args.name if args.name else ''
+	s.outdir      = args.output
 	s.nmapparams  = args.nmap
 	s.hydraparams = args.hydra
-	s.srvname     = '_' + args.name if args.name else ''
 
 	atexit.register(lambda: os.system('stty sane'))
 
