@@ -683,7 +683,7 @@ if __name__ == '__main__':
 	parser.add_argument('-o', '--output', action='store', default='results', help='output directory for the results')
 	parser.add_argument('--nmap', action='store', default='-Pn --min-rate=400 -T4 --script-timeout 10m', help='additional nmap arguments')
 	parser.add_argument('--hydra', action='store', default='-L data/users -P data/passwords -t 16 -f', help='additional hydra arguments')
-	parser.error = lambda s: s.fail(s[0].upper() + s[1:])
+	parser.error = lambda x: s.fail(x[0].upper() + x[1:])
 	args = parser.parse_args()
 
 	s.bruteforce  = args.bruteforce
