@@ -527,13 +527,34 @@ def update_database():
 def fuzzy_find_cpe(name, version=None):
 	conn.create_function('bm25', 2, bm25)
 
-	name = re.sub('\s\s*', ' ', name.lower()).strip().replace(' ', ' OR ')
+	if version is None:
+		# try to figure out if version is supplied
+
+		parts = re.split(r'\bv?(\d+(?:\.\d)?)', name, 1, re.I)
+
+		if len(parts) > 1:
+			name = parts[0]
+			version = ''.join(parts[1:])
+
+	name = re.sub('\s\s*', ' ', name.lower()).strip()#
 
 	if not version:
-		query  = 'select cpe, bm25(matchinfo(names, \'pcxnal\'), 1) as rank from names where name match ? and rank > 0 order by rank desc limit 1'
+		query  = 'select cpe, name, bm25(matchinfo(names, \'pcxnal\'), 1) as rank from names where name match ? and rank > 0 order by rank desc limit 10'
 		params = [name]
 	else:
-		query  = 'select cpe, bm25(matchinfo(names, \'pcxnal\'), 1) as rank from names where name match ? and name like ? and rank > 0 order by rank desc limit 1'
+		query  = 'select cpe, name, bm25(matchinfo(names, \'pcxnal\'), 1) as rank from names where name match ? and name like ? and rank > 0 order by rank desc limit 10'
+		params = [name, '%' + version + '%']
+
+	for row in c.execute(query, params):
+		return row[0]
+
+	# retry with laxer search
+
+	name = name.replace(' ', ' OR ')
+
+	if not version:
+		params = [name]
+	else:
 		params = [name, '%' + version + '%']
 
 	for row in c.execute(query, params):
