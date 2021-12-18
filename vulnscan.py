@@ -13,12 +13,14 @@ import re
 import sys
 import math
 import glob
+import gzip
 import struct
 import string
 import shutil
 import sqlite3
 import argparse
 import datetime
+import cysimdjson
 from lxml import etree
 from urllib import parse
 from libnmap.parser import NmapParser
@@ -132,20 +134,17 @@ def bm25(raw_match_info, column_index, k1 = 1.2, b = 0.75):
 # region Database update
 
 
-def download_archives(url, out, uncompress=True):
+def download_archives(url, out):
 	os.system('wget "' + url + '" -O "' + out + '"')
-
-	if uncompress:
-		os.system('gzip -v -d "' + out + '"')
 
 
 def download_nvd_dbs():
 	os.makedirs('nvd', exist_ok=True)
 
-	if os.path.exists('nvd/cpe-dict.xml') and (datetime.datetime.today() - datetime.datetime.fromtimestamp(os.path.getmtime('nvd/cpe-dict.xml'))).days > 1:
-		os.unlink('nvd/cpe-dict.xml')
+	if os.path.exists('nvd/cpe-dict.xml.gz') and (datetime.datetime.today() - datetime.datetime.fromtimestamp(os.path.getmtime('nvd/cpe-dict.xml.gz'))).days > 1:
+		os.unlink('nvd/cpe-dict.xml.gz')
 
-	if not os.path.exists('nvd/cpe-dict.xml'):
+	if not os.path.exists('nvd/cpe-dict.xml.gz'):
 		info('Downloading CPE dictionary...')
 		download_archives('https://static.nvd.nist.gov/feeds/xml/cpe/dictionary/official-cpe-dictionary_v2.3.xml.gz', 'nvd/cpe-dict.xml.gz')
 	else:
@@ -156,39 +155,38 @@ def download_nvd_dbs():
 
 	if not os.path.exists('nvd/cpe-aliases.lst'):
 		info('Downloading CPE aliases...')
-		download_archives('https://salsa.debian.org/dlange/debian_security_security-tracker_split_files_v2/-/raw/master/data/CPE/aliases ', 'nvd/cpe-aliases.lst', False)
+		download_archives('https://salsa.debian.org/dlange/debian_security_security-tracker_split_files_v2/-/raw/master/data/CPE/aliases', 'nvd/cpe-aliases.lst')
 	else:
 		debug('Not downloading CPE aliases: file is less than 24 hours old.')
 
 	currentyear = datetime.datetime.now().year
 
 	for year in range(2002, currentyear):
-		if os.path.exists('nvd/cve-items-' + str(year) + '.json'):
+		if os.path.exists('nvd/cve-items-' + str(year) + '.json.gz'):
 			debug('Not downloading CVE entries for year {year}: file already exists.')
 			continue
 
 		info('Downloading CVE entries for year {year}...')
 		download_archives('https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-' + str(year) + '.json.gz', 'nvd/cve-items-' + str(year) + '.json.gz')
 
-	if os.path.exists('nvd/cve-items-' + str(currentyear) + '.json') and (datetime.datetime.today() - datetime.datetime.fromtimestamp(os.path.getmtime('nvd/cve-items-' + str(currentyear) + '.json'))).days > 1:
-		os.unlink('nvd/cve-items-' + str(currentyear) + '.json')
+	if os.path.exists('nvd/cve-items-' + str(currentyear) + '.json.gz') and (datetime.datetime.today() - datetime.datetime.fromtimestamp(os.path.getmtime('nvd/cve-items-' + str(currentyear) + '.json.gz'))).days > 1:
+		os.unlink('nvd/cve-items-' + str(currentyear) + '.json.gz')
 
-	if not os.path.exists('nvd/cve-items-' + str(currentyear) + '.json'):
+	if not os.path.exists('nvd/cve-items-' + str(currentyear) + '.json.gz'):
 		info('Downloading CVE entries for year {currentyear}...')
 		download_archives('https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-' + str(currentyear) + '.json.gz', 'nvd/cve-items-' + str(currentyear) + '.json.gz')
 	else:
 		debug('Not downloading CVE entries for year {currentyear}: file is less than 24 hours old.')
 
 
-def parse_nvd_dbs():
-	info('Initiating XML parsing...')
-
+def parse_cpe_names():
 	names = []
 
-	info('Parsing file {bgreen}nvd/cpe-dict.xml{rst}...')
+	info('Parsing file {bgreen}nvd/cpe-dict.xml.gz{rst}...')
 
-	tree = etree.parse('nvd/cpe-dict.xml')
-	root = tree.getroot()
+	root = None
+	with gzip.open('nvd/cpe-dict.xml.gz', 'r') as f:
+		root = etree.fromstring(f.read())
 
 	for entry in root.findall('{http://cpe.mitre.org/dictionary/2.0}cpe-item'):
 		name = parse.unquote(entry.attrib['name'][5:])
@@ -203,6 +201,9 @@ def parse_nvd_dbs():
 
 			names.append([name, title.text])
 
+	return names
+
+def parse_cpe_aliases():
 	aliases = []
 
 	info('Parsing file {bgreen}nvd/cpe-aliases.lst{rst}...')
@@ -221,6 +222,11 @@ def parse_nvd_dbs():
 				continue
 
 			alias_group.append(parse.unquote(line.strip()[5:]))
+
+	return aliases
+
+def parse_exploits():
+	# TODO refactor this to use one code path for all lists
 
 	exploitdb_names = None
 	exploitdb_map = None
@@ -320,67 +326,53 @@ def parse_nvd_dbs():
 
 					l337day_map[cve].append(fields[0])
 
+	return (exploitdb_names, exploitdb_map, secfocus_names, secfocus_map, metasploit_names, metasploit_map, l337day_names, l337day_map)
+
+def parse_cve_items(exploits):
+	(exploitdb_names, exploitdb_map, secfocus_names, secfocus_map, metasploit_names, metasploit_map, l337day_names, l337day_map) = exploits;
+
 	vulns = []
 
-	for file in glob.glob('nvd/cve-items-*.xml'):
+	parser = cysimdjson.JSONParser()
+	entries = None
+
+	for file in sorted(glob.glob('nvd/cve-items-*.json.gz')):
 		info('Parsing file {bgreen}{file}{rst}...')
 
-		tree = etree.parse(file)
-		root = tree.getroot()
+		with gzip.open(file, 'rb') as f:
+			entries = parser.parse_in_place(f.read()).at_pointer('/CVE_Items')
 
-		for entry in root.findall('{http://scap.nist.gov/schema/feed/vulnerability/2.0}entry'):
+		for entry in entries:
 			vuln = {'id': None, 'date': None, 'description': None, 'availability': None, 'affected': [], 'vendor': [], '_exploitdb': [], '_securityfocus': [], '_metasploit': [], '_l337day': []}
 
-			id = entry.find('{http://scap.nist.gov/schema/vulnerability/0.4}cve-id')
-			if id is not None:
-				vuln['id'] = id.text[4:]
+			vuln['id'] = entry['cve']['CVE_data_meta']['ID']
+			vuln['date'] = entry['publishedDate']
+			vuln['description'] = entry['cve']['description']['description_data'][0]['value']
 
-			date = entry.find('{http://scap.nist.gov/schema/vulnerability/0.4}published-datetime')
-			if date is not None:
-				vuln['date'] = date.text
+			if 'baseMetricV2' in entry['impact']:
+				vuln['availability'] = entry['impact']['baseMetricV2']['cvssV2']['accessComplexity']
+			
+			# TODO implement proper matching for CPEs with provided operators
+			for node in entry['configurations']['nodes']:
+				for child in node['children']:
+					for cpe in child['cpe_match']:
+						vuln['affected'].append(cpe['cpe23Uri'])
 
-			description = entry.find('{http://scap.nist.gov/schema/vulnerability/0.4}summary')
-			if description is not None:
-				vuln['description'] = description.text
+			for reference in entry['cve']['references']['reference_data']:
+				url = reference['url']
+				source = reference['refsource']
+				tags = reference['tags']
 
-			cvss = entry.find('{http://scap.nist.gov/schema/vulnerability/0.4}cvss')
-			if cvss is not None:
-				metrics = cvss.find('{http://scap.nist.gov/schema/cvss-v2/0.2}base_metrics')
-				if metrics is not None:
-					availability = metrics.find('{http://scap.nist.gov/schema/cvss-v2/0.2}availability-impact')
-					if availability is not None:
-						vuln['availability'] = availability.text[0]
+				if 'Vendor Advisory' in tags:
+					vuln['vendor'].append(url)
 
-			affected = entry.find('{http://scap.nist.gov/schema/vulnerability/0.4}vulnerable-software-list')
-			if affected is not None:
-				for item in affected:
-					vuln['affected'].append(parse.unquote(item.text[5:]))
+				elif source == 'EXPLOIT-DB':
+					vuln['_exploitdb'].append(url)
+				
+				elif source == 'BID':
+					vuln['_securityfocus'].append(url)
 
-			references = entry.findall('{http://scap.nist.gov/schema/vulnerability/0.4}references')
-			if references is not None:
-				for reference in references:
-					reftype   = reference.attrib['reference_type']
-					refsource = None
-					reflink   = None
-
-					source = reference.find('{http://scap.nist.gov/schema/vulnerability/0.4}source')
-					if source is not None:
-						refsource = source.text
-
-					link = reference.find('{http://scap.nist.gov/schema/vulnerability/0.4}reference')
-					if link is not None:
-						if reftype == 'VENDOR_ADVISORY' and refsource != 'BID' and refsource != 'EXPLOIT-DB':
-							reflink = link.attrib['href']
-						else:
-							reflink = link.text
-
-					if refsource == 'EXPLOIT-DB':
-						vuln['_exploitdb'].append(reflink)
-					elif refsource == 'BID':
-						vuln['_securityfocus'].append(reflink)
-					elif reftype == 'VENDOR_ADVISORY':
-						vuln['vendor'].append(reflink)
-
+			# TODO refactor this to use one code path for all lists
 			if exploitdb_map is not None and vuln['id'] in exploitdb_map:
 				for expid in exploitdb_map[vuln['id']]:
 					vuln['_exploitdb'].append(expid)
@@ -444,7 +436,7 @@ def parse_nvd_dbs():
 
 	info('Extracted {byellow}{vulncount:,}{rst} vulnerabilites.', vulncount=len(vulns))
 
-	return names, aliases, vulns
+	return vulns
 
 
 def create_vulndb(names, aliases, vulns):
@@ -471,7 +463,7 @@ def create_vulndb(names, aliases, vulns):
 		id = c.lastrowid
 
 		for affected in vuln['affected']:
-			c.execute('insert into affected (vuln_id, cpe) values (?, ?)', [id, affected])
+			c.execute('insert into affected (vuln_id, cpe) values (?, ?)', [id, affected[8:]])
 
 		if 'exploitdb' in vuln:
 			for exploit in vuln['exploitdb']:
@@ -518,7 +510,12 @@ def create_vulndb(names, aliases, vulns):
 
 def update_database():
 	download_nvd_dbs()
-	(names, aliases, vulns) = parse_nvd_dbs()
+
+	names    = parse_cpe_names()
+	aliases  = parse_cpe_aliases()
+	exploits = parse_exploits()
+	vulns    = parse_cve_items(exploits)
+
 	create_vulndb(names, aliases, vulns)
 
 
