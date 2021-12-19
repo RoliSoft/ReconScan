@@ -15,7 +15,6 @@ import math
 import glob
 import gzip
 import struct
-import string
 import shutil
 import sqlite3
 import argparse
@@ -24,77 +23,14 @@ import cysimdjson
 from lxml import etree
 from urllib import parse
 from libnmap.parser import NmapParser
-from colorama import init, Fore, Back, Style
-
-init()
+from lib.colors import debug, info, warn, error, fail, tally
 
 dumpall = False
 dumpexp = False
+verbose = False
 conn = None
 c = None
 
-# region Colors
-
-
-def cprint(*args, color=Fore.RESET, char='*', sep=' ', end='\n', frame_index=1, file=sys.stdout, **kvargs):
-	frame = sys._getframe(frame_index)
-
-	vals = {
-		'bgreen':  Fore.GREEN  + Style.BRIGHT,
-		'bred':    Fore.RED    + Style.BRIGHT,
-		'bblue':   Fore.BLUE   + Style.BRIGHT,
-		'byellow': Fore.YELLOW + Style.BRIGHT,
-
-		'green':  Fore.GREEN,
-		'red':    Fore.RED,
-		'blue':   Fore.BLUE,
-		'yellow': Fore.YELLOW,
-
-		'bright': Style.BRIGHT,
-		'srst':   Style.NORMAL,
-		'crst':   Fore.RESET,
-		'rst':    Style.NORMAL + Fore.RESET
-	}
-
-	vals.update(frame.f_globals)
-	vals.update(frame.f_locals)
-	vals.update(kvargs)
-
-	unfmt = ''
-	if char is not None:
-		unfmt += color + '[' + Style.BRIGHT + char + Style.NORMAL + ']' + Fore.RESET + sep
-	unfmt += sep.join(args)
-
-	fmted = string.Formatter().vformat(unfmt, args, vals)
-	print(fmted, sep=sep, end=end, file=file)
-
-
-def debug(*args, color=Fore.BLUE, sep=' ', end='\n', file=sys.stdout, **kvargs):
-	cprint(*args, color=color, char='-', sep=sep, end=end, file=file, frame_index=2, **kvargs)
-
-
-def info(*args, sep=' ', end='\n', file=sys.stdout, **kvargs):
-	cprint(*args, color=Fore.GREEN, char='*', sep=sep, end=end, file=file, frame_index=2, **kvargs)
-
-
-def warn(*args, sep=' ', end='\n', file=sys.stderr, **kvargs):
-	cprint(*args, color=Fore.YELLOW, char='!', sep=sep, end=end, file=file, frame_index=2, **kvargs)
-
-
-def error(*args, sep=' ', end='\n', file=sys.stderr, **kvargs):
-	cprint(*args, color=Fore.RED, char='!', sep=sep, end=end, file=file, frame_index=2, **kvargs)
-
-
-def fail(*args, sep=' ', end='\n', file=sys.stderr, **kvargs):
-	cprint(*args, color=Fore.RED, char='!', sep=sep, end=end, file=file, frame_index=2, **kvargs)
-	exit(-1)
-
-
-def liprint(*args, color=Fore.BLUE, char='>>>', sep=' ', end='\n', file=sys.stdout, **kvargs):
-	cprint(color + '{bright}' + char + '{rst}', *args, char=None, sep=sep, end=end, file=file, frame_index=2, **kvargs)
-
-
-# endregion
 
 # region SQLite3 extensions
 
@@ -345,7 +281,7 @@ def parse_cve_items(exploits):
 		for entry in entries:
 			vuln = {'id': None, 'date': None, 'description': None, 'availability': None, 'affected': [], 'vendor': [], '_exploitdb': [], '_securityfocus': [], '_metasploit': [], '_l337day': []}
 
-			vuln['id'] = entry['cve']['CVE_data_meta']['ID']
+			vuln['id'] = entry['cve']['CVE_data_meta']['ID'][4:]
 			vuln['date'] = entry['publishedDate']
 			vuln['description'] = entry['cve']['description']['description_data'][0]['value']
 
@@ -509,14 +445,14 @@ def create_vulndb(names, aliases, vulns):
 
 
 def update_database():
-	download_nvd_dbs()
+	#download_nvd_dbs()
 
-	names    = parse_cpe_names()
-	aliases  = parse_cpe_aliases()
+	#names    = parse_cpe_names()
+	#aliases  = parse_cpe_aliases()
 	exploits = parse_exploits()
 	vulns    = parse_cve_items(exploits)
 
-	create_vulndb(names, aliases, vulns)
+	#create_vulndb(names, aliases, vulns)
 
 
 # endregion
@@ -576,8 +512,14 @@ def get_cpe_aliases(cpe):
 
 		if version:
 			alias += ':' + version
-
+		
 		aliases.append(alias)
+
+	if verbose:
+		if len(aliases) > 0:
+			debug('Resolved aliases: {byellow}cpe:/' + ('{rst}, {byellow}cpe:/'.join(aliases)) + '{rst}.')
+		else:
+			debug('No known aliases.')
 
 	return aliases
 
@@ -665,7 +607,7 @@ def get_vulns_cli(cpe):
 
 		descr = re.sub(r'\b(denial.of.service|execute|arbitrary|code|overflow|gain|escalate|privileges?)\b', r'{bgreen}\1{rst}', descr)
 
-		liprint(color + '{bright}CVE-{vuln[0]}{rst} ' + descr)
+		tally(color + '{bright}CVE-{vuln[0]}{rst} ' + descr)
 
 	exploits = get_exploits(cves)
 
@@ -678,7 +620,7 @@ def get_vulns_cli(cpe):
 		for exploit in exploits:
 			if last_cve != exploit[2]:
 				if last_cve:
-					liprint('{bred}CVE-{last_cve}{rst} ' + descr)
+					tally('{bred}CVE-{last_cve}{rst} ' + descr)
 					descr = ''
 
 				last_cve = exploit[2]
@@ -698,7 +640,7 @@ def get_vulns_cli(cpe):
 			else:
 				descr += exploit[1]
 
-		liprint('{bred}CVE-{last_cve}{rst} ' + descr)
+		tally('{bred}CVE-{last_cve}{rst} ' + descr)
 	else:
 		info('Entry {byellow}{cpe}{rst} has no public exploits.')
 
@@ -744,6 +686,7 @@ if __name__ == '__main__':
 	parser.add_argument('-a', '--all', action='store_true', help='dump all vulnerabilities for a CPE when no version is included (off by default)')
 	parser.add_argument('-e', '--exploits', action='store_true', help='dump only vulnerabilities with public exploits available')
 	parser.add_argument('-u', '--update', action='store_true', help='download the CVE dumps and recreate the local database')
+	parser.add_argument('-v', '--verbose', action='store_true', help='increase verbosity')
 	parser.error = lambda s: fail(s[0].upper() + s[1:])
 	args = parser.parse_args()
 
@@ -757,6 +700,7 @@ if __name__ == '__main__':
 
 	dumpall = args.all
 	dumpexp = args.exploits
+	verbose = args.verbose
 
 	if not os.path.isfile('vulns.db'):
 		fail('Failed to find {bgreen}vulns.db{rst}. Use {bblue}-u{rst} to download the dependencies and build the database.')
@@ -779,7 +723,7 @@ if __name__ == '__main__':
 		if cpe is None:
 			error('Failed to resolve query to a CPE name.')
 		else:
-			info('Fuzzy-matched query to name {byellow}cpe:/{cpe}{rst}')
+			info('Fuzzy-matched query to name {byellow}cpe:/{cpe}{rst}.')
 			get_vulns_cli(cpe)
 
 	conn.close()
