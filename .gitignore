@@ -2,6 +2,7 @@
 /results/
 /nvd/
 /vulns.db
+/precon.conf
 
 ### Python ###
 # Byte-compiled / optimized / DLL files

@@ -19,7 +19,7 @@ import multiprocessing
 from libnmap.parser import NmapParser
 from lib.colors import debug, info, warn, error, fail, e, Style, Fore
 
-class scanner:
+class ActiveScanner:
 	verbose     = 0
 	dryrun      = False
 	deepscan    = False
@@ -586,7 +586,7 @@ class scanner:
 
 
 if __name__ == '__main__':
-	s = scanner()
+	s = ActiveScanner()
 
 	if 'COLUMNS' not in os.environ:
 		os.environ['COLUMNS'] = str(shutil.get_terminal_size((80, 20)).columns)
