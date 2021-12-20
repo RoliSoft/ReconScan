@@ -79,8 +79,18 @@ class ShodanAPI(APIBase):
 		return data
 
 	def enum(self, data):
+		result = []
 		for svc in data['data']:
-			info('Discovered service {bgreen}{svc[_shodan][module]}{rst} on port {bgreen}{svc[port]}{rst}/{bgreen}{svc[transport]}{rst}.')
+			result.append({
+				'port': svc['port'],
+				'service': svc['_shodan']['module'],
+				'transport': svc['transport'],
+				'banner': svc['data'], # TODO insert html from html/html and others?
+				'product': svc['product'], # TODO separate webapp name in info?
+				'version': svc.get('version', None),
+				'cpe': svc.get('cpe23', None)
+			})
+		return result
 
 
 class CensysAPI(APIBase):
@@ -106,9 +116,18 @@ class CensysAPI(APIBase):
 		return data['result'] if 'result' in data else None
 
 	def enum(self, data):
+		result = []
 		for svc in data['services']:
-			info('Discovered service {bgreen}{service}{rst} on port {bgreen}{svc[port]}{rst}/{bgreen}{transport}{rst}.',
-				service=svc['service_name'].lower(), transport=svc['transport_protocol'].lower())
+			result.append({
+				'port': svc['port'],
+				'service': svc['service_name'].lower(),
+				'transport': svc['transport_protocol'].lower(),
+				'banner': svc['banner'],
+				'product': svc['software'][0].get('product', None),
+				'version': svc['software'][0].get('version', None),
+				'cpe': svc['software'][0].get('uniform_resource_identifier', None)
+			})
+		return result
 
 
 class ZoomEyeAPI(APIBase):
@@ -137,9 +156,17 @@ class ZoomEyeAPI(APIBase):
 		return data
 
 	def enum(self, data):
+		result = []
 		for svc in data['matches']:
-			info('Discovered service {bgreen}{svc[portinfo][service]}{rst} on port {bgreen}{svc[portinfo][port]}{rst}/{bgreen}{transport}{rst}.',
-				transport=svc['protocol']['transport'] or 'tcp')
+			result.append({
+				'port': svc['portinfo']['port'],
+				'service': svc['portinfo']['service'],
+				'transport': svc['protocol']['transport'] or 'tcp',
+				'banner': svc['portinfo']['banner'],
+				'product': svc['portinfo'].get('product', None),
+				'version': svc['portinfo'].get('version', None)
+			})
+		return result
 
 
 class LeakIXAPI(APIBase):
@@ -164,16 +191,25 @@ class LeakIXAPI(APIBase):
 		return data
 
 	def enum(self, data):
-		ports = set()
-		
+		result = []
+		ports  = set()
+
 		for svc in data['Services']:
 			if svc['port'] in ports:
 				continue
 			
 			ports.add(svc['port'])
 
-			info('Discovered service {bgreen}{svc[protocol]}{rst} on port {bgreen}{svc[port]}{rst}/{bgreen}{svc[transport][0]}{rst}.')
+			result.append({
+				'port': svc['port'],
+				'service': svc['protocol'],
+				'transport': svc['transport'][0],
+				'banner': svc['summary'],
+				'product': svc['service']['software']['name'],
+				'version': svc['service']['software']['version']
+			})
 
+		return result
 
 # endregion
 
@@ -229,8 +265,18 @@ class ShodanWeb(WebBase):
 		return data
 
 	def enum(self, data):
+		result = []
 		for svc in data['data']:
-			info('Discovered service {bgreen}{svc[_shodan][module]}{rst} on port {bgreen}{svc[port]}{rst}/{bgreen}{svc[transport]}{rst}.')
+			result.append({
+				'port': svc['port'],
+				'service': svc['_shodan']['module'],
+				'transport': svc['transport'],
+				'banner': svc['data'], # TODO insert html from html/html and others?
+				'product': svc['product'], # TODO separate webapp name in info?
+				'version': svc.get('version', None),
+				'cpe': svc.get('cpe23', None)
+			})
+		return result
 
 
 class CensysWeb(WebBase):
@@ -264,9 +310,18 @@ class CensysWeb(WebBase):
 		return data
 
 	def enum(self, data):
+		result = []
 		for svc in data['services']:
-			info('Discovered service {bgreen}{service}{rst} on port {bgreen}{svc[port]}{rst}/{bgreen}{transport}{rst}.',
-				service=svc['service_name'].lower(), transport=svc['transport_protocol'].lower())
+			result.append({
+				'port': svc['port'],
+				'service': svc['service_name'].lower(),
+				'transport': svc['transport_protocol'].lower(),
+				'banner': svc['banner'],
+				'product': svc['software'][0].get('product', None),
+				'version': svc['software'][0].get('version', None),
+				'cpe': svc['software'][0].get('uniform_resource_identifier', None)
+			})
+		return result
 
 
 class ZoomEyeWeb(WebBase):
@@ -336,9 +391,17 @@ class ZoomEyeWeb(WebBase):
 		return data
 
 	def enum(self, data):
+		result = []
 		for svc in data['ports']:
-			info('Discovered service {bgreen}{svc[service]}{rst} on port {bgreen}{svc[port]}{rst}/{bgreen}{transport}{rst}.',
-				transport=svc['transport'] or 'tcp')
+			result.append({
+				'port': svc['port'],
+				'service': svc['service'],
+				'transport': svc['transport'] or 'tcp',
+				'banner': svc['banner'],
+				'product': svc['product'],
+				'version': svc['version']
+			})
+		return result
 
 
 class LeakIXWeb(WebBase):
@@ -425,8 +488,17 @@ class LeakIXWeb(WebBase):
 		return data
 
 	def enum(self, data):
+		result = []
 		for svc in data:
-			info('Discovered service {bgreen}{svc[transport]}{rst} on port {bgreen}{svc[port]}{rst}/{bgreen}{svc[transport]}{rst}.')
+			result.append({
+				'port': svc['port'],
+				'service': None,
+				'transport': svc['transport'],
+				'banner': svc['banner'],
+				'product': svc['product'],
+				'version': svc['version']
+			})
+		return result
 
 # endregion
 
@@ -455,7 +527,8 @@ class PassiveScanner:
 		basedir = os.path.join(self.outdir, address)
 		os.makedirs(basedir, exist_ok=True)
 
-		scanners = [ShodanAPI(), CensysAPI(), ZoomEyeAPI(), LeakIXAPI()]#[ShodanWeb(), CensysWeb(), ZoomEyeWeb(), LeakIXWeb()]
+		#scanners = [ShodanAPI(), CensysAPI(), ZoomEyeAPI(), LeakIXAPI()]
+		scanners = [ShodanWeb(), CensysWeb(), ZoomEyeWeb(), LeakIXWeb()]
 
 		for scanner in scanners:
 			name   = scanner.name()
@@ -480,7 +553,10 @@ class PassiveScanner:
 				error('Failed to get passive scan data for {byellow}{address}{rst}.')
 				continue
 
-			scanner.enum(result)
+			parsed = scanner.enum(result)
+			
+			for svc in parsed:
+				info('Discovered service {bgreen}{svc[service]}{rst} on port {bgreen}{svc[port]}{rst}/{bgreen}{svc[transport]}{rst} running {bgreen}{svc[product]}{rst}/{bgreen}{svc[version]}{rst}.')
 
 
 if __name__ == '__main__':
