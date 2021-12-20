@@ -21,19 +21,184 @@ from lxml import etree
 from lib.colors import debug, info, warn, error, fail
 
 
-class WebBase:
+# region Base
+
+class PassiveBase:
 	_config = None
 
 	def __init__(self) -> None:
-		if WebBase._config is None and os.path.isfile('precon.conf'):
-			WebBase._config = configparser.RawConfigParser()
-			WebBase._config.read('precon.conf')
+		if PassiveBase._config is None and os.path.isfile('precon.conf'):
+			PassiveBase._config = configparser.RawConfigParser()
+			PassiveBase._config.read('precon.conf')
 
 	def config(self, key):
-		if WebBase._config is not None and self.__class__.__name__ in WebBase._config and key in WebBase._config[self.__class__.__name__]:
-			return WebBase._config[self.__class__.__name__][key]
+		if PassiveBase._config is not None and self.__class__.__name__ in PassiveBase._config and key in PassiveBase._config[self.__class__.__name__]:
+			return PassiveBase._config[self.__class__.__name__][key]
 		else:
 			return None
+
+# endregion
+
+# region API implementations
+
+class APIBase(PassiveBase):
+	def headers(self, apiKey = None):
+		headers = {
+			'User-Agent': 'ReconScan/1 (https://github.com/RoliSoft/ReconScan)',
+			'Accept': 'application/json'
+		}
+
+		if apiKey is not None:
+			headers['Api-Key'] = apiKey
+
+		return headers
+
+
+class ShodanAPI(APIBase):
+	def name(self):
+		return "Shodan"
+
+	def get(self, address):
+		req = requests.get('https://api.shodan.io/shodan/host/' + address,
+			headers = self.headers(),
+			params = (
+				('key', self.config('key')),
+			))
+
+		if req.status_code != 200:
+			error('Failed to get {bblue}Shodan{rst}/{byellow}{address}{rst}: status code is {bred}{req.status_code}{rst}.')
+			return None
+
+		data = None
+		try:
+			data = yaml.load(req.text, Loader=yaml.FullLoader)
+		except:
+			error('Failed to get {bblue}Shodan{rst}/{byellow}{address}{rst}: failed to parse data.')
+			return None
+
+		return data
+
+	def enum(self, data):
+		for svc in data['data']:
+			info('Discovered service {bgreen}{svc[_shodan][module]}{rst} on port {bgreen}{svc[port]}{rst}/{bgreen}{svc[transport]}{rst}.')
+
+
+class CensysAPI(APIBase):
+	def name(self):
+		return "Censys"
+
+	def get(self, address):
+		req = requests.get('https://search.censys.io/api/v2/hosts/' + address,
+			headers = self.headers(),
+			auth = (self.config('id'), self.config('secret')))
+
+		if req.status_code != 200:
+			error('Failed to get {bblue}Censys{rst}/{byellow}{address}{rst}: status code is {bred}{req.status_code}{rst}.')
+			return None
+
+		data = None
+		try:
+			data = yaml.load(req.text, Loader=yaml.FullLoader)
+		except:
+			error('Failed to get {bblue}Censys{rst}/{byellow}{address}{rst}: failed to parse data.')
+			return None
+
+		return data['result'] if 'result' in data else None
+
+	def enum(self, data):
+		for svc in data['services']:
+			info('Discovered service {bgreen}{service}{rst} on port {bgreen}{svc[port]}{rst}/{bgreen}{transport}{rst}.',
+				service=svc['service_name'].lower(), transport=svc['transport_protocol'].lower())
+
+
+class ZoomEyeAPI(APIBase):
+	def name(self):
+		return "ZoomEye"
+
+	def get(self, address):
+		req = requests.get('https://api.zoomeye.org/host/search',
+			headers = self.headers(self.config('key')),
+			params = (
+				('query', address),
+				('sub_type', 'all')
+			))
+
+		if req.status_code != 200:
+			error('Failed to get {bblue}ZoomEye{rst}/{byellow}{address}{rst}: status code is {bred}{req.status_code}{rst}.')
+			return None
+
+		data = None
+		try:
+			data = yaml.load(req.text, Loader=yaml.FullLoader)
+		except:
+			error('Failed to get {bblue}ZoomEye{rst}/{byellow}{address}{rst}: failed to parse data.')
+			return None
+
+		return data
+
+	def enum(self, data):
+		for svc in data['matches']:
+			info('Discovered service {bgreen}{svc[portinfo][service]}{rst} on port {bgreen}{svc[portinfo][port]}{rst}/{bgreen}{transport}{rst}.',
+				transport=svc['protocol']['transport'] or 'tcp')
+
+
+class LeakIXAPI(APIBase):
+	def name(self):
+		return "LeakIX"
+
+	def get(self, address):
+		req = requests.get('https://leakix.net/host/' + address,
+			headers = self.headers(self.config('key')))
+
+		if req.status_code != 200:
+			error('Failed to get {bblue}LeakIX{rst}/{byellow}{address}{rst}: status code is {bred}{req.status_code}{rst}.')
+			return None
+
+		data = None
+		try:
+			data = yaml.load(req.text, Loader=yaml.FullLoader)
+		except:
+			error('Failed to get {bblue}LeakIX{rst}/{byellow}{address}{rst}: failed to parse data.')
+			return None
+
+		return data
+
+	def enum(self, data):
+		ports = set()
+		
+		for svc in data['Services']:
+			if svc['port'] in ports:
+				continue
+			
+			ports.add(svc['port'])
+
+			info('Discovered service {bgreen}{svc[protocol]}{rst} on port {bgreen}{svc[port]}{rst}/{bgreen}{svc[transport][0]}{rst}.')
+
+
+# endregion
+
+# region Fallback scrapers
+
+class WebBase(PassiveBase):
+	def headers(self, referrer, authority):
+		return {
+			'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36',
+			'Cookie': self.config('cookies'),
+			'Referer': referrer,
+			'Authority': authority,
+			'Pragma': 'no-cache',
+			'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+			'Accept-Language': 'en-US,en;q=0.9',
+			'Cache-Control': 'no-cache',
+			'Sec-Ch-Ua': '" Not A;Brand";v="99", "Chromium";v="96", "Google Chrome";v="96"',
+			'Sec-Ch-Ua-Mobile': '?0',
+			'Sec-Ch-Ua-Platform': '"macOS"',
+			'Sec-Fetch-Site': 'same-origin',
+			'Sec-Fetch-Mode': 'navigate',
+			'Sec-Fetch-User': '?1',
+			'Sec-Fetch-Dest': 'document',
+			'Upgrade-Insecure-Requests': '1'
+		}
 
 
 class ShodanWeb(WebBase):
@@ -41,26 +206,9 @@ class ShodanWeb(WebBase):
 		return "Shodan"
 
 	def get(self, address):
-		headers = {
-			'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36',
-			'cookie': self.config('cookies'),
-			'referer': 'https://www.shodan.io/host/' + address,
-			'authority': 'www.shodan.io',
-			'pragma': 'no-cache',
-			'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-			'accept-language': 'en-US,en;q=0.9',
-			'cache-control': 'no-cache',
-			'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="96", "Google Chrome";v="96"',
-			'sec-ch-ua-mobile': '?0',
-			'sec-ch-ua-platform': '"macOS"',
-			'sec-fetch-site': 'same-origin',
-			'sec-fetch-mode': 'navigate',
-			'sec-fetch-user': '?1',
-			'sec-fetch-dest': 'document',
-			'upgrade-insecure-requests': '1'
-		}
+		req = requests.get('https://www.shodan.io/host/' + address + '/raw',
+			headers = self.headers('https://www.shodan.io/host/' + address, 'www.shodan.io'))
 
-		req = requests.get('https://www.shodan.io/host/' + address + '/raw', headers=headers)
 		if req.status_code != 200:
 			error('Failed to get {bblue}Shodan{rst}/{byellow}{address}{rst}: status code is {bred}{req.status_code}{rst}.')
 			return None
@@ -90,26 +238,9 @@ class CensysWeb(WebBase):
 		return "Censys"
 
 	def get(self, address):
-		headers = {
-			'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36',
-			'cookie': self.config('cookies'),
-			'referer': 'https://search.censys.io/hosts/' + address,
-			'authority': 'search.censys.io',
-			'pragma': 'no-cache',
-			'cache-control': 'no-cache',
-			'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-			'accept-language': 'en-US,en;q=0.9',
-			'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="96", "Google Chrome";v="96"',
-			'sec-ch-ua-mobile': '?0',
-			'sec-ch-ua-platform': '"macOS"',
-			'sec-fetch-site': 'same-origin',
-			'sec-fetch-mode': 'navigate',
-			'sec-fetch-user': '?1',
-			'sec-fetch-dest': 'document',
-			'upgrade-insecure-requests': '1'
-		}
+		req = requests.get('https://search.censys.io/hosts/' + address + '/data/json',
+			headers = self.headers('https://search.censys.io/hosts/' + address, 'search.censys.io'))
 
-		req = requests.get('https://search.censys.io/hosts/' + address + '/data/json', headers=headers)
 		if req.status_code != 200:
 			error('Failed to get {bblue}Censys{rst}/{byellow}{address}{rst}: status code is {bred}{req.status_code}{rst}.')
 			return None
@@ -143,32 +274,15 @@ class ZoomEyeWeb(WebBase):
 		return "ZoomEye"
 
 	def get(self, address):
-		headers = {
-			'Connection': 'keep-alive',
-			'Pragma': 'no-cache',
-			'Cache-Control': 'no-cache',
-			'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="96", "Google Chrome";v="96"',
-			'Accept': 'application/json, text/plain, */*',
-			'Cube-Authorization': 'undefined',
-			'sec-ch-ua-mobile': '?0',
-			'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36',
-			'Cookie': self.config('cookies'),
-			'sec-ch-ua-platform': '"macOS"',
-			'Sec-Fetch-Site': 'same-origin',
-			'Sec-Fetch-Mode': 'cors',
-			'Sec-Fetch-Dest': 'empty',
-			'Referer': 'https://www.zoomeye.org/searchResult?q=ip%3A%22' + address + '%22',
-			'Accept-Language': 'en-US,en;q=0.9',
-		}
+		req = requests.get('https://www.zoomeye.org/search',
+			headers = self.headers('https://www.zoomeye.org/searchResult?q=ip%3A%22' + address + '%22', 'www.zoomeye.org'),
+			params = (
+				('q', 'ip%3A%22' + address + '%22'),
+				('page', '1'),
+				('pageSize', '20'),
+				('t', 'v4+v6+web'),
+			))
 
-		params = (
-			('q', 'ip%3A%22' + address + '%22'),
-			('page', '1'),
-			('pageSize', '20'),
-			('t', 'v4+v6+web'),
-		)
-
-		req = requests.get('https://www.zoomeye.org/search', headers=headers, params=params)
 		if req.status_code != 200:
 			error('Failed to get {bblue}ZoomEye{rst}/{byellow}{address}{rst}: status code is {bred}{req.status_code}{rst}.')
 			return None
@@ -202,13 +316,12 @@ class ZoomEyeWeb(WebBase):
 		token = host_token if host_token is not None else web_token
 		type  = 'host' if host_token is not None else 'web'
 	
-		headers['Referer'] = 'https://www.zoomeye.org/searchDetail?type=' + type + '&title=' + token
+		req = requests.get('https://www.zoomeye.org/' + type + '/details/' + token,
+			headers = self.headers('https://www.zoomeye.org/searchDetail?type=' + type + '&title=' + token, 'www.zoomeye.org'),
+			params = (
+				('from', 'detail'),
+			))
 
-		params = (
-			('from', 'detail'),
-		)
-
-		req = requests.get('https://www.zoomeye.org/' + type + '/details/' + token, headers=headers, params=params)
 		if req.status_code != 200:
 			error('Failed to get {bblue}ZoomEye{rst}/{byellow}{address}{rst}: status code is {bred}{req.status_code}{rst}.')
 			return None
@@ -233,26 +346,9 @@ class LeakIXWeb(WebBase):
 		return "LeakIX"
 
 	def get(self, address):
-		headers = {
-			'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36',
-			'cookie': self.config('cookies'),
-			'referer': 'https://leakix.net/search?scope=service&q=' + address,
-			'authority': 'leakix.net',
-			'pragma': 'no-cache',
-			'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-			'accept-language': 'en-US,en;q=0.9',
-			'cache-control': 'no-cache',
-			'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="96", "Google Chrome";v="96"',
-			'sec-ch-ua-mobile': '?0',
-			'sec-ch-ua-platform': '"macOS"',
-			'sec-fetch-site': 'same-origin',
-			'sec-fetch-mode': 'navigate',
-			'sec-fetch-user': '?1',
-			'sec-fetch-dest': 'document',
-			'upgrade-insecure-requests': '1'
-		}
+		req = requests.get('https://leakix.net/host/' + address,
+			headers = self.headers('https://leakix.net/search?scope=service&q=' + address, 'leakix.net'))
 
-		req = requests.get('https://leakix.net/host/' + address, headers=headers)
 		if req.status_code != 200:
 			error('Failed to get {bblue}LeakIX{rst}/{byellow}{address}{rst}: status code is {bred}{req.status_code}{rst}.')
 			return None
@@ -332,6 +428,8 @@ class LeakIXWeb(WebBase):
 		for svc in data:
 			info('Discovered service {bgreen}{svc[transport]}{rst} on port {bgreen}{svc[port]}{rst}/{bgreen}{svc[transport]}{rst}.')
 
+# endregion
+
 
 class PassiveScanner:
 	verbose = 0
@@ -349,7 +447,7 @@ class PassiveScanner:
 
 	def has_cached_result(self, address, service):
 		file = os.path.join(self.outdir, address, service + '.json')
-		return os.path.isfile(file) and (datetime.datetime.today() - datetime.datetime.fromtimestamp(os.path.getmtime(file))).days < 1
+		return os.path.isfile(file)# and (datetime.datetime.today() - datetime.datetime.fromtimestamp(os.path.getmtime(file))).days < 1
 
 
 	def scan_host(self, address):
@@ -357,7 +455,7 @@ class PassiveScanner:
 		basedir = os.path.join(self.outdir, address)
 		os.makedirs(basedir, exist_ok=True)
 
-		scanners = [ShodanWeb(), CensysWeb(), ZoomEyeWeb(), LeakIXWeb()]
+		scanners = [ShodanAPI(), CensysAPI(), ZoomEyeAPI(), LeakIXAPI()]#[ShodanWeb(), CensysWeb(), ZoomEyeWeb(), LeakIXWeb()]
 
 		for scanner in scanners:
 			name   = scanner.name()
