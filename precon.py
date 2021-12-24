@@ -13,7 +13,6 @@ import re
 import yaml
 import json
 import html
-import datetime
 import requests
 import argparse
 import configparser
@@ -58,6 +57,9 @@ class ShodanAPI(APIBase):
 	def name(self):
 		return "Shodan"
 
+	def code(self):
+		return "shodan_api"
+
 	def get(self, address):
 		req = requests.get('https://api.shodan.io/shodan/host/' + address,
 			headers = self.headers(),
@@ -80,22 +82,32 @@ class ShodanAPI(APIBase):
 
 	def enum(self, data):
 		result = []
+		
 		for svc in data['data']:
 			result.append({
 				'port': svc['port'],
 				'service': svc['_shodan']['module'],
 				'transport': svc['transport'],
 				'banner': svc['data'], # TODO insert html from html/html and others?
-				'product': svc['product'], # TODO separate webapp name in info?
+				'product': svc.get('product', None), # TODO separate webapp name in info?
 				'version': svc.get('version', None),
-				'cpe': svc.get('cpe23', None)
+				'cpe': svc.get('cpe23', None),
+				'_source': svc
 			})
+
+		result = sorted(result, key=lambda x: int(x['port']))
+		
 		return result
 
 
 class CensysAPI(APIBase):
 	def name(self):
 		return "Censys"
+
+		return "Shodan"
+
+	def code(self):
+		return "censys_api"
 
 	def get(self, address):
 		req = requests.get('https://search.censys.io/api/v2/hosts/' + address,
@@ -117,22 +129,30 @@ class CensysAPI(APIBase):
 
 	def enum(self, data):
 		result = []
+
 		for svc in data['services']:
 			result.append({
 				'port': svc['port'],
 				'service': svc['service_name'].lower(),
 				'transport': svc['transport_protocol'].lower(),
 				'banner': svc['banner'],
-				'product': svc['software'][0].get('product', None),
-				'version': svc['software'][0].get('version', None),
-				'cpe': svc['software'][0].get('uniform_resource_identifier', None)
+				'product': svc.get('software', [{}])[0].get('product', None),
+				'version': svc.get('software', [{}])[0].get('version', None),
+				'cpe': svc.get('software', [{}])[0].get('uniform_resource_identifier', None),
+				'_source': svc
 			})
+
+		result = sorted(result, key=lambda x: int(x['port']))
+		
 		return result
 
 
 class ZoomEyeAPI(APIBase):
 	def name(self):
 		return "ZoomEye"
+
+	def code(self):
+		return "zoomeye_api"
 
 	def get(self, address):
 		req = requests.get('https://api.zoomeye.org/host/search',
@@ -157,21 +177,29 @@ class ZoomEyeAPI(APIBase):
 
 	def enum(self, data):
 		result = []
+
 		for svc in data['matches']:
 			result.append({
 				'port': svc['portinfo']['port'],
 				'service': svc['portinfo']['service'],
 				'transport': svc['protocol']['transport'] or 'tcp',
 				'banner': svc['portinfo']['banner'],
-				'product': svc['portinfo'].get('product', None),
-				'version': svc['portinfo'].get('version', None)
+				'product': svc['portinfo'].get('app', None),
+				'version': svc['portinfo'].get('version', None),
+				'_source': svc
 			})
+
+		result = sorted(result, key=lambda x: int(x['port']))
+		
 		return result
 
 
 class LeakIXAPI(APIBase):
 	def name(self):
 		return "LeakIX"
+
+	def code(self):
+		return "leakix_api"
 
 	def get(self, address):
 		req = requests.get('https://leakix.net/host/' + address,
@@ -206,9 +234,12 @@ class LeakIXAPI(APIBase):
 				'transport': svc['transport'][0],
 				'banner': svc['summary'],
 				'product': svc['service']['software']['name'],
-				'version': svc['service']['software']['version']
+				'version': svc['service']['software']['version'],
+				'_source': svc
 			})
 
+		result = sorted(result, key=lambda x: int(x['port']))
+		
 		return result
 
 # endregion
@@ -241,6 +272,9 @@ class ShodanWeb(WebBase):
 	def name(self):
 		return "Shodan"
 
+	def code(self):
+		return "shodan_web"
+
 	def get(self, address):
 		req = requests.get('https://www.shodan.io/host/' + address + '/raw',
 			headers = self.headers('https://www.shodan.io/host/' + address, 'www.shodan.io'))
@@ -266,22 +300,30 @@ class ShodanWeb(WebBase):
 
 	def enum(self, data):
 		result = []
+		
 		for svc in data['data']:
 			result.append({
 				'port': svc['port'],
 				'service': svc['_shodan']['module'],
 				'transport': svc['transport'],
 				'banner': svc['data'], # TODO insert html from html/html and others?
-				'product': svc['product'], # TODO separate webapp name in info?
+				'product': svc.get('product', None), # TODO separate webapp name in info?
 				'version': svc.get('version', None),
-				'cpe': svc.get('cpe23', None)
+				'cpe': svc.get('cpe23', None),
+				'_source': svc
 			})
+
+		result = sorted(result, key=lambda x: int(x['port']))
+		
 		return result
 
 
 class CensysWeb(WebBase):
 	def name(self):
 		return "Censys"
+
+	def code(self):
+		return "censys_web"
 
 	def get(self, address):
 		req = requests.get('https://search.censys.io/hosts/' + address + '/data/json',
@@ -311,22 +353,30 @@ class CensysWeb(WebBase):
 
 	def enum(self, data):
 		result = []
+		
 		for svc in data['services']:
 			result.append({
 				'port': svc['port'],
 				'service': svc['service_name'].lower(),
 				'transport': svc['transport_protocol'].lower(),
 				'banner': svc['banner'],
-				'product': svc['software'][0].get('product', None),
-				'version': svc['software'][0].get('version', None),
-				'cpe': svc['software'][0].get('uniform_resource_identifier', None)
+				'product': svc.get('software', [{}])[0].get('product', None),
+				'version': svc.get('software', [{}])[0].get('version', None),
+				'cpe': svc.get('software', [{}])[0].get('uniform_resource_identifier', None),
+				'_source': svc
 			})
+		
+		result = sorted(result, key=lambda x: int(x['port']))
+		
 		return result
 
 
 class ZoomEyeWeb(WebBase):
 	def name(self):
 		return "ZoomEye"
+
+	def code(self):
+		return "zoomeye_web"
 
 	def get(self, address):
 		req = requests.get('https://www.zoomeye.org/search',
@@ -392,6 +442,7 @@ class ZoomEyeWeb(WebBase):
 
 	def enum(self, data):
 		result = []
+		
 		for svc in data['ports']:
 			result.append({
 				'port': svc['port'],
@@ -399,14 +450,21 @@ class ZoomEyeWeb(WebBase):
 				'transport': svc['transport'] or 'tcp',
 				'banner': svc['banner'],
 				'product': svc['product'],
-				'version': svc['version']
+				'version': svc['version'],
+				'_source': svc
 			})
+		
+		result = sorted(result, key=lambda x: int(x['port']))
+		
 		return result
 
 
 class LeakIXWeb(WebBase):
 	def name(self):
 		return "LeakIX"
+
+	def code(self):
+		return "leakix_web"
 
 	def get(self, address):
 		req = requests.get('https://leakix.net/host/' + address,
@@ -489,6 +547,7 @@ class LeakIXWeb(WebBase):
 
 	def enum(self, data):
 		result = []
+
 		for svc in data:
 			result.append({
 				'port': svc['port'],
@@ -496,8 +555,12 @@ class LeakIXWeb(WebBase):
 				'transport': svc['transport'],
 				'banner': svc['banner'],
 				'product': svc['product'],
-				'version': svc['version']
+				'version': svc['version'],
+				'_source': svc
 			})
+
+		result = sorted(result, key=lambda x: int(x['port']))
+
 		return result
 
 # endregion
@@ -522,18 +585,65 @@ class PassiveScanner:
 		return os.path.isfile(file)# and (datetime.datetime.today() - datetime.datetime.fromtimestamp(os.path.getmtime(file))).days < 1
 
 
+	def merge_results(self, scans):
+		def _len(x):
+			return len(x) if x is not None else 0
+
+		results = {}
+
+		for name, scan in scans.items():
+			for port in scan:
+				portname = str(port['port']) + '/' + str(port['transport'])
+				
+				if portname not in results:
+					results[portname] = port
+					results[portname]['_source'] = {name: port['_source']}
+				else:
+					if _len(port['service']) > _len(results[portname]['service']):
+						results[portname]['service'] = port['service']
+
+					if  _len(port['banner']) > 0:
+						if _len(results[portname]['banner']) > 0:
+							results[portname]['banner'] += '\n\n' + port['banner']
+						else:
+							results[portname]['banner'] = port['banner']
+
+					if _len(port['product']) > _len(results[portname]['product']):
+						results[portname]['product'] = port['product']
+
+					if _len(port['version']) > _len(results[portname]['version']):
+						results[portname]['version'] = port['version']
+
+					if _len(port.get('cpe', None)) > _len(results[portname].get('cpe', None)):
+						results[portname]['cpe'] = port.get('cpe', None)
+					
+					results[portname]['_source'][name] = port['_source']
+
+		results = list(results.values())
+		results = sorted(results, key=lambda x: int(x['port']))
+
+		return results
+
+
 	def scan_host(self, address):
 		info('Getting passive scan data for host {byellow}{address}{rst}...')
 		basedir = os.path.join(self.outdir, address)
 		os.makedirs(basedir, exist_ok=True)
 
 		#scanners = [ShodanAPI(), CensysAPI(), ZoomEyeAPI(), LeakIXAPI()]
-		scanners = [ShodanWeb(), CensysWeb(), ZoomEyeWeb(), LeakIXWeb()]
+		#scanners = [ShodanWeb(), CensysWeb(), ZoomEyeWeb(), LeakIXWeb()]
+		scanners = [[ShodanAPI(), ShodanWeb()],
+					[CensysWeb(), CensysAPI()],
+					[ZoomEyeWeb(), ZoomEyeAPI()],
+					[LeakIXAPI(), LeakIXWeb()]]
 
-		for scanner in scanners:
-			name   = scanner.name()
-			cache  = name.lower()
-			result = None
+		results = {}
+
+		for scanner_group in scanners:
+			scanner = scanner_group[0] # TODO implement failover
+			name    = scanner.name()
+			cache   = scanner.code()
+			result  = None
 
 			if self.has_cached_result(address, cache):
 				if self.verbose >= 1:
@@ -554,9 +664,20 @@ class PassiveScanner:
 				continue
 
 			parsed = scanner.enum(result)
-			
-			for svc in parsed:
-				info('Discovered service {bgreen}{svc[service]}{rst} on port {bgreen}{svc[port]}{rst}/{bgreen}{svc[transport]}{rst} running {bgreen}{svc[product]}{rst}/{bgreen}{svc[version]}{rst}.')
+			results[name] = parsed
+
+			if self.verbose >= 1:
+				for svc in parsed:
+					debug('Discovered service {bgreen}{svc[service]}{rst} on port {bgreen}{svc[port]}{rst}/{bgreen}{svc[transport]}{rst} running {bgreen}{svc[product]}{rst}/{bgreen}{svc[version]}{rst}.')
+
+		info('Amalgamated results for host {byellow}{address}{rst}:')
+
+		merged = self.merge_results(results)
+
+		for svc in merged:
+			info('Discovered service {bgreen}{svc[service]}{rst} on port {bgreen}{svc[port]}{rst}/{bgreen}{svc[transport]}{rst} running {bgreen}{svc[product]}{rst}/{bgreen}{svc[version]}{rst}.')
+
+		return merged
 
 
 if __name__ == '__main__':
