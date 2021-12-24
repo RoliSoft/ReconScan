@@ -16,6 +16,7 @@ import html
 import requests
 import argparse
 import configparser
+import multiprocessing
 from lxml import etree
 from lib.colors import debug, info, warn, error, fail
 
@@ -25,16 +26,15 @@ from lib.colors import debug, info, warn, error, fail
 class PassiveBase:
 	_config = None
 
-	def __init__(self) -> None:
+	def config(self, key):
 		if PassiveBase._config is None and os.path.isfile('precon.conf'):
 			PassiveBase._config = configparser.RawConfigParser()
 			PassiveBase._config.read('precon.conf')
 
-	def config(self, key):
 		if PassiveBase._config is not None and self.__class__.__name__ in PassiveBase._config and key in PassiveBase._config[self.__class__.__name__]:
 			return PassiveBase._config[self.__class__.__name__][key]
 		else:
-			return None
+			return ''
 
 # endregion
 
@@ -68,6 +68,7 @@ class ShodanAPI(APIBase):
 			))
 
 		if req.status_code != 200:
+			info('api key is ' + req.text)
 			error('Failed to get {bblue}Shodan{rst}/{byellow}{address}{rst}: status code is {bred}{req.status_code}{rst}.')
 			return None
 
@@ -567,8 +568,9 @@ class LeakIXWeb(WebBase):
 
 
 class PassiveScanner:
-	verbose = 0
-	outdir  = ''
+	verbose  = 0
+	parallel = False
+	outdir   = ''
 
 	def write_result(self, address, service, data):
 		with open(os.path.join(self.outdir, address, service + '.json'), 'w') as f:
@@ -625,25 +627,14 @@ class PassiveScanner:
 		return results
 
 
-	def scan_host(self, address):
-		info('Getting passive scan data for host {byellow}{address}{rst}...')
-		basedir = os.path.join(self.outdir, address)
-		os.makedirs(basedir, exist_ok=True)
-
-		#scanners = [ShodanAPI(), CensysAPI(), ZoomEyeAPI(), LeakIXAPI()]
-		#scanners = [ShodanWeb(), CensysWeb(), ZoomEyeWeb(), LeakIXWeb()]
-		scanners = [[ShodanAPI(), ShodanWeb()],
-					[CensysWeb(), CensysAPI()],
-					[ZoomEyeWeb(), ZoomEyeAPI()],
-					[LeakIXAPI(), LeakIXWeb()]]
-
-		results = {}
-
-		for scanner_group in scanners:
-			scanner = scanner_group[0] # TODO implement failover
+	def _scan_host(self, scanner_group, address, results):
+		for idx, scanner in enumerate(scanner_group):
 			name    = scanner.name()
 			cache   = scanner.code()
 			result  = None
+
+			if idx > 0:
+				info('Re-trying {bblue}{name}{rst}/{byellow}{address}{rst} with next implementation...')
 
 			if self.has_cached_result(address, cache):
 				if self.verbose >= 1:
@@ -664,11 +655,47 @@ class PassiveScanner:
 				continue
 
 			parsed = scanner.enum(result)
-			results[name] = parsed
 
 			if self.verbose >= 1:
 				for svc in parsed:
 					debug('Discovered service {bgreen}{svc[service]}{rst} on port {bgreen}{svc[port]}{rst}/{bgreen}{svc[transport]}{rst} running {bgreen}{svc[product]}{rst}/{bgreen}{svc[version]}{rst}.')
+
+			results[name] = parsed
+			break
+
+
+	def scan_host(self, address):
+		info('Getting passive scan data for host {byellow}{address}{rst}...')
+		basedir = os.path.join(self.outdir, address)
+		os.makedirs(basedir, exist_ok=True)
+
+		#scanners = [ShodanAPI(), CensysAPI(), ZoomEyeAPI(), LeakIXAPI()]
+		#scanners = [ShodanWeb(), CensysWeb(), ZoomEyeWeb(), LeakIXWeb()]
+		scanners = [[ShodanAPI(), ShodanWeb()],
+					[CensysWeb(), CensysAPI()],
+					[ZoomEyeWeb(), ZoomEyeAPI()],
+					[LeakIXAPI(), LeakIXWeb()]]
+
+		procs = []
+		results = {}
+
+		if self.parallel:
+			manager = multiprocessing.Manager()
+			results = manager.dict()
+
+		for scanner_group in scanners:
+			if not self.parallel:
+				self._scan_host(scanner_group, address, results)
+
+			else:
+				proc = multiprocessing.Process(target=self._scan_host, args=(scanner_group, address, results))
+				procs.append(proc)
+				proc.start()
+
+		if self.parallel:
+			for proc in procs:
+				if proc.is_alive():
+					proc.join()
 
 		info('Amalgamated results for host {byellow}{address}{rst}:')
 
@@ -685,12 +712,14 @@ if __name__ == '__main__':
 
 	parser = argparse.ArgumentParser(description='Passive network reconnaissance tool for enumerating a host.')
 	parser.add_argument('address', action='store', help='address of the host.')
+	parser.add_argument('-p', '--parallel', action='store_true', help='runs queries in parallel for each source, if set')
 	parser.add_argument('-o', '--output', action='store', default='results', help='output directory for the results')
 	parser.add_argument('-v', '--verbose', action='count', help='enable verbose output, repeat for more verbosity')
 	parser.error = lambda x: fail(x[0].upper() + x[1:])
 	args = parser.parse_args()
 
-	s.outdir  = args.output
-	s.verbose = args.verbose if args.verbose is not None else 0
+	s.outdir   = args.output
+	s.parallel = args.parallel
+	s.verbose  = args.verbose if args.verbose is not None else 0
 
 	s.scan_host(args.address)
