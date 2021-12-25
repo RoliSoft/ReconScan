@@ -18,6 +18,7 @@ import argparse
 import configparser
 import multiprocessing
 from lxml import etree
+from distutils.util import strtobool
 from lib.colors import debug, info, warn, error, fail
 
 
@@ -35,6 +36,9 @@ class PassiveBase:
 			return PassiveBase._config[self.__class__.__name__][key]
 		else:
 			return ''
+
+	def enabled(self):
+		return bool(strtobool(self.config('enabled') or '0'))
 
 # endregion
 
@@ -61,6 +65,9 @@ class ShodanAPI(APIBase):
 		return "shodan_api"
 
 	def get(self, address):
+		if not self.enabled():
+			return None
+
 		req = requests.get('https://api.shodan.io/shodan/host/' + address,
 			headers = self.headers(),
 			params = (
@@ -68,7 +75,6 @@ class ShodanAPI(APIBase):
 			))
 
 		if req.status_code != 200:
-			info('api key is ' + req.text)
 			error('Failed to get {bblue}Shodan{rst}/{byellow}{address}{rst}: status code is {bred}{req.status_code}{rst}.')
 			return None
 
@@ -111,6 +117,9 @@ class CensysAPI(APIBase):
 		return "censys_api"
 
 	def get(self, address):
+		if not self.enabled():
+			return None
+
 		req = requests.get('https://search.censys.io/api/v2/hosts/' + address,
 			headers = self.headers(),
 			auth = (self.config('id'), self.config('secret')))
@@ -156,6 +165,9 @@ class ZoomEyeAPI(APIBase):
 		return "zoomeye_api"
 
 	def get(self, address):
+		if not self.enabled():
+			return None
+
 		req = requests.get('https://api.zoomeye.org/host/search',
 			headers = self.headers(self.config('key')),
 			params = (
@@ -203,6 +215,9 @@ class LeakIXAPI(APIBase):
 		return "leakix_api"
 
 	def get(self, address):
+		if not self.enabled():
+			return None
+
 		req = requests.get('https://leakix.net/host/' + address,
 			headers = self.headers(self.config('key')))
 
@@ -277,6 +292,9 @@ class ShodanWeb(WebBase):
 		return "shodan_web"
 
 	def get(self, address):
+		if not self.enabled():
+			return None
+
 		req = requests.get('https://www.shodan.io/host/' + address + '/raw',
 			headers = self.headers('https://www.shodan.io/host/' + address, 'www.shodan.io'))
 
@@ -327,6 +345,9 @@ class CensysWeb(WebBase):
 		return "censys_web"
 
 	def get(self, address):
+		if not self.enabled():
+			return None
+
 		req = requests.get('https://search.censys.io/hosts/' + address + '/data/json',
 			headers = self.headers('https://search.censys.io/hosts/' + address, 'search.censys.io'))
 
@@ -360,7 +381,7 @@ class CensysWeb(WebBase):
 				'port': svc['port'],
 				'service': svc['service_name'].lower(),
 				'transport': svc['transport_protocol'].lower(),
-				'banner': svc['banner'],
+				'banner': svc.get('banner', None),
 				'product': svc.get('software', [{}])[0].get('product', None),
 				'version': svc.get('software', [{}])[0].get('version', None),
 				'cpe': svc.get('software', [{}])[0].get('uniform_resource_identifier', None),
@@ -379,24 +400,37 @@ class ZoomEyeWeb(WebBase):
 	def code(self):
 		return "zoomeye_web"
 
+	def headers(self, referrer, authority):
+		lines = super().headers('https://www.zoomeye.org/searchResult?q=ip%3A%22' + referrer + '%22', authority)
+		lines['Cube-Authorization'] = self.config('auth')
+		return lines
+
 	def get(self, address):
+		if not self.enabled():
+			return None
+
 		req = requests.get('https://www.zoomeye.org/search',
 			headers = self.headers('https://www.zoomeye.org/searchResult?q=ip%3A%22' + address + '%22', 'www.zoomeye.org'),
 			params = (
 				('q', 'ip%3A%22' + address + '%22'),
 				('page', '1'),
 				('pageSize', '20'),
-				('t', 'v4+v6+web'),
+				('t', 'v4+v6'),
 			))
 
 		if req.status_code != 200:
-			error('Failed to get {bblue}ZoomEye{rst}/{byellow}{address}{rst}: status code is {bred}{req.status_code}{rst}.')
+			error('Failed to get {bblue}ZoomEye{rst}/{byellow}{address}{rst}: HTTP status code is {bred}{req.status_code}{rst}.')
 			return None
 
 		try:
 			search = yaml.load(req.text, Loader=yaml.FullLoader)
 		except:
 			error('Failed to get {bblue}ZoomEye{rst}/{byellow}{address}{rst}: failed to parse data.')
+			return None
+
+		print(search)
+		if 'status' in search and search['status'] != 200:
+			error('Failed to get {bblue}ZoomEye{rst}/{byellow}{address}{rst}: API status code is {bred}{search[status]}{rst}.')
 			return None
 
 		if 'matches' not in search or len(search['matches']) == 0:
@@ -444,6 +478,9 @@ class ZoomEyeWeb(WebBase):
 	def enum(self, data):
 		result = []
 		
+		if 'ports' not in data or len(data['ports']) == 0:
+			return result
+
 		for svc in data['ports']:
 			result.append({
 				'port': svc['port'],
@@ -468,6 +505,9 @@ class LeakIXWeb(WebBase):
 		return "leakix_web"
 
 	def get(self, address):
+		if not self.enabled():
+			return None
+
 		req = requests.get('https://leakix.net/host/' + address,
 			headers = self.headers('https://leakix.net/search?scope=service&q=' + address, 'leakix.net'))
 
@@ -570,6 +610,7 @@ class LeakIXWeb(WebBase):
 class PassiveScanner:
 	verbose  = 0
 	parallel = False
+	no_query = False
 	outdir   = ''
 
 	def write_result(self, address, service, data):
@@ -642,7 +683,7 @@ class PassiveScanner:
 
 				result = self.read_result(address, cache)
 
-			if result is None:
+			if result is None and not self.no_query:
 				if self.verbose >= 1:
 					debug('Getting fresh {bblue}{name}{rst}/{byellow}{address}{rst} data...')
 
@@ -664,19 +705,43 @@ class PassiveScanner:
 			break
 
 
+	def get_scanners(self):
+		base  = PassiveBase()
+		order = (base.config('order') or '').split(':')
+		if len(order) == 1 and not order[0]:
+			error('Scanner order is not specified in {byellow}precon.conf{rst}.')
+			return None
+
+		scanners = []
+		for group in order:
+			group = group.split(',')
+			scanner_group = []
+
+			for name in group:
+				if name not in globals():
+					error('Specified class {byellow}{name}{rst} does not exist.')
+					continue
+
+				clss = globals()[name]
+				if not issubclass(clss, PassiveBase):
+					error('Specified class {byellow}{name}{rst} is not a supported scanner.')
+					continue
+
+				inst = clss()
+				scanner_group.append(inst)
+
+			scanners.append(scanner_group)
+
+		return scanners
+
+
 	def scan_host(self, address):
 		info('Getting passive scan data for host {byellow}{address}{rst}...')
 		basedir = os.path.join(self.outdir, address)
 		os.makedirs(basedir, exist_ok=True)
 
-		#scanners = [ShodanAPI(), CensysAPI(), ZoomEyeAPI(), LeakIXAPI()]
-		#scanners = [ShodanWeb(), CensysWeb(), ZoomEyeWeb(), LeakIXWeb()]
-		scanners = [[ShodanAPI(), ShodanWeb()],
-					[CensysWeb(), CensysAPI()],
-					[ZoomEyeWeb(), ZoomEyeAPI()],
-					[LeakIXAPI(), LeakIXWeb()]]
-
-		procs = []
+		scanners = self.get_scanners()
+		jobs = []
 		results = {}
 
 		if self.parallel:
@@ -688,14 +753,14 @@ class PassiveScanner:
 				self._scan_host(scanner_group, address, results)
 
 			else:
-				proc = multiprocessing.Process(target=self._scan_host, args=(scanner_group, address, results))
-				procs.append(proc)
-				proc.start()
+				job = multiprocessing.Process(target=self._scan_host, args=(scanner_group, address, results))
+				jobs.append(job)
+				job.start()
 
 		if self.parallel:
-			for proc in procs:
-				if proc.is_alive():
-					proc.join()
+			for job in jobs:
+				if job.is_alive():
+					job.join()
 
 		info('Amalgamated results for host {byellow}{address}{rst}:')
 
@@ -715,11 +780,13 @@ if __name__ == '__main__':
 	parser.add_argument('-p', '--parallel', action='store_true', help='runs queries in parallel for each source, if set')
 	parser.add_argument('-o', '--output', action='store', default='results', help='output directory for the results')
 	parser.add_argument('-v', '--verbose', action='count', help='enable verbose output, repeat for more verbosity')
+	parser.add_argument('--cache-only', action='store_true', help='work only with cached content')
 	parser.error = lambda x: fail(x[0].upper() + x[1:])
 	args = parser.parse_args()
 
 	s.outdir   = args.output
 	s.parallel = args.parallel
+	s.no_query = args.cache_only
 	s.verbose  = args.verbose if args.verbose is not None else 0
 
 	s.scan_host(args.address)
