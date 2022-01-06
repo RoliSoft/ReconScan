@@ -1,160 +1,246 @@
 #!/usr/bin/env python3
+#
+#    Universal honeypot server for scanner testing purposes.
+#    Copyright (C) 2021 RoliSoft <root@rolisoft.net>
+#
+#    This program can be redistributed and/or modified under the terms of the
+#    GNU General Public License, either version 3 of the License, or (at your
+#    option) any later version.
+#
+
+import os
 import re
 import socket
 import random
 import asyncio
 import difflib
-from os import stat_result
+import argparse
 from xeger import Xeger
 from thefuzz import process
+from lib.colors import debug, info, warn, error, fail
 
-probes = {'UDP': {}, 'TCP': {}}
-payloads = {'UDP': {}, 'TCP': {}}
+class Honeypot:
+	verbose  = 0
+	probes   = None
+	payloads = None
 
-with open('/usr/local/Cellar/nmap/7.92/share/nmap/nmap-service-probes', 'r') as f:
-    lines = f.readlines()
-    
-    current = None
-    for line in lines:
-        line = line.strip()
-        lowline = line.lower()
+	def load_probes(self):
+		if not os.path.exists('data/nmap-service-probes'):
+			error('Could not find {bgreen}data/nmap-service-probes{rst}.')
+			return False
 
-        if not line:
-            continue
+		self.probes   = {'UDP': {}, 'TCP': {}}
+		self.payloads = {'UDP': {}, 'TCP': {}}
 
-        if lowline.startswith('probe '):
-            (probe_type, proto, name, payload) = line.split(' ', 3)
-            payload = payload[2:-1].encode('utf-8').decode('unicode_escape')
-            probes[proto][name] = payload
-            current = (proto, name)
+		with open('data/nmap-service-probes', 'r') as f:
+			lines = f.readlines()
+			
+			current = None
+			for line in lines:
+				line = line.strip()
+				lowline = line.lower()
 
-        elif lowline.startswith('match ') or lowline.startswith('softmatch '):
-            if not current:
-                continue
+				if not line:
+					continue
 
-            (action, name, regex) = (line.split(' ', 2))
+				if lowline.startswith('probe '):
+					probe_type, proto, name, payload = line.split(' ', 3)
+					payload = payload[2:-1].encode('utf-8').decode('unicode_escape')
+					self.probes[proto][name] = payload
+					current = (proto, name)
 
-            rgxsep = regex[1]
-            rgxend = regex[2:].find(rgxsep) + 2
+				elif lowline.startswith('match ') or lowline.startswith('softmatch '):
+					if not current:
+						continue
 
-            regex = regex[2:rgxend]
+					action, name, regex = line.split(' ', 2)
 
-            if current[1] not in payloads[current[0]]:
-                payloads[current[0]][current[1]] = []
+					# check what separator is being used for the regex
+					# and extract the regex itself
 
-            payloads[current[0]][current[1]].append(regex)
+					rgxsep = regex[1]
+					rgxend = regex[2:].find(rgxsep) + 2
+					regex  = regex[2:rgxend]
+
+					if current[1] not in self.payloads[current[0]]:
+						self.payloads[current[0]][current[1]] = []
+
+					self.payloads[current[0]][current[1]].append(regex)
+
+		if server.verbose >= 1:
+			tcp_probes = len(server.probes['TCP'])
+			udp_probes = len(server.probes['UDP'])
+			debug('Loaded {bgreen}{tcp_probes}{rst} TCP and {bgreen}{udp_probes}{rst} UDP probes.')
+			
+		return len(self.probes['UDP']) > 0 and len(self.probes['TCP']) > 0
 
 
-def get_match(payload, probes):
-    plen = min(len(payload), 50)
-    processed = [i[0:plen] for i in list(probes['UDP'].values())]
-    closest = difflib.get_close_matches(payload[0:plen], processed, 1, cutoff=0)
+	def get_match(self, payload, proto):
+		plen = min(len(payload), 50)
+		processed = [i[0:plen] for i in list(self.probes[proto].values())]
+		closest = difflib.get_close_matches(payload[0:plen], processed, 1, cutoff=0)
 
-    if not closest:
-        closest, score = process.extractOne(payload[0:plen], processed)
-    else:
-        closest = closest[0]
+		if not closest:
+			closest, score = process.extractOne(payload[0:plen], processed)
+		else:
+			closest = closest[0]
 
-    for name, probe in probes['UDP'].items():
-        if probe[0:plen] == closest:
-            return (name, probe, payloads['UDP'][name])
+		for name, probe in self.probes[proto].items():
+			if probe[0:plen] == closest:
+				return name, probe, self.payloads[proto][name]
 
-    return None
+		return None
 
-def gen_random(payloads):
-    random.shuffle(payloads)
-    payload = None
-    x = Xeger(limit=1)
 
-    for regex in payloads:
-        #payload = rstr.xeger(regex)
-        #payload = exrex.getone(regex)
-        payload = x.xeger(regex)
+	def gen_random(self, payloads):
+		random.shuffle(payloads)
+		payload = None
+		x = Xeger(limit=1)
 
-        match = re.match(regex, payload)
-        if match:
-            return payload
+		for regex in payloads:
+			#payload = rstr.xeger(regex)
+			#payload = exrex.getone(regex)
+			payload = x.xeger(regex)
 
-    # relax matcher
+			match = re.match(regex, payload)
+			if match:
+				return payload
 
-    for regex in payloads:
-        payload = x.xeger(regex)
+		# relax matcher
 
-        match = re.match(regex, payload, re.IGNORECASE | re.MULTILINE)
-        if match:
-            return payload
+		for regex in payloads:
+			payload = x.xeger(regex)
 
-    return payload
+			match = re.match(regex, payload, re.IGNORECASE | re.MULTILINE)
+			if match:
+				return payload
 
-def get_response(message):
-    match = get_match(message.decode('unicode_escape'), probes)
-    if not match:
-        print('could not match to any probe')
-        return None
+		return payload
 
-    reply = gen_random(match[2])
-    if not reply:
-        print('could not generate payload')
-        return None
 
-    print("replying with match from {}".format(match[0]))
+	def get_response(self, message, proto):
+		match = self.get_match(message.decode('unicode_escape'), proto)
+		if not match:
+			return None, None, 'Could not match to any probe.'
 
-    return reply.encode('unicode_escape')
+		reply = self.gen_random(match[2])
+		if not reply:
+			return None, None, 'Could not generate payload.'
+
+		return match[0], reply.encode('unicode_escape'), None
+
+
+	def serve(self):
+		loop = asyncio.get_event_loop()
+
+		for port in range(1, 1024):
+			try:
+				tcp_socket = socket.socket(family=socket.AF_INET6, type=socket.SOCK_STREAM)
+				tcp_socket.bind(('::', port))
+				loop_server = loop.run_until_complete(
+					loop.create_server(
+						lambda: HoneypotServerTCP(self),
+						sock=tcp_socket))
+				loop.create_task(loop_server.serve_forever())
+			except:
+				error('Failed to bind to TCP port {port}.')
+
+			try:
+				udp_socket = socket.socket(family=socket.AF_INET6, type=socket.SOCK_DGRAM)
+				udp_socket.bind(('::', port))
+				transport, protocol = loop.run_until_complete(
+					loop.create_datagram_endpoint(
+						lambda: HoneypotServerUDP(self),
+						sock=udp_socket))
+			except:
+				error('Failed to bind to UDP port {port}.')
+
+		info('Started TCP and UDP servers.')
+
+		try:
+			loop.run_forever()
+		except:
+			pass
 
 
 class HoneypotServerTCP(asyncio.Protocol):
-    def connection_made(self, transport):
-        self.peer = transport.get_extra_info('peername')
-        self.transport = transport
+	def __init__(self, server):
+		self.server = server
+		super().__init__()
 
-    def data_received(self, data):
-        print('data received from {}: {}'.format(self.peer[0], data))
+	def connection_made(self, transport):
+		self.peer = transport.get_extra_info('peername')
+		self.transport = transport
 
-        reply = get_response(data)
-        if reply is not None:
-            self.transport.write(reply)
+	def data_received(self, data):
+		lport = self.transport.get_extra_info('sockname')[1]
 
-        self.transport.close()
+		if self.server.verbose >= 1:
+			debug('Data on {byellow}tcp:{lport}{rst} from {byellow}{self.peer[0]}{rst}: {bblue}{data}{rst}')
 
-    def error_received(self, exc):
-        print("exception thrown: %s" % exc)
+		proto, reply, error = self.server.get_response(data, 'TCP')
+		if reply is not None:
+			if self.server.verbose >= 1:
+				debug('Replying to {byellow}{self.peer[0]}{rst} with {bgreen}{proto}{rst}: {bblue}{reply}{rst}')
+			else:
+				info('Data on {byellow}tcp:{lport}{rst} from {byellow}{self.peer[0]}{rst}, replying with {bgreen}{proto}{rst}.')
+
+			self.transport.write(reply)
+		else:
+			if self.server.verbose >= 1:
+				debug('Closing connection on {byellow}tcp:{lport}{rst} with {byellow}{self.peer[0]}{rst}: {bred}{error}{rst}')
+			else:
+				info('Refusing connection on {byellow}tcp:{lport}{rst} from {byellow}{self.peer[0]}{rst}: {bred}{error}{rst}')
+
+		self.transport.close()
+
+	def error_received(self, exc):
+		lport = self.transport.get_extra_info('sockname')[1]
+		error('Error on {byellow}tcp:{lport}{rst} from {byellow}tcp:{self.peer[0]}{rst}: {bred}{exc}{rst}')
 
 
 class HoneypotServerUDP(asyncio.DatagramProtocol):
-    def connection_made(self, transport):
-        self.transport = transport
+	def __init__(self, server):
+		self.server = server
+		super().__init__()
 
-    def datagram_received(self, data, addr):
-        print('data received from {}: {}'.format(addr[0], data))
-        
-        reply = get_response(data)
-        if reply is not None:
-            self.transport.sendto(reply, addr)
+	def connection_made(self, transport):
+		self.transport = transport
 
-    def error_received(self, exc):
-        print("exception thrown: %s" % exc)
+	def datagram_received(self, data, addr):
+		lport = self.transport.get_extra_info('sockname')[1]
 
-loop = asyncio.get_event_loop()
+		if server.verbose >= 1:
+			debug('Data on {byellow}udp:{lport}{rst} from {byellow}{addr[0]}{rst}: {bblue}{data}{rst}')
+		
+		proto, reply, error = server.get_response(data, 'UDP')
+		if reply is not None:
+			if self.server.verbose >= 1:
+				debug('Replying to {byellow}{addr[0]}{rst} with {bgreen}{proto}{rst}: {bblue}{reply}{rst}')
+			else:
+				info('Data on {byellow}udp:{lport}{rst} from {byellow}{addr[0]}{rst}, replying with {bgreen}{proto}{rst}.')
 
-for i in range(1, 1024):
-    try:
-        tcp_socket = socket.socket(family=socket.AF_INET6, type=socket.SOCK_STREAM)
-        tcp_socket.bind(('::', i))
-        server = loop.run_until_complete(loop.create_server(HoneypotServerTCP, sock=tcp_socket))
-        loop.create_task(server.serve_forever())
-    except:
-        print(f'failed to bind to TCP port {i}')
+			self.transport.sendto(reply, addr)
+		else:
+			if self.server.verbose >= 1:
+				debug('Closing connection on {byellow}udp:{lport}{rst} with {byellow}{addr[0]}{rst}: {bred}{error}{rst}')
+			else:
+				info('Refusing connection on {byellow}udp:{lport}{rst} from {byellow}{addr[0]}{rst}: {bred}{error}{rst}')
 
-    try:
-        udp_socket = socket.socket(family=socket.AF_INET6, type=socket.SOCK_DGRAM)
-        udp_socket.bind(('::', i))
-        transport, protocol = loop.run_until_complete(loop.create_datagram_endpoint(HoneypotServerUDP, sock=udp_socket))
-    except:
-        print(f'failed to bind to UDP port {i}')
+	def error_received(self, exc):
+		lport = self.transport.get_extra_info('sockname')[1]
+		error('Error on {byellow}udp:{lport}{rst}: {bred}{exc}{rst}')
 
-print('TCP and UDP servers up and listening')
 
-try:
-    loop.run_forever()
-except:
-    pass
+if __name__ == '__main__':
+	s = Honeypot()
+
+	parser = argparse.ArgumentParser(description='Universal honeypot server for scanner testing purposes.')
+	parser.add_argument('-v', '--verbose', action='count', help='enable verbose output, repeat for more verbosity')
+	parser.error = lambda x: fail(x[0].upper() + x[1:])
+	args = parser.parse_args()
+
+	s.verbose  = args.verbose if args.verbose is not None else 0
+
+	s.load_probes()
+	s.serve()
