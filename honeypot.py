@@ -1,18 +1,12 @@
 #!/usr/bin/env python3
 import re
-import select
-import rstr
-from os import stat_result
-import exrex
-from xeger import Xeger
-import difflib
-from thefuzz import process
 import socket
 import random
-
-# read probes from  /usr/local/Cellar/nmap/7.92/share/nmap/nmap-service-probes
-# match closest incoming payload difflib.get_close_matches('Hello', words)
-# generate random response exrex.getone or rstr.xeger
+import asyncio
+import difflib
+from os import stat_result
+from xeger import Xeger
+from thefuzz import process
 
 probes = {'UDP': {}, 'TCP': {}}
 payloads = {'UDP': {}, 'TCP': {}}
@@ -57,18 +51,17 @@ def get_match(payload, probes):
     closest = difflib.get_close_matches(payload[0:plen], processed, 1, cutoff=0)
 
     if not closest:
-        (closest, score) = process.extractOne(payload[0:plen], processed)
+        closest, score = process.extractOne(payload[0:plen], processed)
     else:
         closest = closest[0]
 
-    for (name, probe) in probes['UDP'].items():
+    for name, probe in probes['UDP'].items():
         if probe[0:plen] == closest:
             return (name, probe, payloads['UDP'][name])
 
     return None
 
 def gen_random(payloads):
-    #regex = random.choice(payloads)
     random.shuffle(payloads)
     payload = None
     x = Xeger(limit=1)
@@ -93,87 +86,75 @@ def gen_random(payloads):
 
     return payload
 
-#print(gen_random(payloads['UDP']['SIPOptions']))
+def get_response(message):
+    match = get_match(message.decode('unicode_escape'), probes)
+    if not match:
+        print('could not match to any probe')
+        return None
+
+    reply = gen_random(match[2])
+    if not reply:
+        print('could not generate payload')
+        return None
+
+    print("replying with match from {}".format(match[0]))
+
+    return reply.encode('unicode_escape')
 
 
-sockets = {}
-poller = select.poll()
+class HoneypotServerTCP(asyncio.Protocol):
+    def connection_made(self, transport):
+        self.peer = transport.get_extra_info('peername')
+        self.transport = transport
 
-for i in range(20, 1024):
+    def data_received(self, data):
+        print('data received from {}: {}'.format(self.peer[0], data))
+
+        reply = get_response(data)
+        if reply is not None:
+            self.transport.write(reply)
+
+        self.transport.close()
+
+    def error_received(self, exc):
+        print("exception thrown: %s" % exc)
+
+
+class HoneypotServerUDP(asyncio.DatagramProtocol):
+    def connection_made(self, transport):
+        self.transport = transport
+
+    def datagram_received(self, data, addr):
+        print('data received from {}: {}'.format(addr[0], data))
+        
+        reply = get_response(data)
+        if reply is not None:
+            self.transport.sendto(reply, addr)
+
+    def error_received(self, exc):
+        print("exception thrown: %s" % exc)
+
+loop = asyncio.get_event_loop()
+
+for i in range(1, 1024):
     try:
         tcp_socket = socket.socket(family=socket.AF_INET6, type=socket.SOCK_STREAM)
         tcp_socket.bind(('::', i))
-        tcp_socket.listen()
-        sockets[tcp_socket.fileno()] = tcp_socket
-        poller.register(tcp_socket, select.POLLIN)
+        server = loop.run_until_complete(loop.create_server(HoneypotServerTCP, sock=tcp_socket))
+        loop.create_task(server.serve_forever())
     except:
-        print('failed to bind to TCP port {}'.format(i))
+        print(f'failed to bind to TCP port {i}')
 
     try:
         udp_socket = socket.socket(family=socket.AF_INET6, type=socket.SOCK_DGRAM)
         udp_socket.bind(('::', i))
-        sockets[udp_socket.fileno()] = udp_socket
-        poller.register(udp_socket, select.POLLIN)
+        transport, protocol = loop.run_until_complete(loop.create_datagram_endpoint(HoneypotServerUDP, sock=udp_socket))
     except:
-        print('failed to bind to UDP port {}'.format(i))
+        print(f'failed to bind to UDP port {i}')
 
-print("TCP and UDP servers up and listening")
+print('TCP and UDP servers up and listening')
 
-while(True):
-    #readable, writable, exceptional = select.select(sockets, [], sockets)
-    #for sock in readable:
-
-    fds = poller.poll(10000)
-    for fd, Event in fds:
-        sock = sockets[fd]
-        try:
-            if sock.type == socket.SOCK_STREAM:
-
-                # TCP
-
-                conn, address = sock.accept()
-                message = conn.recv(10240)
-
-                print("\nincoming from {}: {}".format(address[0], message))
-
-                match = get_match(message.decode('unicode_escape'), probes)
-                if not match:
-                    print('Could not match to any probe')
-                    continue
-
-                reply = gen_random(match[2])
-                if not reply:
-                    print('Could not generate payload')
-                    continue
-
-                print("replying with match from {}".format(match[0]))
-
-                conn.sendall(reply.encode('unicode_escape'))
-                conn.close()
-            
-            elif sock.type == socket.SOCK_DGRAM:
-
-                # UDP
-
-                message, address = sock.recvfrom(10240)
-
-                print("\nincoming from {}: {}".format(address[0], message))
-
-                match = get_match(message.decode('unicode_escape'), probes)
-                if not match:
-                    print('Could not match to any probe')
-                    continue
-
-                reply = gen_random(match[2])
-                if not reply:
-                    print('Could not generate payload')
-                    continue
-
-                print("replying with match from {}".format(match[0]))
-
-                sock.sendto(reply.encode('unicode_escape'), address)
-
-        except BaseException as e:
-            print('error: ' + str(e))
-            continue
-
+try:
+    loop.run_forever()
+except:
+    pass
