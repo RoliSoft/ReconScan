@@ -4,8 +4,8 @@
 #    Copyright (C) 2021 RoliSoft <root@rolisoft.net>
 #
 #    This program can be redistributed and/or modified under the terms of the
-#    GNU General Public License, either version 3 of the License, or (at your
-#    option) any later version.
+#    GNU Affero General Public License, either version 3 of the License, or
+#    (at your option) any later version.
 #
 
 import os
@@ -236,6 +236,7 @@ if __name__ == '__main__':
 	s = Honeypot()
 
 	parser = argparse.ArgumentParser(description='Universal honeypot server for scanner testing purposes.')
+	parser.add_argument('-t', '--tcp-ports', action='store', default='1-10000', help='output directory for the results')
 	parser.add_argument('-v', '--verbose', action='count', help='enable verbose output, repeat for more verbosity')
 	parser.error = lambda x: fail(x[0].upper() + x[1:])
 	args = parser.parse_args()
