@@ -11,6 +11,7 @@
 import os
 import re
 import yaml
+import array
 import socket
 import random
 import asyncio
@@ -172,7 +173,9 @@ class Honeypot:
 		if not reply:
 			return None, None, 'Could not generate payload.'
 
-		return match[0], reply.encode('unicode_escape'), None
+		#ret = reply.encode('unicode_escape')
+		ret = array.array('B', [x for x in map(ord,reply)]).tobytes()
+		return match[0], ret, None
 
 
 	def serve(self):
