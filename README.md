@@ -31,6 +31,17 @@ Results will be dumped into the `results/$ip_address` directory, with the `$port
 
 This script is inspired by [Mike Czumak's Recon Scan](http://www.securitysift.com/offsec-pwb-oscp/), which he wrote during his OSCP exam. Many modifications can be found on GitHub, however, I wanted to write a script from scratch, familiarizing myself with each tool and their parameterization, instead of just reusing a bunch of scripts found scattered in various repositories, leaving me none the wiser.
 
+### Installation 
+
+Python3, python-libnmap and colorama are required. 
+ 
+Install python packages: 
+
+pip3 install python-libnmap colorama
+
+Run:
+python3 ./recon.py -v TARGET
+
 ### Usage
 
 	usage: recon.py [-h] [-b] [-n] [-p] [-v] [-o OUTPUT] [--nmap NMAP] [--hydra HYDRA]
