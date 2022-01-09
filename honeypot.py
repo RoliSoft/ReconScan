@@ -67,15 +67,15 @@ class Honeypot:
 
 					self.payloads[current[0]][current[1]].append(regex)
 
-		if server.verbose >= 1:
-			tcp_probes = len(server.probes['TCP'])
-			udp_probes = len(server.probes['UDP'])
+		if self.verbose >= 1:
+			tcp_probes = len(self.probes['TCP'])
+			udp_probes = len(self.probes['UDP'])
 			debug('Loaded {bgreen}{tcp_probes}{rst} TCP and {bgreen}{udp_probes}{rst} UDP probes.')
 			
 		return len(self.probes['UDP']) > 0 and len(self.probes['TCP']) > 0
 
 
-	def get_match(self, payload, proto):
+	def map_to_probe(self, payload, proto):
 		plen = min(len(payload), 50)
 		processed = [i[0:plen] for i in list(self.probes[proto].values())]
 		closest = difflib.get_close_matches(payload[0:plen], processed, 1, cutoff=0)
@@ -92,7 +92,7 @@ class Honeypot:
 		return None
 
 
-	def gen_random(self, payloads):
+	def generate_service_reply(self, payloads):
 		random.shuffle(payloads)
 		payload = None
 		x = Xeger(limit=1)
@@ -118,12 +118,12 @@ class Honeypot:
 		return payload
 
 
-	def get_response(self, message, proto):
-		match = self.get_match(message.decode('unicode_escape'), proto)
+	def handle_message(self, message, proto):
+		match = self.map_to_probe(message.decode('unicode_escape'), proto)
 		if not match:
 			return None, None, 'Could not match to any probe.'
 
-		reply = self.gen_random(match[2])
+		reply = self.generate_service_reply(match[2])
 		if not reply:
 			return None, None, 'Could not generate payload.'
 
@@ -178,7 +178,7 @@ class HoneypotServerTCP(asyncio.Protocol):
 		if self.server.verbose >= 1:
 			debug('Data on {byellow}tcp:{lport}{rst} from {byellow}{self.peer[0]}{rst}: {bblue}{data}{rst}')
 
-		proto, reply, error = self.server.get_response(data, 'TCP')
+		proto, reply, error = self.server.handle_message(data, 'TCP')
 		if reply is not None:
 			if self.server.verbose >= 1:
 				debug('Replying to {byellow}{self.peer[0]}{rst} with {bgreen}{proto}{rst}: {bblue}{reply}{rst}')
@@ -210,10 +210,10 @@ class HoneypotServerUDP(asyncio.DatagramProtocol):
 	def datagram_received(self, data, addr):
 		lport = self.transport.get_extra_info('sockname')[1]
 
-		if server.verbose >= 1:
+		if self.server.verbose >= 1:
 			debug('Data on {byellow}udp:{lport}{rst} from {byellow}{addr[0]}{rst}: {bblue}{data}{rst}')
 		
-		proto, reply, error = server.get_response(data, 'UDP')
+		proto, reply, error = self.server.handle_message(data, 'UDP')
 		if reply is not None:
 			if self.server.verbose >= 1:
 				debug('Replying to {byellow}{addr[0]}{rst} with {bgreen}{proto}{rst}: {bblue}{reply}{rst}')
