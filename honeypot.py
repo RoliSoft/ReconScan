@@ -10,6 +10,7 @@
 
 import os
 import re
+import yaml
 import socket
 import random
 import asyncio
@@ -19,20 +20,22 @@ from xeger import Xeger
 from thefuzz import process
 from lib.colors import debug, info, warn, error, fail
 
+
+
 class Honeypot:
 	verbose  = 0
 	probes   = None
 	payloads = None
 
 	def load_probes(self):
-		if not os.path.exists('data/nmap-service-probes'):
-			error('Could not find {bgreen}data/nmap-service-probes{rst}.')
+		if not os.path.exists('data/service-probes'):
+			error('Could not find {bgreen}data/service-probes{rst}.')
 			return False
 
 		self.probes   = {'UDP': {}, 'TCP': {}}
 		self.payloads = {'UDP': {}, 'TCP': {}}
 
-		with open('data/nmap-service-probes', 'r') as f:
+		with open('data/service-probes', 'r') as f:
 			lines = f.readlines()
 			
 			current = None
@@ -73,6 +76,48 @@ class Honeypot:
 			debug('Loaded {bgreen}{tcp_probes}{rst} TCP and {bgreen}{udp_probes}{rst} UDP probes.')
 			
 		return len(self.probes['UDP']) > 0 and len(self.probes['TCP']) > 0
+
+
+	def load_ports(self):
+		if not os.path.exists('data/port-popularity'):
+			error('Could not find {bgreen}data/port-popularity{rst}.')
+			return False
+
+		self.port_popularity = {}
+
+		with open('data/port-popularity', 'r') as f:
+			data = yaml.load(f, Loader=yaml.BaseLoader)
+			self.port_popularity = {'TCP': data[0]['TCP'], 'UDP': data[1]['UDP']}
+
+
+	def parse_range(self, interval):
+		numbers = []
+		ranges = interval.split(',')
+		
+		for current in ranges:
+			interim = current.split('-')
+
+			if len(interim) == 1:
+				numbers.append(int(interim[0]))
+			else:
+				numbers.extend(list(range(int(interim[0]), int(interim[1]) + 1)))
+
+		return numbers
+
+
+	def set_ports(self, tcp_range, udp_range, top_tcp, top_udp):
+		if top_tcp or top_udp:
+			self.load_ports()
+
+		if not top_tcp:
+			self.tcp_ports = self.parse_range(tcp_range)
+		else:
+			self.tcp_ports = self.port_popularity['TCP'][:top_tcp]
+
+		if not top_udp:
+			self.udp_ports = self.parse_range(udp_range)
+		else:
+			self.udp_ports = self.port_popularity['UDP'][:top_udp]
 
 
 	def map_to_probe(self, payload, proto):
@@ -133,29 +178,48 @@ class Honeypot:
 	def serve(self):
 		loop = asyncio.get_event_loop()
 
-		for port in range(1, 1024):
+		tcp_success = 0
+		for port in self.tcp_ports:
+			if self.verbose >= 2:
+				debug('Starting listener for TCP port {byellow}{port}{rst}...')
+
 			try:
 				tcp_socket = socket.socket(family=socket.AF_INET6, type=socket.SOCK_STREAM)
-				tcp_socket.bind(('::', port))
+				tcp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+				tcp_socket.bind(('::', int(port)))
+
 				loop_server = loop.run_until_complete(
 					loop.create_server(
 						lambda: HoneypotServerTCP(self),
 						sock=tcp_socket))
 				loop.create_task(loop_server.serve_forever())
+
+				tcp_success += 1
 			except:
 				error('Failed to bind to TCP port {port}.')
 
+		info('Started listening on {byellow}{tcp_success}{rst} TCP ports.')
+
+		udp_success = 0
+		for port in self.udp_ports:
+			if self.verbose >= 3:
+				debug('Starting listener for UDP port {byellow}{port}{rst}...')
+
 			try:
 				udp_socket = socket.socket(family=socket.AF_INET6, type=socket.SOCK_DGRAM)
-				udp_socket.bind(('::', port))
+				udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+				udp_socket.bind(('::', int(port)))
+
 				transport, protocol = loop.run_until_complete(
 					loop.create_datagram_endpoint(
 						lambda: HoneypotServerUDP(self),
 						sock=udp_socket))
+				
+				udp_success += 1
 			except:
 				error('Failed to bind to UDP port {port}.')
 
-		info('Started TCP and UDP servers.')
+		info('Started listening on {byellow}{udp_success}{rst} UDP ports.')
 
 		try:
 			loop.run_forever()
@@ -166,6 +230,8 @@ class Honeypot:
 class HoneypotServerTCP(asyncio.Protocol):
 	def __init__(self, server):
 		self.server = server
+		self.truncation_length = 60
+		self.truncation_marker = ' [...]'.encode('ascii')
 		super().__init__()
 
 	def connection_made(self, transport):
@@ -181,7 +247,10 @@ class HoneypotServerTCP(asyncio.Protocol):
 		proto, reply, error = self.server.handle_message(data, 'TCP')
 		if reply is not None:
 			if self.server.verbose >= 1:
-				debug('Replying to {byellow}{self.peer[0]}{rst} with {bgreen}{proto}{rst}: {bblue}{reply}{rst}')
+				trunc = reply
+				if self.server.verbose < 2 and len(trunc) > self.truncation_length:
+					trunc = trunc[:60] + self.truncation_marker
+				debug('Replying to {byellow}{self.peer[0]}{rst} with {bgreen}{proto}{rst}: {bblue}{trunc}{rst}')
 			else:
 				info('Data on {byellow}tcp:{lport}{rst} from {byellow}{self.peer[0]}{rst}, replying with {bgreen}{proto}{rst}.')
 
@@ -202,6 +271,8 @@ class HoneypotServerTCP(asyncio.Protocol):
 class HoneypotServerUDP(asyncio.DatagramProtocol):
 	def __init__(self, server):
 		self.server = server
+		self.truncation_length = 60
+		self.truncation_marker = ' [...]'.encode('ascii')
 		super().__init__()
 
 	def connection_made(self, transport):
@@ -216,7 +287,10 @@ class HoneypotServerUDP(asyncio.DatagramProtocol):
 		proto, reply, error = self.server.handle_message(data, 'UDP')
 		if reply is not None:
 			if self.server.verbose >= 1:
-				debug('Replying to {byellow}{addr[0]}{rst} with {bgreen}{proto}{rst}: {bblue}{reply}{rst}')
+				trunc = reply
+				if self.server.verbose < 2 and len(trunc) > self.truncation_length:
+					trunc = trunc[:60] + self.truncation_marker
+				debug('Replying to {byellow}{addr[0]}{rst} with {bgreen}{proto}{rst}: {bblue}{trunc}{rst}')
 			else:
 				info('Data on {byellow}udp:{lport}{rst} from {byellow}{addr[0]}{rst}, replying with {bgreen}{proto}{rst}.')
 
@@ -236,7 +310,10 @@ if __name__ == '__main__':
 	s = Honeypot()
 
 	parser = argparse.ArgumentParser(description='Universal honeypot server for scanner testing purposes.')
-	parser.add_argument('-t', '--tcp-ports', action='store', default='1-10000', help='output directory for the results')
+	parser.add_argument('-p', '--ports', action='store', default='1-10000', help='list of TCP ports to listen on; can be comma-separated numbers or ranges (e.g. 80,443-8443,9000-10000)')
+	parser.add_argument('--top-ports', type=int, action='store', help='use the specified number of most popular TCP ports instead of port ranges')
+	parser.add_argument('-u', '--udp-ports', action='store', default='1-10000', help='list of UDP ports to listen on; same format as TCP ports')
+	parser.add_argument('--top-udp-ports', type=int, action='store', help='use the specified number of most popular UDP ports instead of port ranges')
 	parser.add_argument('-v', '--verbose', action='count', help='enable verbose output, repeat for more verbosity')
 	parser.error = lambda x: fail(x[0].upper() + x[1:])
 	args = parser.parse_args()
@@ -244,4 +321,5 @@ if __name__ == '__main__':
 	s.verbose  = args.verbose if args.verbose is not None else 0
 
 	s.load_probes()
+	s.set_ports(args.ports, args.udp_ports, args.top_ports, args.top_udp_ports)
 	s.serve()
